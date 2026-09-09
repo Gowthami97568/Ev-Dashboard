@@ -1,0 +1,671 @@
+<div class="dashboard-page">
+  <!-- LEFT SIDEBAR -->
+  <aside class="dashboard-sidebar">
+    <app-sidebar></app-sidebar>
+  </aside>
+  <!-- MAIN AREA -->
+  <main class="dashboard-main">
+
+    <!-- TOPBAR -->
+    <app-topbar
+      [title]="'Charging Management System (CMS)'"
+      (signOutRequested)="onSignOut()"
+    ></app-topbar>
+
+
+    <!-- DASHBOARD CONTENT -->
+    <section class="dashboard-content">
+
+      <!-- HEADER -->
+      <div class="dashboard-header">
+        <div>
+          <span class="page-kicker">
+            EV PLATFORM
+          </span>
+
+          <p>
+            EV Charging Management Overview
+          </p>
+        </div>
+      </div>
+
+
+      <!-- ERROR -->
+      <div
+        class="error-box"
+        *ngIf="errorMessage"
+      >
+        {{ errorMessage }}
+      </div>
+
+
+      <!-- LOADING -->
+      <div
+        class="loading-box"
+        *ngIf="loading"
+      >
+
+      <div class="loading-spinner"></div>
+
+        <span>
+          Loading dashboard data...
+        </span>
+
+      </div>
+
+
+      <!-- DASHBOARD -->
+      <ng-container *ngIf="!loading">
+        <!-- =====================================================
+             KPI CARDS
+        ====================================================== -->
+
+        <section class="stat-grid">
+
+
+          <!-- =================================================
+               1. TOTAL CHARGERS
+          ================================================== -->
+
+          <article
+            class="stat-card clickable-card"
+            (click)="goToChargeManager()"
+          >
+
+            <div class="stat-icon teal">
+              ⚡
+            </div>
+
+            <div class="stat-label">
+              TOTAL CHARGERS
+            </div>
+
+            <div class="stat-value">
+              {{ dashboardData.chargers | number }}
+            </div>
+
+            <div class="stat-description">
+              Charger records
+            </div>
+
+          </article>
+
+
+          <!-- =================================================
+               2. TRANSACTIONS
+          ================================================== -->
+
+          <article
+            class="stat-card clickable-card"
+            (click)="goToChargeTransactions()"
+          >
+
+            <div class="stat-icon orange">
+              ⇄
+            </div>
+
+            <div class="stat-label">
+              TRANSACTIONS
+            </div>
+
+            <div class="stat-value">
+              {{ dashboardData.transactions | number }}
+            </div>
+
+            <div class="stat-description">
+              Charging transactions
+            </div>
+
+          </article>
+
+
+          <!-- =================================================
+               3. EV USERS
+          ================================================== -->
+
+          <article
+            class="stat-card clickable-card"
+            (click)="goToUsers()"
+          >
+
+            <div class="stat-icon purple">
+              👥
+            </div>
+
+            <div class="stat-label">
+              EV USERS
+            </div>
+
+            <div class="stat-value">
+              {{ dashboardData.users | number }}
+            </div>
+
+            <div class="stat-description">
+              Registered users
+            </div>
+
+          </article>
+
+
+          <!-- =================================================
+               4. DEVICES
+          ================================================== -->
+
+          <article
+            class="stat-card clickable-card"
+            (click)="goToDevicesMaster()"
+          >
+
+            <div class="stat-icon blue">
+              ◉
+            </div>
+
+            <div class="stat-label">
+              DEVICES
+            </div>
+
+            <div class="stat-value">
+              {{ dashboardData.devices | number }}
+            </div>
+
+            <div class="stat-description">
+              Device records
+            </div>
+
+          </article>
+
+
+          <!-- =================================================
+               5. ACCOUNT INFO
+          ================================================== -->
+
+          <article
+            class="stat-card clickable-card"
+            (click)="goToAccountInfo()"
+          >
+
+            <div class="stat-icon cyan">
+              ▣
+            </div>
+
+            <div class="stat-label">
+              ACCOUNT INFO
+            </div>
+
+            <div class="stat-value">
+              {{ dashboardData.accountInfo | number }}
+            </div>
+
+            <div class="stat-description">
+              Account records
+            </div>
+
+          </article>
+
+
+          <!-- =================================================
+               6. APP VERSIONS
+          ================================================== -->
+
+          <article
+            class="stat-card clickable-card"
+            (click)="goToAppVersions()"
+          >
+
+            <div class="stat-icon green">
+              ◈
+            </div>
+
+            <div class="stat-label">
+              APP VERSIONS
+            </div>
+
+            <div class="stat-value">
+              {{ dashboardData.appVersions | number }}
+            </div>
+
+            <div class="stat-description">
+              Version records
+            </div>
+
+          </article>
+
+
+          <!-- =================================================
+               7. WALLET HISTORY
+          ================================================== -->
+
+          <article
+            class="stat-card clickable-card"
+            (click)="goToWalletHistory()"
+          >
+
+            <div class="stat-icon violet">
+              ₹
+            </div>
+
+            <div class="stat-label">
+              WALLET HISTORY
+            </div>
+
+            <div class="stat-value">
+              {{ dashboardData.walletHistory | number }}
+            </div>
+
+            <div class="stat-description">
+              Wallet records
+            </div>
+
+          </article>
+
+
+          <!-- =================================================
+               8. CONFIG DATA
+          ================================================== -->
+
+          <article
+            class="stat-card clickable-card"
+            (click)="goToConfigData()"
+          >
+
+            <div class="stat-icon pink">
+              ⚙
+            </div>
+
+            <div class="stat-label">
+              CONFIG DATA
+            </div>
+
+            <div class="stat-value">
+              {{ dashboardData.configData | number }}
+            </div>
+
+            <div class="stat-description">
+              Configuration records
+            </div>
+
+          </article>
+
+
+          <!-- =================================================
+               9. SOCKET INFO
+          ================================================== -->
+
+          <article
+            class="stat-card clickable-card"
+            (click)="goToSocketInfo()"
+          >
+
+            <div class="stat-icon cyan">
+              ◉
+            </div>
+
+            <div class="stat-label">
+              SOCKET INFO
+            </div>
+
+            <div class="stat-value">
+              {{ dashboardData.socketInfo | number }}
+            </div>
+
+            <div class="stat-description">
+              Socket records
+            </div>
+
+          </article>
+
+
+          <!-- =================================================
+               10. LOGS
+          ================================================== -->
+
+          <article
+            class="stat-card clickable-card"
+            (click)="goToLogs()"
+          >
+
+            <div class="stat-icon pink">
+              ▤
+            </div>
+
+            <div class="stat-label">
+              LOGS
+            </div>
+
+            <div class="stat-value">
+              {{ dashboardData.logs | number }}
+            </div>
+
+            <div class="stat-description">
+              Log records
+            </div>
+
+          </article>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             CHARTS
+        ====================================================== -->
+
+        <section class="content-row">
+
+
+          <!-- PLATFORM RECORDS -->
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <h2>
+                  Platform Records
+                </h2>
+
+                <p>
+                  Comparison of all dashboard entities
+                </p>
+
+              </div>
+
+              <span class="panel-badge">
+                Live database
+              </span>
+
+            </div>
+
+
+            <div class="bar-chart-container">
+
+              <canvas
+                baseChart
+                [type]="'bar'"
+                [data]="comparisonChartData"
+                [options]="comparisonChartOptions"
+              ></canvas>
+
+            </div>
+
+          </article>
+
+
+          <!-- SYSTEM COMPOSITION -->
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <h2>
+                  System Composition
+                </h2>
+
+                <p>
+                  Chargers, transactions, users, devices, logs and socket info
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="donut-chart-container">
+
+              <canvas
+                baseChart
+                [type]="'doughnut'"
+                [data]="compositionChartData"
+                [options]="compositionChartOptions"
+              ></canvas>
+
+            </div>
+
+          </article>
+
+        </section>
+
+
+        <!-- =====================================================
+             TRANSACTION ACTIVITY
+        ====================================================== -->
+
+        <section class="panel transaction-panel">
+
+          <div class="panel-header">
+
+            <div>
+
+              <h2>
+                Transaction Activity
+              </h2>
+
+              <p>
+                Latest transaction activity from the database
+              </p>
+
+            </div>
+
+            <span
+              class="live-badge"
+              *ngIf="hasTrendData"
+            >
+              ● Live data
+            </span>
+
+          </div>
+
+
+          <div
+            class="line-chart-container"
+            *ngIf="hasTrendData"
+          >
+
+            <canvas
+              baseChart
+              [type]="'line'"
+              [data]="transactionsTrendData"
+              [options]="transactionsTrendOptions"
+            ></canvas>
+
+          </div>
+
+
+          <div
+            class="empty-state"
+            *ngIf="!hasTrendData"
+          >
+
+            <div class="empty-icon">
+              📊
+            </div>
+
+            <h3>
+              No transaction activity available
+            </h3>
+
+            <p>
+              Transaction trend data will appear here
+              when the backend returns transaction dates.
+            </p>
+
+          </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             DATABASE SUMMARY
+        ====================================================== -->
+
+        <section class="panel summary-panel">
+
+          <div class="panel-header">
+
+            <div>
+
+              <h2>
+                Database Summary
+              </h2>
+
+              <p>
+                Current records available across the platform
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="summary-grid">
+
+
+            <div class="summary-item">
+
+              <span>
+                Chargers
+              </span>
+
+              <strong>
+                {{ dashboardData.chargers | number }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+              <span>
+                Transactions
+              </span>
+
+              <strong>
+                {{ dashboardData.transactions | number }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+              <span>
+                Users
+              </span>
+
+              <strong>
+                {{ dashboardData.users | number }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+              <span>
+                Devices
+              </span>
+
+              <strong>
+                {{ dashboardData.devices | number }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+              <span>
+                Account Info
+              </span>
+
+              <strong>
+                {{ dashboardData.accountInfo | number }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+              <span>
+                App Versions
+              </span>
+
+              <strong>
+                {{ dashboardData.appVersions | number }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+              <span>
+                Wallet History
+              </span>
+
+              <strong>
+                {{ dashboardData.walletHistory | number }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+              <span>
+                Config Data
+              </span>
+
+              <strong>
+                {{ dashboardData.configData | number }}
+              </strong>
+
+            </div>
+
+
+            <!-- SOCKET INFO -->
+
+            <div class="summary-item">
+
+              <span>
+                Socket Info
+              </span>
+
+              <strong>
+                {{ dashboardData.socketInfo | number }}
+              </strong>
+
+            </div>
+
+
+            <!-- LOGS -->
+
+            <div class="summary-item">
+
+              <span>
+                Logs
+              </span>
+
+              <strong>
+                {{ dashboardData.logs | number }}
+              </strong>
+
+            </div>
+
+
+          </div>
+
+        </section>
+
+
+      </ng-container>
+
+    </section>
+
+  </main>
+
+</div>

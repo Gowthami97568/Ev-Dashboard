@@ -1,0 +1,1446 @@
+/* =========================================================
+   LOGS PAGE
+========================================================= */
+
+.logs-page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+
+  background: #f3f5f7;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.logs-sidebar {
+  width: 308px;
+  min-width: 308px;
+
+  min-height: 100vh;
+
+  background: #ffffff;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.logs-main {
+  flex: 1;
+
+  min-width: 0;
+
+  min-height: 100vh;
+
+  background: #f3f5f7;
+
+  overflow-x: hidden;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.logs-content {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 28px 32px 40px;
+}
+
+
+/* =========================================================
+   LOGS HEADING
+========================================================= */
+
+.logs-heading {
+  width: 100%;
+
+  margin-bottom: 22px;
+}
+
+
+.logs-heading h1 {
+  margin: 0;
+
+  color: #111827;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 28px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   FILTER CARD
+========================================================= */
+
+.filter-card {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: grid;
+
+  grid-template-columns:
+    220px
+    minmax(0, 1fr)
+    minmax(0, 1fr)
+    120px
+    100px;
+
+  align-items: end;
+
+  gap: 18px;
+
+  padding: 20px;
+
+  margin-bottom: 30px;
+
+  background: #ffffff;
+
+  border-radius: 10px;
+
+  border: 1px solid #e2e7ed;
+
+  box-shadow:
+    0 2px 7px
+    rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================================================
+   FILTER FIELD
+========================================================= */
+
+.filter-field {
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.filter-field label {
+  margin: 0;
+
+  color: #43546d;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  line-height: 1.2;
+}
+
+
+/* =========================================================
+   DEVICE SELECT
+========================================================= */
+
+.filter-field select {
+  width: 100%;
+
+  height: 44px;
+
+  min-width: 0;
+
+  box-sizing: border-box;
+
+  padding:
+    0
+    12px;
+
+  border:
+    1px solid
+    #d8dee7;
+
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  color: #27364c;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 15px;
+
+  outline: none;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   SELECT FOCUS
+========================================================= */
+
+.filter-field select:focus {
+  border-color: #0d9488;
+
+  outline: none;
+}
+
+
+/* =========================================================
+   DATE / TIME INPUT
+========================================================= */
+
+.filter-field input[type="datetime-local"],
+.filter-field input[type="text"] {
+  width: 100%;
+
+  height: 44px;
+
+  min-width: 0;
+
+  box-sizing: border-box;
+
+  padding:
+    0
+    10px;
+
+  border:
+    1px solid
+    #d8dee7;
+
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  color: #27364c;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 15px;
+
+  outline: none;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   DATE INPUT FOCUS
+========================================================= */
+
+.filter-field input[type="datetime-local"]:focus,
+.filter-field input[type="text"]:focus {
+  border-color: #0d9488;
+
+  outline: none;
+}
+
+
+/* =========================================================
+   KEEP CALENDAR ICON
+========================================================= */
+
+.filter-field
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  width: 18px;
+
+  height: 18px;
+
+  margin-right: 2px;
+
+  cursor: pointer;
+
+  opacity: 1;
+}
+
+
+/* =========================================================
+   SEARCH BUTTON
+========================================================= */
+
+.search-button {
+  width: 120px;
+
+  height: 44px;
+
+  box-sizing: border-box;
+
+  padding:
+    0
+    18px;
+
+  border:
+    1px solid
+    #0d9488;
+
+  border-radius: 7px;
+
+  background: #0d9488;
+
+  color: #ffffff;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   SEARCH HOVER
+========================================================= */
+
+.search-button:hover {
+  background: #0f766e;
+}
+
+
+/* =========================================================
+   RESET BUTTON
+========================================================= */
+
+.reset-button {
+  width: 100px;
+
+  height: 44px;
+
+  box-sizing: border-box;
+
+  padding:
+    0
+    15px;
+
+  border:
+    1px solid
+    #d8dee7;
+
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  color: #536176;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   RESET HOVER
+========================================================= */
+
+.reset-button:hover {
+  background: #f7f8fa;
+
+  border-color: #c6ced9;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.error-message {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding:
+    12px
+    15px;
+
+  margin-bottom: 20px;
+
+  border:
+    1px solid
+    #fecaca;
+
+  border-radius: 7px;
+
+  background: #fff1f2;
+
+  color: #b91c1c;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   DEVICE REPORT + LOG TABLE LAYOUT
+========================================================= */
+
+.logs-report-layout {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: grid;
+
+  /*
+     LEFT  = Device Report
+     RIGHT = Device Logs
+  */
+
+  grid-template-columns:
+    350px
+    minmax(0, 1fr);
+
+  gap: 20px;
+
+  align-items: start;
+}
+
+
+/* =========================================================
+   WHEN DEVICE REPORT IS NOT SHOWN
+========================================================= */
+
+.logs-report-layout.single-column {
+  grid-template-columns: 1fr;
+}
+
+
+/* =========================================================
+   DEVICE REPORT CARD
+========================================================= */
+
+.device-report {
+  width: 100%;
+
+  min-width: 0;
+
+  box-sizing: border-box;
+
+  margin: 0;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    #e2e7ed;
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 2px 7px
+    rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================================================
+   DEVICE REPORT HEADER
+========================================================= */
+
+.device-report-header {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+
+  padding-bottom: 16px;
+
+  border-bottom:
+    1px solid
+    #e5e7eb;
+}
+
+
+/* =========================================================
+   REPORT TITLE
+========================================================= */
+
+.report-title-area {
+  min-width: 0;
+
+  flex: 1;
+}
+
+
+.device-report-header h2 {
+  margin:
+    0
+    0
+    7px;
+
+  color: #111827;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 21px;
+
+  font-weight: 600;
+
+  line-height: 1.2;
+}
+
+
+.device-report-header p {
+  margin: 0;
+
+  color: #667085;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+
+.device-report-header p strong {
+  color: #111827;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   EXPORT BUTTON
+========================================================= */
+
+.export-button {
+  flex-shrink: 0;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  min-width: 80px;
+
+  height: 38px;
+
+  box-sizing: border-box;
+
+  padding:
+    0
+    12px;
+
+  border:
+    1px solid
+    #0d9488;
+
+  border-radius: 7px;
+
+  background: #0d9488;
+
+  color: #ffffff;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+
+/* =========================================================
+   EXPORT HOVER
+========================================================= */
+
+.export-button:hover:not(:disabled) {
+  background: #0f766e;
+
+  border-color: #0f766e;
+}
+
+
+/* =========================================================
+   EXPORT DISABLED
+========================================================= */
+
+.export-button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   EXPORT ICON
+========================================================= */
+
+.export-icon {
+  display: inline-block;
+
+  font-size: 17px;
+
+  line-height: 1;
+}
+
+
+/* =========================================================
+   DEVICE REPORT SUMMARY
+========================================================= */
+
+.device-report-summary {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap: 10px;
+
+  margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   REPORT CARD
+========================================================= */
+
+.report-card {
+  min-width: 0;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  min-height: 68px;
+
+  padding:
+    11px
+    12px;
+
+  background: #f8fafc;
+
+  border:
+    1px solid
+    #e5e7eb;
+
+  border-radius: 8px;
+}
+
+
+/* =========================================================
+   REPORT LABEL
+========================================================= */
+
+.report-label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #667085;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  line-height: 1.2;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
+}
+
+
+/* =========================================================
+   REPORT VALUE
+========================================================= */
+
+.report-card strong {
+  display: block;
+
+  color: #111827;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+  line-height: 1.25;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   DEVICE ID VALUE
+========================================================= */
+
+.report-card .report-device-id {
+  color: #0d9488;
+
+  font-size: 13px;
+
+  word-break: break-all;
+}
+
+
+/* =========================================================
+   DEVICE ACTIVITY
+========================================================= */
+
+.device-activity {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+
+/* =========================================================
+   ACTIVITY ITEM
+========================================================= */
+
+.activity-item {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+  padding:
+    11px
+    12px;
+
+  background: #f8fafc;
+
+  border:
+    1px solid
+    #e5e7eb;
+
+  border-radius: 8px;
+}
+
+
+/* =========================================================
+   ACTIVITY LABEL
+========================================================= */
+
+.activity-item span {
+  color: #667085;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  line-height: 1.2;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
+}
+
+
+/* =========================================================
+   ACTIVITY VALUE
+========================================================= */
+
+.activity-item strong {
+  color: #111827;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  line-height: 1.4;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   LOG CARD
+========================================================= */
+
+.logs-card {
+  width: 100%;
+
+  min-width: 0;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: none;
+
+  border-radius: 0;
+
+  overflow: visible;
+
+  margin: 0;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding:
+    50px
+    20px;
+
+  text-align: center;
+
+  color: #667085;
+
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   TABLE WRAPPER
+========================================================= */
+
+.table-wrapper {
+  width: 100%;
+
+  min-width: 0;
+
+  overflow-x: auto;
+
+  overflow-y: visible;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.logs-table {
+  width: 100%;
+
+  min-width: 650px;
+
+  border-collapse: collapse;
+
+  border-spacing: 0;
+
+  table-layout: fixed;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+
+/* =========================================================
+   TABLE HEADER
+========================================================= */
+
+.logs-table thead th {
+  height: 90px;
+
+  box-sizing: border-box;
+
+  padding:
+    10px
+    13px;
+
+  background: #08aa72;
+
+  color: #ffffff;
+
+  text-align: left;
+
+  vertical-align: middle;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 25px;
+
+  font-weight: 400;
+
+  line-height: 1.1;
+
+  border-right:
+    1px solid
+    rgba(255, 255, 255, 0.25);
+}
+
+
+/* =========================================================
+   LAST HEADER
+========================================================= */
+
+.logs-table thead th:last-child {
+  border-right: none;
+}
+
+
+/* =========================================================
+   TYPE COLUMN
+========================================================= */
+
+.type-column {
+  width: 86px;
+}
+
+
+/* =========================================================
+   DATE TIME COLUMN
+========================================================= */
+
+.datetime-column {
+  width: 128px;
+}
+
+
+/* =========================================================
+   MESSAGE COLUMN
+========================================================= */
+
+.message-column {
+  width: auto;
+}
+
+
+/* =========================================================
+   TABLE BODY ROWS
+========================================================= */
+
+.logs-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+
+.logs-table tbody tr:nth-child(even) {
+  background: #e4e4e4;
+}
+
+
+/* =========================================================
+   TABLE BODY CELLS
+========================================================= */
+
+.logs-table tbody td {
+  box-sizing: border-box;
+
+  padding:
+    13px
+    13px;
+
+  border-right:
+    1px solid
+    #d5d5d5;
+
+  border-bottom:
+    1px solid
+    #d5d5d5;
+
+  vertical-align: middle;
+
+  text-align: left;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 17px;
+
+  line-height: 1.4;
+
+  color: #111111;
+}
+
+
+/* =========================================================
+   LAST CELL
+========================================================= */
+
+.logs-table tbody td:last-child {
+  border-right: none;
+}
+
+
+/* =========================================================
+   TYPE
+========================================================= */
+
+.type-cell {
+  font-size: 17px;
+
+  font-weight: 400;
+
+  color: #111111;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   WARNING
+========================================================= */
+
+.type-cell.warn {
+  color: #ff9800;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.type-cell.error {
+  color: #e53935;
+}
+
+
+/* =========================================================
+   DATE TIME
+========================================================= */
+
+.datetime-cell {
+  color: #111111;
+
+  white-space: normal;
+
+  word-break: normal;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   DATE / TIME LINES
+========================================================= */
+
+.datetime-cell div {
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.message-cell {
+  color: #111111;
+
+  white-space: normal;
+
+  word-break: break-word;
+
+  overflow-wrap: anywhere;
+
+  line-height: 1.45;
+
+  text-overflow: clip;
+
+  overflow: visible;
+
+  max-width: none;
+}
+
+
+/* =========================================================
+   NO DATA
+========================================================= */
+
+.no-data {
+  height: 90px;
+
+  padding:
+    20px !important;
+
+  text-align: center !important;
+
+  vertical-align: middle !important;
+
+  color: #777777 !important;
+
+  background: #ffffff !important;
+
+  font-size: 15px !important;
+}
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.pagination {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding:
+    12px
+    16px;
+
+  border-top:
+    1px solid
+    #dddddd;
+
+  background: #ffffff;
+}
+
+
+/* =========================================================
+   PAGINATION INFO
+========================================================= */
+
+.pagination-info {
+  color: #69778a;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   PAGINATION BUTTONS
+========================================================= */
+
+.pagination-buttons {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+}
+
+
+/* =========================================================
+   PAGINATION BUTTON
+========================================================= */
+
+.pagination-buttons button {
+  min-width: 34px;
+
+  height: 34px;
+
+  padding:
+    0
+    9px;
+
+  border:
+    1px solid
+    #d5dce5;
+
+  border-radius: 5px;
+
+  background: #ffffff;
+
+  color: #536176;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   ACTIVE PAGE
+========================================================= */
+
+.pagination-buttons button.active {
+  background: #0d9488;
+
+  border-color: #0d9488;
+
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   PAGINATION HOVER
+========================================================= */
+
+.pagination-buttons button:hover:not(:disabled) {
+  background: #f0fdfa;
+
+  border-color: #9ad8d2;
+}
+
+
+/* =========================================================
+   ACTIVE HOVER
+========================================================= */
+
+.pagination-buttons button.active:hover {
+  background: #0d9488;
+
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   DISABLED
+========================================================= */
+
+.pagination-buttons button:disabled {
+  opacity: 0.45;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   MEDIUM SCREEN
+========================================================= */
+
+@media (max-width: 1250px) {
+
+  .filter-card {
+    grid-template-columns:
+      1fr
+      1fr;
+
+    gap: 16px;
+  }
+
+
+  .search-button,
+  .reset-button {
+    width: 100%;
+  }
+
+
+  .logs-report-layout {
+    grid-template-columns:
+      300px
+      minmax(0, 1fr);
+  }
+
+}
+
+
+/* =========================================================
+   REPORT + LOGS STACK ON SMALLER SCREENS
+========================================================= */
+
+@media (max-width: 950px) {
+
+  .logs-report-layout {
+    grid-template-columns: 1fr !important;
+
+    gap: 20px;
+  }
+
+
+  .device-report {
+    width: 100%;
+  }
+
+
+  .logs-card {
+    width: 100%;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL SCREEN
+========================================================= */
+
+@media (max-width: 750px) {
+
+  .logs-page {
+    display: block;
+  }
+
+
+  .logs-sidebar {
+    width: 100%;
+
+    min-width: 0;
+
+    min-height: auto;
+  }
+
+
+  .logs-content {
+    padding:
+      20px
+      15px
+      30px;
+  }
+
+
+  .filter-card {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+
+    padding: 18px;
+  }
+
+
+  .pagination {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 12px;
+  }
+
+
+  .device-report-header {
+    flex-direction: column;
+  }
+
+
+  .export-button {
+    width: 100%;
+  }
+
+
+  .device-report-summary {
+    grid-template-columns:
+      1fr
+      1fr;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL SCREEN
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .device-report-summary {
+    grid-template-columns: 1fr;
+  }
+
+
+  .device-report {
+    padding: 15px;
+  }
+
+}

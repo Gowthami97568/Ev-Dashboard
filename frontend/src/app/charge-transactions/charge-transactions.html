@@ -1,0 +1,1436 @@
+<div class="transaction-page">
+
+<!-- ==================================================
+       SIDEBAR
+  =================================================== -->
+
+  <aside class="transaction-sidebar">
+    <app-sidebar></app-sidebar>
+  </aside>
+  <!-- ==================================================
+       MAIN
+  =================================================== -->
+
+  <main class="transaction-main">
+    <section class="transaction-content">
+
+
+      <!-- ==================================================
+           HEADER
+      =================================================== -->
+
+      <div class="page-header">
+
+        <div>
+          <span class="kicker">
+            MANAGEMENT
+          </span>
+          <p>
+            Monitor and review charging transactions
+          </p>
+        </div>
+    
+      </div>
+
+
+      <!-- ==================================================
+           SUCCESS
+      =================================================== -->
+
+      <div
+        class="success-box"
+        *ngIf="successMessage"
+      >
+        {{ successMessage }}
+      </div>
+
+
+      <!-- ==================================================
+           ERROR
+      =================================================== -->
+
+      <div
+        class="error-box"
+        *ngIf="errorMessage"
+      >
+        {{ errorMessage }}
+      </div>
+
+
+      <!-- ==================================================
+           SUMMARY
+      =================================================== -->
+
+      <section class="summary-grid">
+
+        <div class="summary-card">
+
+          <span>
+            Total Transactions
+          </span>
+          <strong>
+            {{ summary.total | number }}
+          </strong>
+
+        </div>
+          <div class="summary-card">
+          <span>
+            Charging
+          </span>
+          <strong class="blue">
+            {{ summary.charging | number }}
+          </strong>
+
+        </div>
+         <div class="summary-card">
+           <span>
+            Accepted
+          </span>
+
+          <strong class="green">
+            {{ summary.accepted | number }}
+          </strong>
+
+        </div>
+         <div class="summary-card">
+
+          <span>
+            Stopped
+          </span>
+
+          <strong class="red">
+            {{ summary.stopped | number }}
+          </strong>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           SECONDARY SUMMARY
+      =================================================== -->
+
+      <section class="summary-grid secondary-grid">
+
+        <div class="summary-card">
+
+          <span>
+            Requested
+          </span>
+
+          <strong class="orange">
+            {{ summary.requested | number }}
+          </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <span>
+            Total kWh
+          </span>
+
+          <strong>
+            {{ summary.totalKwh | number:'1.0-2' }}
+          </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <span>
+            Total Charge Value
+          </span>
+
+          <strong>
+            {{ summary.totalChargeValue | number:'1.0-2' }}
+          </strong>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           FILTERS
+      =================================================== -->
+
+      <section class="filter-panel">
+
+        <!-- SEARCH -->
+
+        <div class="search-field">
+
+          <span class="search-icon">
+            ⌕
+          </span>
+
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            placeholder="Transaction ID, mobile, device ID..."
+            (keyup.enter)="applyFilters()"
+          />
+
+        </div>
+
+
+        <!-- CHARGE STATUS -->
+
+        <select
+          [(ngModel)]="chargeStatusFilter"
+          (change)="onFilterChange()"
+        >
+
+          <option value="">
+            All Charge Status
+          </option>
+
+          <option value="1">
+            Charging
+          </option>
+
+          <option value="2">
+            Stopped
+          </option>
+
+        </select>
+
+
+        <!-- STATUS -->
+
+        <select
+          [(ngModel)]="statusFilter"
+          (change)="onFilterChange()"
+        >
+
+          <option value="">
+            All Status
+          </option>
+
+          <option
+            *ngFor="let status of filters.statuses"
+            [value]="status"
+          >
+            {{ status }}
+          </option>
+
+        </select>
+
+
+        <!-- REASON -->
+
+        <select
+          [(ngModel)]="reasonFilter"
+          (change)="onFilterChange()"
+        >
+
+          <option value="">
+            All Reasons
+          </option>
+
+          <option
+            *ngFor="let reason of filters.reasons"
+            [value]="reason"
+          >
+            {{ reason }}
+          </option>
+
+        </select>
+
+
+        <!-- CREATED BY -->
+
+        <select
+          [(ngModel)]="createdByFilter"
+          (change)="onFilterChange()"
+        >
+
+          <option value="">
+            All Created By
+          </option>
+
+          <option
+            *ngFor="let person of filters.createdBy"
+            [value]="person"
+          >
+            {{ person }}
+          </option>
+
+        </select>
+
+
+        <!-- FROM DATE -->
+
+        <div class="date-field">
+
+          <label>
+            From
+          </label>
+
+          <input
+            type="date"
+            [(ngModel)]="dateFrom"
+            (change)="onFilterChange()"
+          />
+
+        </div>
+
+
+        <!-- TO DATE -->
+
+        <div class="date-field">
+
+          <label>
+            To
+          </label>
+
+          <input
+            type="date"
+            [(ngModel)]="dateTo"
+            (change)="onFilterChange()"
+          />
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <button
+          type="button"
+          class="search-btn"
+          (click)="applyFilters()"
+        >
+          Search
+        </button>
+
+
+        <!-- CLEAR -->
+
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="clearFilters()"
+        >
+          Clear
+        </button>
+
+      </section>
+
+
+      <!-- ==================================================
+           TABLE
+      =================================================== -->
+
+      <section class="table-panel">
+
+
+        <!-- LOADING -->
+
+        <div
+          class="loading-state"
+          *ngIf="loading"
+        >
+          Loading transactions...
+        </div>
+
+
+        <!-- TABLE -->
+
+        <div
+          class="table-wrapper"
+          *ngIf="!loading"
+        >
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  TRANSACTION ID
+                </th>
+
+                <th>
+                  MOBILE
+                </th>
+
+                <th>
+                  DEVICE ID
+                </th>
+
+                <th>
+                  START TIME
+                </th>
+
+                <th>
+                  END TIME
+                </th>
+
+                <th>
+                  DURATION
+                </th>
+
+                <th>
+                  CHARGE STATUS
+                </th>
+
+                <th>
+                  KWH
+                </th>
+
+                <th>
+                  WALLET
+                </th>
+
+                <th>
+                  CHARGE VALUE
+                </th>
+
+                <th>
+                  VOLTAGE
+                </th>
+
+                <th>
+                  CURRENT
+                </th>
+
+                <th>
+                  STATUS
+                </th>
+
+                <th>
+                  CREATED BY
+                </th>
+
+                <!-- ADDED EDIT ACTION -->
+                <th>
+                  ACTIONS
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              <tr
+                *ngFor="let transaction of transactions"
+              >
+
+                <!-- TRANSACTION ID -->
+
+                <td>
+
+                  <strong>
+                    {{ transaction.transactionid }}
+                  </strong>
+
+                </td>
+
+
+                <!-- MOBILE -->
+
+                <td>
+                  {{ transaction.mobile || '—' }}
+                </td>
+
+
+                <!-- DEVICE -->
+
+                <td>
+                  {{ transaction.deviceid || '—' }}
+                </td>
+
+
+                <!-- START -->
+
+                <td>
+                  {{ transaction.starttime || '—' }}
+                </td>
+
+
+                <!-- END -->
+
+                <td>
+                  {{ transaction.endtime || '—' }}
+                </td>
+
+
+                <!-- DURATION -->
+
+                <td>
+                  {{ transaction.duration ?? '—' }}
+                </td>
+
+
+                <!-- CHARGE STATUS -->
+
+                <td>
+
+                  <span
+                    class="charge-badge"
+                    [ngClass]="
+                      getChargeStatusClass(
+                        transaction.chargestatus
+                      )
+                    "
+                  >
+
+                    {{
+                      getChargeStatusLabel(
+                        transaction.chargestatus
+                      )
+                    }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- KWH -->
+
+                <td>
+                  {{ transaction.kwh ?? '—' }}
+                </td>
+
+
+                <!-- WALLET -->
+
+                <td>
+                  {{ transaction.consumewallet ?? '—' }}
+                </td>
+
+
+                <!-- CHARGE VALUE -->
+
+                <td>
+                  {{ transaction.chargevalue ?? '—' }}
+                </td>
+
+
+                <!-- VOLTAGE -->
+
+                <td>
+                  {{ transaction.voltage ?? '—' }}
+                </td>
+
+
+                <!-- CURRENT -->
+
+                <td>
+                  {{ transaction.current ?? '—' }}
+                </td>
+
+
+                <!-- STATUS -->
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="
+                      getStatusClass(
+                        transaction.status
+                      )
+                    "
+                  >
+
+                    {{ transaction.status || '—' }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- CREATED BY -->
+
+                <td>
+                  {{ transaction.createdby || '—' }}
+                </td>
+
+
+                <!-- ==================================================
+                     ACTIONS
+                =================================================== -->
+
+                <td class="actions-cell">
+
+                  <!-- VIEW -->
+
+                  <button
+                    type="button"
+                    class="details-btn"
+                    (click)="openDetails(transaction)"
+                  >
+                    View
+                  </button>
+
+
+                  <!-- EDIT -->
+
+                  <button
+                    type="button"
+                    class="edit-btn"
+                    (click)="editTransaction(transaction)"
+                  >
+                    Edit
+                  </button>
+
+                </td>
+
+              </tr>
+
+
+              <!-- EMPTY -->
+
+              <tr
+                *ngIf="transactions.length === 0"
+              >
+
+                <td
+                  colspan="15"
+                  class="empty"
+                >
+                  No transactions found.
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <!-- ==================================================
+             PAGINATION
+        =================================================== -->
+
+        <div
+          class="pagination"
+          *ngIf="!loading"
+        >
+
+          <span>
+
+            Page
+            {{ total === 0 ? 0 : page }}
+            of
+            {{ totalPages }}
+
+            &nbsp; · &nbsp;
+
+            {{ total }}
+
+            records
+
+          </span>
+
+
+          <div class="pagination-buttons">
+
+            <button
+              type="button"
+              (click)="previousPage()"
+              [disabled]="page <= 1 || total === 0"
+            >
+              Previous
+            </button>
+
+
+            <button
+              type="button"
+              (click)="nextPage()"
+              [disabled]="page >= totalPages || total === 0"
+            >
+              Next
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+
+  <!-- ==================================================
+       DETAILS MODAL
+  =================================================== -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="showDetails && selectedTransaction"
+    (click)="closeDetails()"
+  >
+
+    <div
+      class="details-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="modal-header">
+
+        <div>
+
+          <span>
+            TRANSACTION DETAILS
+          </span>
+
+          <h2>
+            #{{ selectedTransaction.transactionid }}
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closeDetails()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="details-grid">
+
+        <div>
+          <label>Transaction ID</label>
+          <p>
+            {{ selectedTransaction.transactionid }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Mobile</label>
+          <p>
+            {{ selectedTransaction.mobile || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Device ID</label>
+          <p>
+            {{ selectedTransaction.deviceid || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Start Time</label>
+          <p>
+            {{ selectedTransaction.starttime || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>End Time</label>
+          <p>
+            {{ selectedTransaction.endtime || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Duration</label>
+          <p>
+            {{ selectedTransaction.duration ?? '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Charge Status</label>
+          <p>
+            {{
+              getChargeStatusLabel(
+                selectedTransaction.chargestatus
+              )
+            }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Status</label>
+          <p>
+            {{ selectedTransaction.status || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>kWh</label>
+          <p>
+            {{ selectedTransaction.kwh ?? '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Wallet Consumption</label>
+          <p>
+            {{ selectedTransaction.consumewallet ?? '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Charge Value</label>
+          <p>
+            {{ selectedTransaction.chargevalue ?? '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Voltage</label>
+          <p>
+            {{ selectedTransaction.voltage ?? '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Current</label>
+          <p>
+            {{ selectedTransaction.current ?? '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Watt</label>
+          <p>
+            {{ selectedTransaction.watt ?? '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Charge Date</label>
+          <p>
+            {{ selectedTransaction.chargedate || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Reason</label>
+          <p>
+            {{ selectedTransaction.reason || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Created By</label>
+          <p>
+            {{ selectedTransaction.createdby || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Created Date</label>
+          <p>
+            {{ selectedTransaction.createddate || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Invoice ID</label>
+          <p>
+            {{ selectedTransaction.invoiceid ?? '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Comm Time</label>
+          <p>
+            {{ selectedTransaction.commtime || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Auto Start</label>
+          <p>
+            {{ selectedTransaction.autostart ?? '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>RFID</label>
+          <p>
+            {{ selectedTransaction.rfid || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Modified By</label>
+          <p>
+            {{ selectedTransaction.modifiedBy || '—' }}
+          </p>
+        </div>
+
+
+        <div>
+          <label>Modified Date</label>
+          <p>
+            {{ selectedTransaction.modifiedDate || '—' }}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==================================================
+       EDIT TRANSACTION MODAL
+  =================================================== -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="showEditModal"
+    (click)="closeEditModal()"
+  >
+
+    <div
+      class="edit-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <!-- HEADER -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <span>
+            EDIT TRANSACTION
+          </span>
+
+          <h2>
+            #{{ editingTransaction.transactionid }}
+          </h2>
+
+          <p class="edit-description">
+            Update transaction information
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closeEditModal()"
+          [disabled]="saving"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- EDIT FORM -->
+
+      <div class="edit-form">
+
+
+        <!-- TRANSACTION ID -->
+
+        <div class="form-group">
+
+          <label>
+            Transaction ID
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingTransaction.transactionid"
+            readonly
+          />
+
+        </div>
+
+
+        <!-- MOBILE -->
+
+        <div class="form-group">
+
+          <label>
+            Mobile
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingTransaction.mobile"
+            placeholder="Enter mobile"
+          />
+
+        </div>
+
+
+        <!-- DEVICE ID -->
+
+        <div class="form-group">
+
+          <label>
+            Device ID
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingTransaction.deviceid"
+            placeholder="Enter device ID"
+          />
+
+        </div>
+
+
+        <!-- START TIME -->
+
+        <div class="form-group">
+
+          <label>
+            Start Time
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingTransaction.starttime"
+            placeholder="Enter start time"
+          />
+
+        </div>
+
+
+        <!-- END TIME -->
+
+        <div class="form-group">
+
+          <label>
+            End Time
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingTransaction.endtime"
+            placeholder="Enter end time"
+          />
+
+        </div>
+
+
+        <!-- DURATION -->
+
+        <div class="form-group">
+
+          <label>
+            Duration
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.duration"
+            placeholder="Enter duration"
+          />
+
+        </div>
+
+
+        <!-- CHARGE STATUS -->
+
+        <div class="form-group">
+
+          <label>
+            Charge Status
+          </label>
+
+          <select
+            [(ngModel)]="editingTransaction.chargestatus"
+          >
+
+            <option [ngValue]="1">
+              1
+            </option>
+
+            <option [ngValue]="2">
+              2
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- KWH -->
+
+        <div class="form-group">
+
+          <label>
+            kWh
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.kwh"
+            placeholder="Enter kWh"
+          />
+
+        </div>
+
+
+        <!-- WALLET -->
+
+        <div class="form-group">
+
+          <label>
+            Wallet Consumption
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.consumewallet"
+            placeholder="Enter wallet consumption"
+          />
+
+        </div>
+
+
+        <!-- CHARGE VALUE -->
+
+        <div class="form-group">
+
+          <label>
+            Charge Value
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.chargevalue"
+            placeholder="Enter charge value"
+          />
+
+        </div>
+
+
+        <!-- VOLTAGE -->
+
+        <div class="form-group">
+
+          <label>
+            Voltage
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.voltage"
+            placeholder="Enter voltage"
+          />
+
+        </div>
+
+
+        <!-- CURRENT -->
+
+        <div class="form-group">
+
+          <label>
+            Current
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.current"
+            placeholder="Enter current"
+          />
+
+        </div>
+
+
+        <!-- WATT -->
+
+        <div class="form-group">
+
+          <label>
+            Watt
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.watt"
+            placeholder="Enter watt"
+          />
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div class="form-group">
+
+          <label>
+            Status
+          </label>
+
+          <select
+            [(ngModel)]="editingTransaction.status"
+          >
+
+            <option value="">
+              Select Status
+            </option>
+
+            <option
+              *ngFor="let status of filters.statuses"
+              [value]="status"
+            >
+              {{ status }}
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- REASON -->
+
+        <div class="form-group">
+
+          <label>
+            Reason
+          </label>
+
+          <select
+            [(ngModel)]="editingTransaction.reason"
+          >
+
+            <option value="">
+              Select Reason
+            </option>
+
+            <option
+              *ngFor="let reason of filters.reasons"
+              [value]="reason"
+            >
+              {{ reason }}
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- RFID -->
+
+        <div class="form-group">
+
+          <label>
+            RFID
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingTransaction.rfid"
+            placeholder="Enter RFID"
+          />
+
+        </div>
+
+
+        <!-- AUTO START -->
+
+        <div class="form-group">
+
+          <label>
+            Auto Start
+          </label>
+
+          <select
+            [(ngModel)]="editingTransaction.autostart"
+          >
+
+            <option [ngValue]="1">
+              Yes
+            </option>
+
+            <option [ngValue]="0">
+              No
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- REFERENCE CODE -->
+
+        <div class="form-group">
+
+          <label>
+            Reference Code
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingTransaction.refcode"
+            placeholder="Enter reference code"
+          />
+
+        </div>
+
+
+        <!-- METER START -->
+
+        <div class="form-group">
+
+          <label>
+            Meter Start
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.meterstart"
+            placeholder="Enter meter start"
+          />
+
+        </div>
+
+
+        <!-- METER STOP -->
+
+        <div class="form-group">
+
+          <label>
+            Meter Stop
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.meterstop"
+            placeholder="Enter meter stop"
+          />
+
+        </div>
+
+
+        <!-- CGST -->
+
+        <div class="form-group">
+
+          <label>
+            CGST
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.cgst"
+            placeholder="Enter CGST"
+          />
+
+        </div>
+
+
+        <!-- SGST -->
+
+        <div class="form-group">
+
+          <label>
+            SGST
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.sgst"
+            placeholder="Enter SGST"
+          />
+
+        </div>
+
+
+        <!-- TOTAL VALUE -->
+
+        <div class="form-group">
+
+          <label>
+            Total Value
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingTransaction.totalvalue"
+            placeholder="Enter total value"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- FOOTER -->
+
+      <div class="edit-modal-footer">
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="closeEditModal()"
+          [disabled]="saving"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="button"
+          class="save-btn"
+          (click)="saveTransaction()"
+          [disabled]="saving"
+        >
+
+          <span
+            *ngIf="saving"
+            class="save-spinner"
+          ></span>
+
+          {{
+            saving
+              ? 'Saving...'
+              : 'Save Changes'
+          }}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

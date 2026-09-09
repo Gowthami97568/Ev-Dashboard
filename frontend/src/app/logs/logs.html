@@ -1,0 +1,622 @@
+<div class="logs-page">
+<!-- =====================================================
+       SIDEBAR
+====================================================== -->
+
+  <aside class="logs-sidebar">
+    <app-sidebar></app-sidebar>
+  </aside>
+
+
+  <!-- =====================================================
+       MAIN
+  ====================================================== -->
+
+  <main class="logs-main">
+
+    <section class="logs-content">
+
+
+      <!-- =================================================
+           LOGS HEADING
+      ================================================== -->
+
+      <div class="logs-heading">
+
+        <h1>Logs</h1>
+
+      </div>
+      <!-- =================================================
+           FILTER CARD
+      ================================================== -->
+
+      <section class="filter-card">
+
+
+        <!-- =================================================
+             DEVICE ID
+        ================================================== -->
+
+        <div class="filter-field">
+
+          <label for="deviceId">
+            Device ID
+          </label>
+
+
+          <select
+            id="deviceId"
+            [(ngModel)]="selectedDeviceId"
+            (change)="onDeviceChange()"
+          >
+
+            <option value="">
+              All Devices
+            </option>
+
+
+            <option
+              *ngFor="let deviceId of deviceIds"
+              [value]="deviceId"
+            >
+
+              {{ deviceId }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- =================================================
+             FROM DATE & TIME
+        ================================================== -->
+
+        <div class="filter-field">
+
+          <label for="fromDateTime">
+            From Date &amp; Time
+          </label>
+
+
+          <input
+            id="fromDateTime"
+            type="text"
+            [value]="fromDateTimeDisplay"
+            readonly
+          >
+
+        </div>
+
+
+        <!-- =================================================
+             TO DATE & TIME
+        ================================================== -->
+
+        <div class="filter-field">
+
+          <label for="toDateTime">
+            To Date &amp; Time
+          </label>
+
+
+          <input
+            id="toDateTime"
+            type="text"
+            [value]="toDateTimeDisplay"
+            readonly
+          >
+
+        </div>
+
+
+        <!-- =================================================
+             SEARCH
+        ================================================== -->
+
+        <button
+          type="button"
+          class="search-button"
+          (click)="searchLogs()"
+        >
+
+          Search
+
+        </button>
+
+
+        <!-- =================================================
+             RESET
+        ================================================== -->
+
+        <button
+          type="button"
+          class="reset-button"
+          (click)="resetFilters()"
+        >
+
+          Reset
+
+        </button>
+
+      </section>
+
+
+      <!-- =================================================
+           ERROR
+      ================================================== -->
+
+      <div
+        class="error-message"
+        *ngIf="errorMessage"
+      >
+
+        {{ errorMessage }}
+
+      </div>
+
+
+      <!-- =================================================
+           DEVICE REPORT + LOG TABLE
+           
+           SIDE-BY-SIDE
+      ================================================== -->
+
+      <div
+        class="logs-report-layout"
+        [class.single-column]="!showDeviceReport"
+      >
+
+
+        <!-- =================================================
+             DEVICE REPORT
+        ================================================== -->
+
+        <section
+          class="device-report"
+          *ngIf="showDeviceReport"
+        >
+
+
+          <!-- =================================================
+               REPORT HEADER
+          ================================================== -->
+
+          <div class="device-report-header">
+
+            <div class="report-title-area">
+
+              <h2>
+                Device Report
+              </h2>
+
+
+              <p>
+                Complete report for Device ID:
+
+                <strong>
+                  {{ reportDeviceId }}
+                </strong>
+              </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 EXPORT
+            ================================================== -->
+
+            <button
+              type="button"
+              class="export-button"
+              (click)="exportDeviceReport()"
+              [disabled]="reportTotalLogs === 0"
+            >
+
+              <span class="export-icon">
+                ↓
+              </span>
+
+              Export
+
+            </button>
+
+          </div>
+
+
+          <!-- =================================================
+               REPORT SUMMARY
+          ================================================== -->
+
+          <div class="device-report-summary">
+
+
+            <!-- DEVICE ID -->
+
+            <div class="report-card">
+
+              <span class="report-label">
+                Device ID
+              </span>
+
+
+              <strong class="report-device-id">
+                {{ reportDeviceId }}
+              </strong>
+
+            </div>
+
+
+            <!-- TOTAL LOGS -->
+
+            <div class="report-card">
+
+              <span class="report-label">
+                Total Logs
+              </span>
+
+
+              <strong>
+                {{ reportTotalLogs }}
+              </strong>
+
+            </div>
+
+
+            <!-- INFO -->
+
+            <div class="report-card">
+
+              <span class="report-label">
+                INFO
+              </span>
+
+
+              <strong>
+                {{ reportInfoCount }}
+              </strong>
+
+            </div>
+
+
+            <!-- WARN -->
+
+            <div class="report-card">
+
+              <span class="report-label">
+                WARN
+              </span>
+
+
+              <strong>
+                {{ reportWarnCount }}
+              </strong>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            <div class="report-card">
+
+              <span class="report-label">
+                ERROR
+              </span>
+
+
+              <strong>
+                {{ reportErrorCount }}
+              </strong>
+
+            </div>
+
+
+            <!-- OTHER -->
+
+            <div
+              class="report-card"
+              *ngIf="reportOtherCount > 0"
+            >
+
+              <span class="report-label">
+                OTHER
+              </span>
+
+
+              <strong>
+                {{ reportOtherCount }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================================
+               ACTIVITY INFORMATION
+          ================================================== -->
+
+          <div class="device-activity">
+
+
+            <!-- FIRST ACTIVITY -->
+
+            <div class="activity-item">
+
+              <span>
+                First Activity
+              </span>
+
+
+              <strong>
+                {{ reportFirstActivity }}
+              </strong>
+
+            </div>
+
+
+            <!-- LAST ACTIVITY -->
+
+            <div class="activity-item">
+
+              <span>
+                Last Activity
+              </span>
+
+
+              <strong>
+                {{ reportLastActivity }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             LOG TABLE
+        ================================================== -->
+
+        <section class="logs-card">
+
+
+          <!-- =================================================
+               LOADING
+          ================================================== -->
+
+          <div
+            class="loading"
+            *ngIf="loading"
+          >
+
+            Loading logs...
+
+          </div>
+
+
+          <!-- =================================================
+               TABLE
+          ================================================== -->
+
+          <div
+            class="table-wrapper"
+            *ngIf="!loading"
+          >
+
+            <table class="logs-table">
+
+              <thead>
+
+                <tr>
+
+                  <th class="type-column">
+                    Type
+                  </th>
+
+
+                  <th class="datetime-column">
+                    Date<br>
+                    Time
+                  </th>
+
+
+                  <th class="message-column">
+                    Message
+                  </th>
+
+                </tr>
+
+              </thead>
+
+
+              <tbody>
+
+                <tr
+                  *ngFor="let log of displayedLogs"
+                >
+
+
+                  <!-- =================================================
+                       TYPE
+                  ================================================== -->
+
+                  <td
+                    class="type-cell"
+
+                    [class.warn]="
+                      log.type &&
+                      (
+                        log.type.toLowerCase() === 'warn' ||
+                        log.type.toLowerCase() === 'warning'
+                      )
+                    "
+
+                    [class.error]="
+                      log.type &&
+                      log.type.toLowerCase() === 'error'
+                    "
+                  >
+
+                    {{ log.type }}
+
+                  </td>
+
+
+                  <!-- =================================================
+                       DATE / TIME
+                  ================================================== -->
+
+                  <td class="datetime-cell">
+
+                    <div>
+                      {{ log.date }}
+                    </div>
+
+
+                    <div>
+                      {{ log.time }}
+                    </div>
+
+                  </td>
+
+
+                  <!-- =================================================
+                       MESSAGE
+                  ================================================== -->
+
+                  <td class="message-cell">
+
+                    {{ log.message }}
+
+                  </td>
+
+                </tr>
+
+
+                <!-- =================================================
+                     NO DATA
+                ================================================== -->
+
+                <tr
+                  *ngIf="displayedLogs.length === 0"
+                >
+
+                  <td
+                    colspan="3"
+                    class="no-data"
+                  >
+
+                    No logs found.
+
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+
+          <!-- =================================================
+               PAGINATION
+          ================================================== -->
+
+          <div
+            class="pagination"
+            *ngIf="
+              !loading &&
+              filteredLogs.length > 0
+            "
+          >
+
+
+            <!-- PAGINATION INFO -->
+
+            <div class="pagination-info">
+
+              Showing
+
+              {{ startRecord }}
+
+              -
+
+              {{ endRecord }}
+
+              of
+
+              {{ filteredLogs.length }}
+
+            </div>
+
+
+            <!-- PAGINATION BUTTONS -->
+
+            <div class="pagination-buttons">
+
+
+              <!-- PREVIOUS -->
+
+              <button
+                type="button"
+                [disabled]="currentPage === 1"
+                (click)="previousPage()"
+              >
+
+                ‹
+
+              </button>
+
+
+              <!-- PAGE NUMBERS -->
+
+              <button
+                type="button"
+                *ngFor="
+                  let page of getPageNumbers()
+                "
+                [class.active]="page === currentPage"
+                (click)="goToPage(page)"
+              >
+
+                {{ page }}
+
+              </button>
+
+
+              <!-- NEXT -->
+
+              <button
+                type="button"
+                [disabled]="currentPage >= totalPages"
+                (click)="nextPage()"
+              >
+
+                ›
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+        </section>
+
+
+      </div>
+
+
+    </section>
+
+  </main>
+
+</div>
+
+
+

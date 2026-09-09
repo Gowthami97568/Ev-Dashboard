@@ -1,0 +1,951 @@
+:host {
+  display: block;
+
+  min-height: 100vh;
+
+  --canvas: #f4f6f8;
+  --surface: #ffffff;
+  --ink: #0b1420;
+  --muted: #64748b;
+  --line: #e6e9ee;
+
+  --primary: #0ea5a0;
+  --primary-dark: #06746f;
+  --accent: #6366f1;
+  --amber: #f59e0b;
+  --danger: #dc2626;
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+
+  --shadow-sm:
+    0 1px 2px rgba(11, 20, 32, .05);
+
+  --shadow-md:
+    0 8px 24px rgba(11, 20, 32, .06);
+
+  font-family:
+    Inter,
+    "Segoe UI",
+    sans-serif;
+
+  color: var(--ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   SHELL
+========================================================= */
+
+.dash {
+  display: grid;
+
+  grid-template-columns:
+    240px minmax(0, 1fr);
+
+  gap: 18px;
+
+  min-height: 100vh;
+
+  padding: 18px;
+
+  background: var(--canvas);
+}
+
+.dash-sidebar {
+  width: 240px;
+
+  min-width: 240px;
+
+  max-width: 240px;
+
+  height: calc(100vh - 36px);
+
+  position: sticky;
+
+  top: 18px;
+
+  align-self: start;
+
+  overflow: hidden;
+}
+
+.dash-sidebar app-sidebar {
+  display: block;
+
+  width: 100%;
+
+  height: 100%;
+}
+
+.dash-main {
+  width: 100%;
+
+  min-width: 0;
+}
+
+.dash-content {
+  width: 100%;
+
+  min-width: 0;
+
+  padding-bottom: 40px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.page-head {
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 22px;
+}
+
+.eyebrow {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: var(--primary-dark);
+
+  font-family:
+    "JetBrains Mono",
+    monospace;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  letter-spacing: .08em;
+
+  text-transform: uppercase;
+}
+
+.page-head h1 {
+  margin: 0;
+
+  font-size: 29px;
+
+  font-weight: 800;
+
+  letter-spacing: -.02em;
+
+  color: var(--ink);
+}
+
+.page-head p {
+  margin: 6px 0 0;
+
+  color: var(--muted);
+
+  font-size: 13.5px;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status-pill {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 7px 13px;
+
+  border-radius: 999px;
+
+  border: 1px solid var(--line);
+
+  background: var(--surface);
+
+  color: var(--muted);
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 7px;
+
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: var(--muted);
+}
+
+.status-pill--live {
+  color: var(--primary-dark);
+
+  border-color:
+    rgba(14, 165, 160, .25);
+
+  background:
+    rgba(14, 165, 160, .08);
+}
+
+.status-pill--live .status-dot {
+  background: var(--primary);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(14, 165, 160, .18);
+}
+
+/* =========================================================
+   ERROR / LOADING
+========================================================= */
+
+.error-box {
+  margin-bottom: 18px;
+
+  padding: 12px 15px;
+
+  border:
+    1px solid #fecaca;
+
+  border-radius: var(--radius-md);
+
+  background: #fef2f2;
+
+  color: #b91c1c;
+
+  font-size: 13px;
+}
+
+.loading-state {
+  min-height: 320px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  color: var(--muted);
+
+  font-size: 13px;
+}
+
+.loading-spinner {
+  width: 16px;
+
+  height: 16px;
+
+  border-radius: 50%;
+
+  border:
+    2px solid var(--line);
+
+  border-top-color:
+    var(--primary);
+
+  animation:
+    spin .7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   KEY INSIGHTS
+========================================================= */
+
+.insight-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 14px;
+
+  margin-bottom: 18px;
+}
+
+.insight-card {
+  padding: 18px;
+
+  background: var(--surface);
+
+  border:
+    1px solid var(--line);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.insight-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow: var(--shadow-md);
+}
+
+.insight-card span {
+  display: block;
+
+  color: var(--muted);
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: .05em;
+}
+
+.insight-card strong {
+  display: block;
+
+  margin-top: 8px;
+
+  color: var(--ink);
+
+  font-size: 25px;
+
+  font-weight: 800;
+
+  font-family:
+    "JetBrains Mono",
+    monospace;
+}
+
+.insight-card strong em {
+  font-style: normal;
+
+  font-size: 12px;
+
+  color: var(--muted);
+}
+
+.insight-card small {
+  display: block;
+
+  margin-top: 7px;
+
+  color: var(--muted);
+
+  font-size: 10.5px;
+}
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+.analytics-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+
+  margin-bottom: 16px;
+}
+
+.panel {
+  min-width: 0;
+
+  padding: 20px;
+
+  background: var(--surface);
+
+  border:
+    1px solid var(--line);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
+}
+
+.panel-wide {
+  grid-column: 1 / -1;
+
+  margin-bottom: 16px;
+}
+
+.panel-head {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+}
+
+.panel-head h2 {
+  margin: 0;
+
+  font-size: 15.5px;
+
+  font-weight: 700;
+}
+
+.panel-head p {
+  margin: 4px 0 0;
+
+  color: var(--muted);
+
+  font-size: 11.5px;
+}
+
+.panel-tag {
+  flex-shrink: 0;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  background: var(--canvas);
+
+  border:
+    1px solid var(--line);
+
+  color: var(--muted);
+
+  font-family:
+    "JetBrains Mono",
+    monospace;
+
+  font-size: 10px;
+
+  font-weight: 600;
+}
+
+/* =========================================================
+   TREND CHART
+========================================================= */
+
+.trend-chart {
+  width: 100%;
+
+  height: 305px;
+
+  overflow-x: auto;
+}
+
+.trend-chart.compact {
+  height: 270px;
+}
+
+.trend-bars {
+  min-width: 720px;
+
+  height: 265px;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 8px;
+
+  padding:
+    5px
+    4px
+    0;
+
+  border-bottom:
+    1px solid var(--line);
+}
+
+.trend-column {
+  min-width: 28px;
+
+  height: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: flex-end;
+
+  align-items: center;
+
+  gap: 5px;
+}
+
+.trend-value {
+  min-height: 13px;
+
+  color: var(--muted);
+
+  font-family:
+    "JetBrains Mono",
+    monospace;
+
+  font-size: 8px;
+
+  white-space: nowrap;
+}
+
+.trend-value.currency {
+  font-size: 7px;
+}
+
+.trend-bar {
+  width: 20px;
+
+  min-height: 5px;
+
+  border-radius:
+    6px
+    6px
+    0
+    0;
+
+  transition:
+    height .35s ease;
+}
+
+.trend-bar.transaction {
+  background:
+    linear-gradient(
+      180deg,
+      #14b8a6,
+      #0f766e
+    );
+}
+
+.trend-bar.energy {
+  background:
+    linear-gradient(
+      180deg,
+      #6366f1,
+      #4338ca
+    );
+}
+
+.trend-bar.revenue {
+  background:
+    linear-gradient(
+      180deg,
+      #f59e0b,
+      #d97706
+    );
+}
+
+.trend-column span {
+  color: var(--muted);
+
+  font-size: 8px;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   PERFORMANCE
+========================================================= */
+
+.performance-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 14px;
+
+  margin-bottom: 16px;
+}
+
+.performance-card {
+  padding: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #f8fafc
+    );
+
+  border:
+    1px solid var(--line);
+
+  border-radius:
+    var(--radius-lg);
+
+  box-shadow:
+    var(--shadow-sm);
+}
+
+.performance-card span {
+  color: var(--muted);
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: .05em;
+
+  text-transform: uppercase;
+}
+
+.performance-card strong {
+  display: block;
+
+  margin-top: 8px;
+
+  font-family:
+    "JetBrains Mono",
+    monospace;
+
+  font-size: 22px;
+
+  font-weight: 600;
+
+  color: var(--ink);
+}
+
+.performance-card em {
+  font-style: normal;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   INITIATION
+========================================================= */
+
+.initiation-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+.initiation-row {
+  display: grid;
+
+  grid-template-columns:
+    1fr;
+
+  gap: 6px;
+}
+
+.initiation-top {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+.initiation-top span {
+  color: #475569;
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+.initiation-top strong {
+  font-family:
+    "JetBrains Mono",
+    monospace;
+
+  font-size: 12px;
+}
+
+.status-track {
+  height: 9px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #eef2f4;
+}
+
+.status-fill {
+  height: 100%;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--primary),
+      #5eead4
+    );
+}
+
+.initiation-row small {
+  color: var(--muted);
+
+  font-size: 9px;
+}
+
+/* =========================================================
+   PEAK USAGE
+========================================================= */
+
+.peak-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 12px;
+}
+
+.peak-item {
+  padding: 18px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius:
+    var(--radius-md);
+
+  background: #fafbfc;
+}
+
+.peak-item span {
+  display: block;
+
+  color: var(--muted);
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+.peak-item strong {
+  display: block;
+
+  margin-top: 9px;
+
+  font-family:
+    "JetBrains Mono",
+    monospace;
+
+  font-size: 20px;
+}
+
+.peak-item small {
+  display: block;
+
+  margin-top: 6px;
+
+  color: var(--muted);
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   TOP CHARGERS
+========================================================= */
+
+.charger-table {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.charger-header,
+.charger-row {
+  min-width: 650px;
+
+  display: grid;
+
+  grid-template-columns:
+    2fr
+    1fr
+    1fr
+    1.2fr;
+
+  align-items: center;
+
+  gap: 18px;
+}
+
+.charger-header {
+  padding:
+    10px
+    12px;
+
+  border-bottom:
+    1px solid var(--line);
+
+  color: var(--muted);
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: .05em;
+}
+
+.charger-row {
+  padding:
+    13px
+    12px;
+
+  border-bottom:
+    1px solid #f1f5f9;
+
+  color: #475569;
+
+  font-size: 11px;
+}
+
+.charger-row:last-child {
+  border-bottom: 0;
+}
+
+.charger-name {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.charger-name strong {
+  color: var(--ink);
+
+  font-family:
+    "JetBrains Mono",
+    monospace;
+
+  font-size: 11px;
+}
+
+.rank {
+  width: 24px;
+
+  height: 24px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 7px;
+
+  background: #f1f5f9;
+
+  color: var(--muted);
+
+  font-family:
+    "JetBrains Mono",
+    monospace;
+
+  font-size: 9px;
+
+  font-weight: 600;
+}
+
+.charger-value {
+  color: var(--primary-dark);
+
+  font-family:
+    "JetBrains Mono",
+    monospace;
+}
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.empty-state {
+  min-height: 210px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1150px) {
+
+  .insight-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+
+  .dash {
+    display: block;
+
+    padding: 12px;
+  }
+
+  .dash-sidebar {
+    width: 100%;
+
+    min-width: 100%;
+
+    max-width: 100%;
+
+    height: auto;
+
+    position: relative;
+
+    top: auto;
+
+    margin-bottom: 14px;
+  }
+
+  .page-head {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .insight-grid,
+  .analytics-grid,
+  .performance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-wide {
+    grid-column: auto;
+  }
+
+  .peak-grid {
+    grid-template-columns: 1fr;
+  }
+}

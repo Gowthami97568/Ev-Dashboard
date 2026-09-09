@@ -1,0 +1,676 @@
+<div class="devices-page">
+
+  <!-- ==================================================
+       SIDEBAR
+  =================================================== -->
+
+  <aside class="devices-sidebar">
+
+    <app-sidebar></app-sidebar>
+
+  </aside>
+
+
+  <!-- ==================================================
+       MAIN CONTENT
+  =================================================== -->
+
+  <main class="devices-main">
+
+    <section class="devices-content">
+
+
+      <!-- ==================================================
+           PAGE HEADER
+      =================================================== -->
+
+      <div class="page-header">
+
+        <div>
+
+          <span class="kicker">
+            MANAGEMENT
+          </span>
+
+          <p>
+            View and manage device master records
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           SUCCESS
+      =================================================== -->
+
+      <div
+        class="success-box"
+        *ngIf="successMessage"
+      >
+        {{ successMessage }}
+      </div>
+
+
+      <!-- ==================================================
+           ERROR
+      =================================================== -->
+
+      <div
+        class="error-box"
+        *ngIf="errorMessage"
+      >
+        {{ errorMessage }}
+      </div>
+
+
+      <!-- ==================================================
+           SUMMARY
+      =================================================== -->
+
+      <section class="summary-grid">
+
+        <div class="summary-card">
+
+          <span>
+            Total Devices
+          </span>
+
+          <strong>
+            {{ summary.total | number }}
+          </strong>
+
+          <small>
+            Device records
+          </small>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           SEARCH
+      =================================================== -->
+
+      <section class="filter-panel">
+
+        <div class="search-field">
+
+          <span class="search-icon">
+            ⌕
+          </span>
+
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            placeholder="Search device records..."
+            (keyup.enter)="applySearch()"
+          />
+
+        </div>
+
+
+        <button
+          type="button"
+          class="search-btn"
+          (click)="applySearch()"
+        >
+          Search
+        </button>
+
+
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="clearSearch()"
+        >
+          Clear
+        </button>
+
+      </section>
+
+
+      <!-- ==================================================
+           TABLE
+      =================================================== -->
+
+      <section class="table-panel">
+
+
+        <!-- LOADING -->
+
+        <div
+          class="loading-state"
+          *ngIf="loading"
+        >
+          Loading devices...
+        </div>
+
+
+        <!-- TABLE -->
+
+        <div
+          class="table-wrapper"
+          *ngIf="!loading"
+        >
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  SLNO
+                </th>
+
+                <th>
+                  DEVICE ID
+                </th>
+
+                <th>
+                  REG DATE
+                </th>
+
+                <th>
+                  STATUS
+                </th>
+
+                <th>
+                  ACTIONS
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+              <!-- ==================================================
+                   DEVICE ROW
+              =================================================== -->
+
+              <tr
+                *ngFor="let device of devices"
+              >
+
+                <!-- SLNO -->
+
+                <td>
+                  {{ formatValue(device.slno) }}
+                </td>
+
+
+                <!-- DEVICE ID -->
+
+                <td>
+                  {{ formatValue(device.device_id) }}
+                </td>
+
+
+                <!-- REG DATE -->
+
+                <td>
+                  {{ formatDate(device.reg_date) }}
+                </td>
+
+
+                <!-- STATUS -->
+
+                <td>
+
+                  <span
+                    *ngIf="device.status"
+                    class="status-badge"
+                  >
+                    {{ device.status }}
+                  </span>
+
+                  <span
+                    *ngIf="!device.status"
+                    class="empty-status"
+                  >
+                    —
+                  </span>
+
+                </td>
+
+
+                <!-- ACTIONS -->
+
+                <td class="actions-cell">
+
+
+                  <!-- VIEW -->
+
+                  <button
+                    type="button"
+                    class="details-btn"
+                    (click)="openDetails(device)"
+                  >
+                    View
+                  </button>
+
+
+                  <!-- EDIT -->
+
+                  <button
+                    type="button"
+                    class="edit-btn"
+                    (click)="editDevice(device)"
+                  >
+                    Edit
+                  </button>
+
+
+                </td>
+
+              </tr>
+
+
+              <!-- ==================================================
+                   EMPTY
+              =================================================== -->
+
+              <tr
+                *ngIf="devices.length === 0"
+              >
+
+                <td
+                  colspan="5"
+                  class="empty"
+                >
+                  No devices found.
+                </td>
+
+              </tr>
+
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <!-- ==================================================
+             PAGINATION
+        =================================================== -->
+
+        <div
+          class="pagination"
+          *ngIf="!loading"
+        >
+
+          <span>
+
+            Page
+            {{ total === 0 ? 0 : page }}
+            of
+            {{ totalPages }}
+
+            &nbsp; · &nbsp;
+
+            {{ total }}
+
+            records
+
+          </span>
+
+
+          <div class="pagination-buttons">
+
+            <button
+              type="button"
+              (click)="previousPage()"
+              [disabled]="
+                page <= 1 ||
+                total === 0
+              "
+            >
+              Previous
+            </button>
+
+
+            <button
+              type="button"
+              (click)="nextPage()"
+              [disabled]="
+                page >= totalPages ||
+                total === 0
+              "
+            >
+              Next
+            </button>
+
+          </div>
+
+        </div>
+
+
+      </section>
+
+
+    </section>
+
+  </main>
+
+
+  <!-- ==================================================
+       DETAILS MODAL
+  =================================================== -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="showDetails && selectedDevice"
+    (click)="closeDetails()"
+  >
+
+    <div
+      class="details-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+
+      <!-- HEADER -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <span>
+            DEVICE DETAILS
+          </span>
+
+          <h2>
+            Device Information
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closeDetails()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- CONTENT -->
+
+      <div class="details-grid">
+
+
+        <!-- SLNO -->
+
+        <div>
+
+          <label>
+            SLNO
+          </label>
+
+          <p>
+            {{ formatValue(selectedDevice.slno) }}
+          </p>
+
+        </div>
+
+
+        <!-- DEVICE ID -->
+
+        <div>
+
+          <label>
+            DEVICE ID
+          </label>
+
+          <p>
+            {{ formatValue(selectedDevice.device_id) }}
+          </p>
+
+        </div>
+
+
+        <!-- REG DATE -->
+
+        <div>
+
+          <label>
+            REG DATE
+          </label>
+
+          <p>
+            {{ formatDate(selectedDevice.reg_date) }}
+          </p>
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div>
+
+          <label>
+            STATUS
+          </label>
+
+          <p>
+            {{ formatStatus(selectedDevice.status) }}
+          </p>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==================================================
+       EDIT MODAL
+  =================================================== -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="showEditModal"
+    (click)="closeEditModal()"
+  >
+
+    <div
+      class="edit-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+
+      <!-- ==================================================
+           EDIT HEADER
+      =================================================== -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <span>
+            EDIT DEVICE
+          </span>
+
+          <h2>
+            Device Information
+          </h2>
+
+          <p class="edit-description">
+            Update device master information
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closeEditModal()"
+          [disabled]="saving"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- ==================================================
+           EDIT FORM
+      =================================================== -->
+
+      <div class="edit-form">
+
+
+        <!-- ==================================================
+             SLNO
+        =================================================== -->
+
+        <div class="form-group">
+
+          <label>
+            SLNO
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingDevice.slno"
+            readonly
+          />
+
+        </div>
+
+
+        <!-- ==================================================
+             DEVICE ID
+        =================================================== -->
+
+        <div class="form-group">
+
+          <label>
+            DEVICE ID
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingDevice.device_id"
+            readonly
+          />
+
+        </div>
+
+
+        <!-- ==================================================
+             REG DATE
+        =================================================== -->
+
+        <div class="form-group">
+
+          <label>
+            REG DATE
+          </label>
+
+          <input
+            type="date"
+            [(ngModel)]="editingDevice.reg_date"
+          />
+
+        </div>
+
+
+        <!-- ==================================================
+             STATUS
+        =================================================== -->
+
+        <div class="form-group">
+
+          <label>
+            STATUS
+          </label>
+
+          <select
+            [(ngModel)]="editingDevice.status"
+          >
+
+            <option [ngValue]="null">
+              Select Status
+            </option>
+
+            <option value="Active">
+              Active
+            </option>
+
+            <option value="Inactive">
+              Inactive
+            </option>
+
+          </select>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- ==================================================
+           FOOTER
+      =================================================== -->
+
+      <div class="edit-modal-footer">
+
+
+        <!-- CANCEL -->
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="closeEditModal()"
+          [disabled]="saving"
+        >
+          Cancel
+        </button>
+
+
+        <!-- SAVE -->
+
+        <button
+          type="button"
+          class="save-btn"
+          (click)="saveDevice()"
+          [disabled]="saving"
+        >
+
+          <span
+            *ngIf="saving"
+            class="save-spinner"
+          ></span>
+
+          {{
+            saving
+              ? 'Saving...'
+              : 'Save Changes'
+          }}
+
+        </button>
+
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</div>

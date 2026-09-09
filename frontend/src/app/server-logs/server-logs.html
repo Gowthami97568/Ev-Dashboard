@@ -1,0 +1,183 @@
+<div class="dashboard-page">
+
+  <!-- SIDEBAR -->
+  <app-sidebar></app-sidebar>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <section class="server-logs-page">
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <h1>Server Logs</h1>
+      </div>
+
+      <!-- SEARCH -->
+      <div class="toolbar">
+
+        <div class="search-box">
+
+          <span class="search-icon">⌕</span>
+
+          <input
+            type="text"
+            [(ngModel)]="searchText"
+              (ngModelChange)="onSearchChange()"
+            placeholder="Search service, level, message..."
+          />
+
+          @if (searchText) {
+            <button
+              type="button"
+              class="clear-btn"
+              (click)="searchText = ''"
+            >
+              ×
+            </button>
+          }
+
+        </div>
+
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-card">
+
+        <div class="table-header">
+          <div>
+            <h2>Server Activity Logs</h2>
+            <p>Recent server and application events</p>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Level</th>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Date & Time</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              @for (log of displayedLogs; track log.id) {
+
+                <tr>
+
+                  <td class="id-column">
+                    {{ log.id }}
+                  </td>
+
+                  <td>
+                    <span
+                      class="level"
+                      [class.info]="log.level === 'INFO'"
+                      [class.warning]="log.level === 'WARNING'"
+                      [class.error]="log.level === 'ERROR'"
+                    >
+                      {{ log.level }}
+                    </span>
+                  </td>
+
+                  <td class="message-column">
+                    {{ log.message }}
+                  </td>
+
+                  <td>
+                    <span
+                      class="status"
+                      [class.success]="log.status === 'Success'"
+                      [class.warning]="log.status === 'Warning'"
+                      [class.failed]="log.status === 'Failed'"
+                    >
+                      {{ log.status }}
+                    </span>
+                  </td>
+
+                  <td class="date-column">
+                    {{ log.timestamp }}
+                  </td>
+
+                </tr>
+
+              }
+
+              @if (filteredLogs.length === 0) {
+
+                <tr>
+                  <td
+                    colspan="5"
+                    class="no-data"
+                  >
+                    No server logs found
+                  </td>
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        @if (filteredLogs.length > 0) {
+          <div class="pagination" aria-label="Server logs pagination">
+            <span class="pagination-summary">
+              Showing {{ startRecord }}-{{ endRecord }} of {{ filteredLogs.length }} logs
+            </span>
+
+            <div class="pagination-controls">
+              <button
+                type="button"
+                class="page-button"
+                [disabled]="currentPage === 1"
+                (click)="previousPage()"
+                aria-label="Previous page"
+              >
+                Previous
+              </button>
+
+              @for (page of getPageNumbers(); track $index) {
+                @if (page === -1) {
+                  <span class="page-ellipsis">...</span>
+                } @else {
+                  <button
+                    type="button"
+                    class="page-button page-number"
+                    [class.active]="page === currentPage"
+                    [attr.aria-current]="page === currentPage ? 'page' : null"
+                    (click)="goToPage(page)"
+                  >
+                    {{ page }}
+                  </button>
+                }
+              }
+
+              <button
+                type="button"
+                class="page-button"
+                [disabled]="currentPage === totalPages"
+                (click)="nextPage()"
+                aria-label="Next page"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        }
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

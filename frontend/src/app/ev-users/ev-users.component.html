@@ -1,0 +1,472 @@
+<div class="ev-users-page">
+
+  <!-- ==================================================
+       SIDEBAR
+  ================================================== -->
+
+  <aside class="ev-sidebar">
+    <app-sidebar></app-sidebar>
+  </aside>
+
+
+  <!-- ==================================================
+       MAIN
+  ================================================== -->
+
+  <main class="ev-main">
+
+    <!-- ==================================================
+         CONTENT
+    ================================================== -->
+
+    <section class="ev-content">
+
+
+      <!-- ==================================================
+           PAGE HEADER
+      ================================================== -->
+
+      <div class="page-header">
+
+        <div>
+
+          <span class="kicker">
+            MANAGEMENT
+          </span>
+
+          <p>
+            Manage and monitor registered EV users
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           SUMMARY
+      ================================================== -->
+
+      <section class="summary-grid">
+
+        <!-- TOTAL USERS -->
+
+        <div class="summary-card">
+
+          <span>
+            Total EV Users
+          </span>
+
+          <strong>
+            {{ totalUsers | number }}
+          </strong>
+
+        </div>
+
+
+        <!-- SEARCH RESULTS -->
+
+        <div class="summary-card">
+
+          <span>
+            Search Results
+          </span>
+
+          <strong class="green">
+            {{ filteredUsers.length | number }}
+          </strong>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           FILTERS
+      ================================================== -->
+
+      <section class="filter-panel">
+
+        <!-- SEARCH -->
+
+        <div class="search-field">
+
+          <span class="search-icon">
+            ⌕
+          </span>
+
+          <input
+            type="text"
+            [(ngModel)]="searchText"
+            placeholder="Search EV Users..."
+            (keyup.enter)="searchUsers()"
+          />
+
+        </div>
+
+
+        <!-- SEARCH BUTTON -->
+
+        <button
+          type="button"
+          class="filter-btn"
+          (click)="searchUsers()"
+        >
+          Search
+        </button>
+
+
+        <!-- CLEAR BUTTON -->
+
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="clearSearch()"
+        >
+          Clear
+        </button>
+
+      </section>
+
+
+      <!-- ==================================================
+           ERROR
+      ================================================== -->
+
+      <div
+        class="error-box"
+        *ngIf="errorMessage"
+      >
+
+        {{ errorMessage }}
+
+      </div>
+
+
+      <!-- ==================================================
+           TABLE PANEL
+      ================================================== -->
+
+      <section class="table-panel">
+
+
+        <!-- ==================================================
+             LOADING
+        ================================================== -->
+
+        <div
+          class="loading-state"
+          *ngIf="loading"
+        >
+
+          Loading EV Users...
+
+        </div>
+
+
+        <!-- ==================================================
+             TABLE CONTENT
+        ================================================== -->
+
+        <div
+          class="table-content"
+          *ngIf="!loading && !errorMessage"
+        >
+
+
+          <!-- ==================================================
+               NORMAL TABLE
+          ================================================== -->
+
+          <div
+            class="table-wrapper"
+            *ngIf="paginatedUsers.length > 0"
+          >
+
+            <table>
+
+
+              <!-- ==================================================
+                   TABLE HEADER
+              ================================================== -->
+
+              <thead>
+
+                <tr>
+
+                  <!-- DATABASE COLUMNS -->
+
+                  <th
+                    *ngFor="let column of getUserColumns()"
+                  >
+                    {{ column }}
+                  </th>
+
+
+                  <!-- ACTIONS -->
+
+                  <th>
+                    Actions
+                  </th>
+
+                </tr>
+
+              </thead>
+
+
+              <!-- ==================================================
+                   TABLE BODY
+              ================================================== -->
+
+              <tbody>
+
+                <tr
+                  *ngFor="let user of paginatedUsers"
+                >
+
+                  <!-- DATABASE VALUES -->
+
+                  <td
+                    *ngFor="let column of getUserColumns()"
+                  >
+                    {{ user[column] ?? '—' }}
+                  </td>
+
+
+                  <!-- EDIT BUTTON -->
+
+                  <td>
+
+                    <button
+                      type="button"
+                      class="edit-btn"
+                      (click)="editUser(user)"
+                    >
+                      Edit
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+
+          <!-- ==================================================
+               EMPTY STATE
+          ================================================== -->
+
+          <div
+            class="empty"
+            *ngIf="filteredUsers.length === 0"
+          >
+
+            No EV Users found.
+
+          </div>
+
+
+          <!-- ==================================================
+               PAGINATION
+          ================================================== -->
+
+          <div
+            class="pagination-container"
+            *ngIf="
+              filteredUsers.length > 0 &&
+              totalPages > 1
+            "
+          >
+
+
+            <!-- ==================================================
+                 PAGINATION INFO
+            ================================================== -->
+
+            <div class="pagination-info">
+
+              <span>
+                Page {{ currentPage }} of {{ totalPages }}
+              </span>
+
+              <span class="pagination-dot">
+                ·
+              </span>
+
+              <span>
+                {{ filteredUsers.length | number }} records
+              </span>
+
+            </div>
+
+
+            <!-- ==================================================
+                 PAGINATION CONTROLS
+            ================================================== -->
+
+            <div class="pagination-controls">
+
+
+              <!-- PREVIOUS -->
+
+              <button
+                type="button"
+                class="pagination-btn"
+                [disabled]="currentPage === 1"
+                (click)="previousPage()"
+              >
+                Previous
+              </button>
+
+
+              <!-- NEXT -->
+
+              <button
+                type="button"
+                class="pagination-btn"
+                [disabled]="currentPage === totalPages"
+                (click)="nextPage()"
+              >
+                Next
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+
+  <!-- ==================================================
+       EDIT USER MODAL
+  ================================================== -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="isEditModalOpen"
+    (click)="closeEditModal()"
+  >
+
+
+    <!-- ==================================================
+         MODAL BOX
+    ================================================== -->
+
+    <div
+      class="modal-box"
+      (click)="$event.stopPropagation()"
+    >
+
+
+      <!-- ==================================================
+           MODAL HEADER
+      ================================================== -->
+
+      <div class="modal-header">
+
+        <h2>
+          Edit User
+        </h2>
+
+
+        <button
+          type="button"
+          class="modal-close"
+          (click)="closeEditModal()"
+        >
+          ✕
+        </button>
+
+      </div>
+
+
+      <!-- ==================================================
+           MODAL ERROR
+      ================================================== -->
+
+      <div
+        class="modal-error"
+        *ngIf="editErrorMessage"
+      >
+
+        {{ editErrorMessage }}
+
+      </div>
+
+
+      <!-- ==================================================
+           MODAL BODY
+      ================================================== -->
+
+      <div
+        class="modal-body"
+        *ngIf="editingUser"
+      >
+
+        <div
+          class="form-field"
+          *ngFor="let key of getEditableKeys()"
+        >
+
+          <label>
+            {{ key }}
+          </label>
+
+
+          <input
+            type="text"
+            [(ngModel)]="editingUser[key]"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           MODAL FOOTER
+      ================================================== -->
+
+      <div class="modal-footer">
+
+
+        <!-- CANCEL -->
+
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="closeEditModal()"
+          [disabled]="savingEdit"
+        >
+          Cancel
+        </button>
+
+
+        <!-- SAVE -->
+
+        <button
+          type="button"
+          class="filter-btn"
+          (click)="saveEditedUser()"
+          [disabled]="savingEdit"
+        >
+          {{ savingEdit ? 'Saving...' : 'Save Changes' }}
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

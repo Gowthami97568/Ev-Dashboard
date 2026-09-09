@@ -1,0 +1,227 @@
+<div class="settings-page">
+
+  <aside class="settings-sidebar">
+    <app-sidebar></app-sidebar>
+  </aside>
+
+  <main class="settings-main">
+
+    <section class="settings-content">
+
+      <header class="page-head">
+        <div class="page-head-text">
+        <span class="eyebrow">Account</span>
+          
+          <p>Manage your account and application preferences.</p>
+        </div>
+      </header>
+
+      <div class="save-message save-message--success" *ngIf="saveMessage" role="status">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M8.5 12.5l2.4 2.4L16 10"></path>
+        </svg>
+        {{ saveMessage }}
+      </div>
+
+      <div class="save-message save-message--error" *ngIf="errorMessage" role="alert">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9"></circle>
+          <line x1="12" y1="8" x2="12" y2="13"></line>
+          <circle cx="12" cy="16.5" r="0.6" fill="currentColor" stroke="none"></circle>
+        </svg>
+        {{ errorMessage }}
+      </div>
+
+      <!-- PROFILE -->
+      <section class="settings-card">
+
+        <div class="section-header">
+          <div>
+            <h2>Profile</h2>
+            <p>Manage your account information</p>
+          </div>
+
+          <div class="avatar-block">
+            <span class="avatar">{{ initials }}</span>
+            <span class="role-badge">{{ role }}</span>
+          </div>
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="settings-name">Name</label>
+            <input
+              id="settings-name"
+              type="text"
+              name="userName"
+              [(ngModel)]="userName"
+              [class.field-invalid]="!isNameValid"
+              autocomplete="name"
+            />
+            <span class="field-hint field-hint--error" *ngIf="!isNameValid">
+              Name can't be empty.
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="settings-email">Email</label>
+            <input
+              id="settings-email"
+              type="email"
+              name="email"
+              [(ngModel)]="email"
+              [class.field-invalid]="!isEmailValid"
+              autocomplete="email"
+            />
+            <span class="field-hint field-hint--error" *ngIf="!isEmailValid">
+              Enter a valid email address.
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="settings-role">Role</label>
+            <input
+              id="settings-role"
+              type="text"
+              [value]="role"
+              disabled
+            />
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- NOTIFICATIONS -->
+      <section class="settings-card">
+
+        <div class="section-header">
+          <div>
+            <h2>Notifications</h2>
+            <p>Control how ChargeHub notifies you</p>
+          </div>
+        </div>
+
+        <div class="toggle-list">
+
+          <label class="toggle-row">
+            <div class="toggle-copy">
+              <strong>Email notifications</strong>
+              <span>Receive important notifications through email</span>
+            </div>
+            <span class="switch">
+              <input type="checkbox" name="emailNotifications" [(ngModel)]="emailNotifications" />
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+            </span>
+          </label>
+
+          <label class="toggle-row">
+            <div class="toggle-copy">
+              <strong>System notifications</strong>
+              <span>Show system alerts and platform updates</span>
+            </div>
+            <span class="switch">
+              <input type="checkbox" name="systemNotifications" [(ngModel)]="systemNotifications" />
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+            </span>
+          </label>
+
+          <label class="toggle-row">
+            <div class="toggle-copy">
+              <strong>Sound notifications</strong>
+              <span>Play a sound when a notification arrives</span>
+            </div>
+            <span class="switch">
+              <input type="checkbox" name="soundNotifications" [(ngModel)]="soundNotifications" />
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+            </span>
+          </label>
+
+        </div>
+
+      </section>
+
+
+      <!-- APPEARANCE -->
+      <section class="settings-card">
+
+        <div class="section-header">
+          <div>
+            <h2>Appearance</h2>
+            <p>Customize the dashboard interface</p>
+          </div>
+        </div>
+
+        <label class="toggle-row">
+          <div class="toggle-copy">
+            <strong>Compact mode</strong>
+            <span>Use a more compact dashboard layout</span>
+          </div>
+          <span class="switch">
+            <input type="checkbox" name="compactMode" [(ngModel)]="compactMode" />
+            <span class="switch-track"><span class="switch-thumb"></span></span>
+          </span>
+        </label>
+       </section>
+
+
+      <!-- SECURITY -->
+      <section class="settings-card">
+
+        <div class="section-header">
+          <div>
+            <h2>Security</h2>
+            <p>Configure session preferences</p>
+          </div>
+        </div>
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="settings-timeout">Session timeout</label>
+            <select id="settings-timeout" name="sessionTimeout" [(ngModel)]="sessionTimeout">
+              <option [ngValue]="15">15 minutes</option>
+              <option [ngValue]="30">30 minutes</option>
+              <option [ngValue]="60">1 hour</option>
+              <option [ngValue]="120">2 hours</option>
+            </select>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ACTIONS -->
+      <div class="settings-actions">
+
+        <span class="dirty-indicator" *ngIf="isDirty && !saving">You have unsaved changes.</span>
+
+        <button
+          type="button"
+          class="reset-btn"
+          (click)="resetSettings()"
+          [disabled]="saving"
+        >
+          Reset to defaults
+        </button>
+
+        <button
+          type="button"
+          class="save-btn"
+          (click)="saveSettings()"
+          [disabled]="saving || !isDirty"
+        >
+          <span class="btn-spinner" *ngIf="saving"></span>
+          {{ saving ? 'Saving…' : 'Save changes' }}
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

@@ -1,0 +1,600 @@
+<div class="config-page">
+
+  <!-- ==================================================
+       LEFT SIDEBAR
+  =================================================== -->
+
+  <aside class="config-sidebar">
+    <app-sidebar></app-sidebar>
+  </aside>
+
+
+  <!-- ==================================================
+       MAIN
+  =================================================== -->
+
+  <main class="config-main">
+
+    <section class="config-content">
+
+
+      <!-- ==================================================
+           HEADER
+      =================================================== -->
+
+      <div class="page-header">
+
+        <div>
+
+          <span class="kicker">
+            CONFIGURATION
+          </span>
+
+          <p>
+            View and manage system configuration data
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           SUCCESS
+      =================================================== -->
+
+      <div
+        class="success-box"
+        *ngIf="successMessage"
+      >
+        {{ successMessage }}
+      </div>
+
+
+      <!-- ==================================================
+           ERROR
+      =================================================== -->
+
+      <div
+        class="error-box"
+        *ngIf="errorMessage"
+      >
+        {{ errorMessage }}
+      </div>
+
+
+      <!-- ==================================================
+           SUMMARY
+      =================================================== -->
+
+      <section class="summary-grid">
+
+        <div class="summary-card">
+
+          <span>
+            Total Config Records
+          </span>
+
+          <strong>
+            {{ summary.total | number }}
+          </strong>
+
+          <small>
+            Configuration records
+          </small>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           SEARCH
+      =================================================== -->
+
+      <section class="filter-panel">
+
+        <div class="search-field">
+
+          <span class="search-icon">
+            ⌕
+          </span>
+
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            placeholder="Search configuration data..."
+            (keyup.enter)="applySearch()"
+          />
+
+        </div>
+
+
+        <button
+          type="button"
+          class="search-btn"
+          (click)="applySearch()"
+        >
+          Search
+        </button>
+
+
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="clearSearch()"
+        >
+          Clear
+        </button>
+
+      </section>
+
+
+      <!-- ==================================================
+           TABLE
+      =================================================== -->
+
+      <section class="table-panel">
+
+
+        <!-- LOADING -->
+
+        <div
+          class="loading-state"
+          *ngIf="loading"
+        >
+          Loading configuration data...
+        </div>
+
+
+        <!-- TABLE -->
+
+        <div
+          class="table-wrapper"
+          *ngIf="!loading"
+        >
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th
+                  *ngFor="
+                    let column of getVisibleColumns()
+                  "
+                >
+                  {{
+                    formatColumnName(column)
+                  }}
+                </th>
+
+
+                <!-- ACTIONS -->
+
+                <th>
+                  ACTIONS
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+              <!-- CONFIGURATION RECORDS -->
+
+              <tr
+                *ngFor="let record of records"
+              >
+
+                <td
+                  *ngFor="
+                    let column of getVisibleColumns()
+                  "
+                >
+
+                  {{
+                    formatValue(
+                      record[column]
+                    )
+                  }}
+
+                </td>
+
+
+                <!-- ACTIONS -->
+
+                <td class="actions-cell">
+
+                  <!-- VIEW -->
+
+                  <button
+                    type="button"
+                    class="details-btn"
+                    (click)="openDetails(record)"
+                  >
+                    View
+                  </button>
+
+
+                  <!-- EDIT -->
+
+                  <button
+                    type="button"
+                    class="edit-btn"
+                    (click)="editRecord(record)"
+                  >
+                    Edit
+                  </button>
+
+                </td>
+
+              </tr>
+
+
+              <!-- EMPTY -->
+
+              <tr
+                *ngIf="records.length === 0"
+              >
+
+                <td
+                  class="empty"
+                  [attr.colspan]="
+                    getVisibleColumns().length + 1
+                  "
+                >
+                  No configuration data found.
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <!-- ==================================================
+             PAGINATION
+        =================================================== -->
+
+        <div
+          class="pagination"
+          *ngIf="!loading"
+        >
+
+          <span>
+
+            Page
+            {{ total === 0 ? 0 : page }}
+            of
+            {{ totalPages }}
+
+            &nbsp; · &nbsp;
+
+            {{ total }}
+
+            records
+
+          </span>
+
+
+          <div class="pagination-buttons">
+
+            <button
+              type="button"
+              (click)="previousPage()"
+              [disabled]="
+                page <= 1 ||
+                total === 0
+              "
+            >
+              Previous
+            </button>
+
+
+            <button
+              type="button"
+              (click)="nextPage()"
+              [disabled]="
+                page >= totalPages ||
+                total === 0
+              "
+            >
+              Next
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+
+  <!-- ==================================================
+       DETAILS MODAL
+  =================================================== -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="
+      showDetails &&
+      selectedRecord
+    "
+    (click)="closeDetails()"
+  >
+
+    <div
+      class="details-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+
+      <!-- MODAL HEADER -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <span>
+            CONFIGURATION DETAILS
+          </span>
+
+          <h2>
+            Configuration Record
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closeDetails()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- MODAL CONTENT -->
+
+      <div class="details-grid">
+
+        <div
+          *ngFor="let column of columns"
+        >
+
+          <label>
+            {{
+              formatColumnName(column)
+            }}
+          </label>
+
+          <p>
+
+            {{
+              formatValue(
+                selectedRecord[column]
+              )
+            }}
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==================================================
+       EDIT CONFIGURATION MODAL
+  =================================================== -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="showEditModal"
+    (click)="closeEditModal()"
+  >
+
+    <div
+      class="edit-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+
+      <!-- ==================================================
+           EDIT HEADER
+      =================================================== -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <span>
+            EDIT CONFIGURATION
+          </span>
+
+          <h2>
+            Configuration Record
+          </h2>
+
+          <p class="edit-description">
+            Update system configuration information
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closeEditModal()"
+          [disabled]="saving"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- ==================================================
+           EDIT FORM
+      =================================================== -->
+
+      <div class="edit-form">
+
+        <div
+          class="form-group"
+          *ngFor="
+            let column of getEditableColumns()
+          "
+        >
+
+          <!-- LABEL -->
+
+          <label>
+            {{
+              formatColumnName(column)
+            }}
+          </label>
+
+
+          <!-- ==================================================
+               BOOLEAN / STATUS
+          =================================================== -->
+
+          <select
+            *ngIf="
+              column.toLowerCase() === 'active' ||
+              column.toLowerCase() === 'enabled'
+            "
+            [(ngModel)]="editingRecord[column]"
+          >
+
+            <option
+              [ngValue]="1"
+            >
+              Active
+            </option>
+
+            <option
+              [ngValue]="0"
+            >
+              Inactive
+            </option>
+
+          </select>
+
+
+          <!-- ==================================================
+               STATUS
+          =================================================== -->
+
+          <select
+            *ngIf="
+              column.toLowerCase() === 'status'
+            "
+            [(ngModel)]="editingRecord[column]"
+          >
+
+            <option value="">
+              Select Status
+            </option>
+
+            <option value="Active">
+              Active
+            </option>
+
+            <option value="Inactive">
+              Inactive
+            </option>
+
+          </select>
+
+
+          <!-- ==================================================
+               NORMAL INPUT
+          =================================================== -->
+
+          <input
+            *ngIf="
+              column.toLowerCase() !== 'active' &&
+              column.toLowerCase() !== 'enabled' &&
+              column.toLowerCase() !== 'status'
+            "
+            type="text"
+            [(ngModel)]="editingRecord[column]"
+            [readonly]="
+              isRecordIdColumn(column)
+            "
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           EDIT FOOTER
+      =================================================== -->
+
+      <div class="edit-modal-footer">
+
+
+        <!-- CANCEL -->
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="closeEditModal()"
+          [disabled]="saving"
+        >
+          Cancel
+        </button>
+
+
+        <!-- SAVE -->
+
+        <button
+          type="button"
+          class="save-btn"
+          (click)="saveRecord()"
+          [disabled]="saving"
+        >
+
+          <span
+            *ngIf="saving"
+            class="save-spinner"
+          ></span>
+
+
+          {{
+            saving
+              ? 'Saving...'
+              : 'Save Changes'
+          }}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

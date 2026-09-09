@@ -1,0 +1,223 @@
+<aside class="sidebar-container">
+  <!-- BRAND / LOGO -->
+  <div class="sidebar-brand">
+    <img src="/logo.png" alt="EV ChargeMan Logo" class="sidebar-logo" />
+  </div>
+  <!-- NAVIGATION -->
+  <nav class="sidebar-nav">
+    @for (section of sections; track section.title) {
+      <div class="sidebar-section">
+
+        <!-- SECTION TITLE -->
+        <p class="sidebar-section-title">{{ section.title }}</p>
+
+        <!-- MENU -->
+        <ul class="sidebar-menu">
+          @for (item of section.items; track item.route) {
+            <li>
+              <a
+                [routerLink]="item.route"
+                routerLinkActive="sidebar-active"
+                [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+                class="sidebar-link"
+              >
+                <!-- ICON -->
+                <span class="sidebar-icon">
+                  @switch (item.icon) {
+
+                    <!-- DASHBOARD -->
+                    @case ('layout-dashboard') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <rect x="3" y="3" width="7" height="9" rx="1.5" />
+                        <rect x="14" y="3" width="7" height="5" rx="1.5" />
+                        <rect x="14" y="12" width="7" height="9" rx="1.5" />
+                        <rect x="3" y="16" width="7" height="5" rx="1.5" />
+                      </svg>
+                    }
+
+                    <!-- USERS -->
+                    @case ('users') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="9" cy="8" r="3.2" />
+                        <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+                        <path d="M16.5 6.7A3.2 3.2 0 0 1 18 12.9" />
+                        <path d="M15.5 14.3c2.6.3 4.7 2.4 5 5.7" />
+                      </svg>
+                    }
+
+                    <!-- CHARGE MANAGER -->
+                    @case ('user-cog') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <rect x="4" y="3" width="10" height="18" rx="2" />
+                        <path d="M8 7h2" />
+                        <path d="M8 11h2" />
+                        <circle cx="18" cy="17" r="3" />
+                        <path d="M18 13v2 M18 19v2 M14 17h2 M20 17h2" />
+                      </svg>
+                    }
+
+                    <!-- TRANSACTIONS -->
+                    @case ('receipt') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z" />
+                        <path d="M9 8h6" />
+                        <path d="M9 12h6" />
+                        <path d="M9 16h4" />
+                      </svg>
+                    }
+
+                    <!-- DEVICES -->
+                    @case ('cpu') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <rect x="7" y="7" width="10" height="10" rx="2" />
+                        <path d="M9 1v4" />
+                        <path d="M15 1v4" />
+                        <path d="M9 19v4" />
+                        <path d="M15 19v4" />
+                        <path d="M1 9h4" />
+                        <path d="M1 15h4" />
+                        <path d="M19 9h4" />
+                        <path d="M19 15h4" />
+                      </svg>
+                    }
+
+                    <!-- WALLET -->
+                    @case ('wallet') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M4 6h15 a2 2 0 0 1 2 2 v10 a2 2 0 0 1-2 2 H5 a3 3 0 0 1-3-3 V7 a3 3 0 0 1 3-3 h13" />
+                        <path d="M16 13h3" />
+                        <circle cx="16" cy="13" r=".8" fill="currentColor" />
+                      </svg>
+                    }
+
+                    <!-- ACCOUNT -->
+                    @case ('user-circle') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="12" cy="12" r="9" />
+                        <circle cx="12" cy="9" r="3" />
+                        <path d="M6.5 19 c1.3-3 3.1-4.5 5.5-4.5 S16.2 16 17.5 19" />
+                      </svg>
+                    }
+
+                    <!-- APP VERSIONS -->
+                    @case ('smartphone') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <rect x="6" y="2" width="12" height="20" rx="2" />
+                        <path d="M10 5h4" />
+                        <path d="M11 18h2" />
+                      </svg>
+                    }
+
+                    <!-- CONFIG DATA -->
+                    @case ('database') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <ellipse cx="12" cy="5" rx="7" ry="3" />
+                        <path d="M5 5 v7 c0 1.7 3.1 3 7 3 s7-1.3 7-3 V5" />
+                        <path d="M5 12 v7 c0 1.7 3.1 3 7 3 s7-1.3 7-3 v-7" />
+                      </svg>
+                    }
+
+                    <!-- SOCKET -->
+                    @case ('radio') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="12" cy="12" r="2" />
+                        <path d="M5 5a10 10 0 0 0 0 14" />
+                        <path d="M19 5a10 10 0 0 1 0 14" />
+                        <path d="M8 8a5.5 5.5 0 0 0 0 8" />
+                        <path d="M16 8a5.5 5.5 0 0 1 0 8" />
+                      </svg>
+                    }
+
+                    <!-- ANALYTICS -->
+                    @case ('bar-chart') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M4 20V10" />
+                        <path d="M12 20V4" />
+                        <path d="M20 20v-7" />
+                      </svg>
+                    }
+                    <!-- LOGS -->
+                    @case ('logs') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z" />
+                        <path d="M9 8h6" />
+                        <path d="M9 12h6" />
+                        <path d="M9 16h4" />
+                      </svg>
+                    }
+
+                    <!-- SETTINGS -->
+                    @case ('settings') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="
+                          M19.4 15
+                          a1.7 1.7 0 0 0 .3 1.9
+                          l.1.1
+                          a2 2 0 1 1-2.8 2.8
+                          l-.1-.1
+                          a1.7 1.7 0 0 0-1.9-.3
+                          a1.7 1.7 0 0 0-1 1.6
+                          V21
+                          a2 2 0 1 1-4 0
+                          v-.2
+                          a1.7 1.7 0 0 0-1-1.5
+                          a1.7 1.7 0 0 0-1.9.3
+                          l-.1.1
+                          a2 2 0 1 1-2.8-2.8
+                          l.1-.1
+                          a1.7 1.7 0 0 0 .3-1.9
+                          a1.7 1.7 0 0 0-1.6-1
+                          H3
+                          a2 2 0 1 1 0-4
+                          h.2
+                          a1.7 1.7 0 0 0 1.5-1
+                          a1.7 1.7 0 0 0-.3-1.9
+                          l-.1-.1
+                          a2 2 0 1 1 2.8-2.8
+                          l.1.1
+                          a1.7 1.7 0 0 0 1.9.3
+                          H9
+                          a1.7 1.7 0 0 0 1-1.6
+                          V3
+                          a2 2 0 1 1 4 0
+                          v.2
+                          a1.7 1.7 0 0 0 1 1.5
+                          a1.7 1.7 0 0 0 1.9-.3
+                          l.1-.1
+                          a2 2 0 1 1 2.8 2.8
+                          l-.1.1
+                          a1.7 1.7 0 0 0-.3 1.9
+                          V9
+                          a1.7 1.7 0 0 0 1.6 1
+                          H21
+                          a2 2 0 1 1 0 4
+                          h-.2
+                          a1.7 1.7 0 0 0-1.4 1Z
+                        " />
+                      </svg>
+                    }
+
+                    <!-- DEFAULT -->
+                    @default {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="12" cy="12" r="8" />
+                      </svg>
+                    }
+
+                  }
+                </span>
+
+                <!-- LABEL -->
+                <span class="sidebar-label">{{ item.label }}</span>
+
+              </a>
+            </li>
+          }
+        </ul>
+
+      </div>
+    }
+  </nav>
+
+</aside>

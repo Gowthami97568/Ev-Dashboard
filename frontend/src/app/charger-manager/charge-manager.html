@@ -1,0 +1,866 @@
+<div class="charge-manager-page">
+
+  <!-- ==================================================
+       SIDEBAR
+  =================================================== -->
+
+  <aside class="charge-sidebar">
+    <app-sidebar></app-sidebar>
+  </aside>
+
+
+  <!-- ==================================================
+       MAIN
+  =================================================== -->
+
+  <main class="charge-main">
+
+    <section class="charge-content">
+
+
+      <!-- ==================================================
+           PAGE HEADER
+      =================================================== -->
+
+      <div class="page-header">
+
+        <div>
+
+          <span class="kicker">
+            MANAGEMENT
+          </span>
+          <p>
+            Manage and monitor charging stations
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           SUCCESS
+      =================================================== -->
+
+      <div
+        class="success-box"
+        *ngIf="successMessage"
+      >
+        {{ successMessage }}
+      </div>
+
+
+      <!-- ==================================================
+           ERROR
+      =================================================== -->
+
+      <div
+        class="error-box"
+        *ngIf="errorMessage"
+      >
+        {{ errorMessage }}
+      </div>
+
+
+      <!-- ==================================================
+           SUMMARY
+      =================================================== -->
+
+      <section class="summary-grid">
+
+        <div class="summary-card">
+
+          <span>
+            Total Chargers
+          </span>
+
+          <strong>
+            {{ summary.total | number }}
+          </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <span>
+            Active
+          </span>
+
+          <strong class="green">
+            {{ summary.active | number }}
+          </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <span>
+            Inactive
+          </span>
+
+          <strong class="red">
+            {{ summary.inactive | number }}
+          </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <span>
+            Full Day
+          </span>
+
+          <strong class="purple">
+            {{ summary.fullDay | number }}
+          </strong>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           FILTERS
+      =================================================== -->
+
+      <section class="filter-panel">
+
+        <div class="search-field">
+
+          <span class="search-icon">
+            ⌕
+          </span>
+
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            placeholder="Search device, mobile, hostname..."
+            (keyup.enter)="applyFilters()"
+          />
+
+        </div>
+
+
+        <div class="status-filter">
+
+          <label for="statusFilter">
+            Status
+          </label>
+
+          <select
+            id="statusFilter"
+            [(ngModel)]="activeFilter"
+            (change)="onStatusFilterChange()"
+          >
+
+            <option value="">
+              All Status
+            </option>
+
+            <option value="1">
+              Active
+            </option>
+
+            <option value="0">
+              Inactive
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <input
+          type="text"
+          [(ngModel)]="deviceTypeFilter"
+          class="filter-input"
+          placeholder="Device Type"
+          (keyup.enter)="applyFilters()"
+        />
+
+
+        <input
+          type="text"
+          [(ngModel)]="countryFilter"
+          class="filter-input"
+          placeholder="Country"
+          (keyup.enter)="applyFilters()"
+        />
+
+
+        <button
+          type="button"
+          class="filter-btn"
+          (click)="applyFilters()"
+        >
+          Search
+        </button>
+
+
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="clearFilters()"
+        >
+          Clear
+        </button>
+
+      </section>
+
+
+      <!-- ==================================================
+           TABLE
+      =================================================== -->
+
+      <section class="table-panel">
+
+        <div
+          class="loading-state"
+          *ngIf="loading"
+        >
+          Loading chargers...
+        </div>
+
+
+        <div
+          class="table-wrapper"
+          *ngIf="!loading"
+        >
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>MOBILE</th>
+
+                <th>DEVICE ID</th>
+
+                <th>CONNECTOR ID</th>
+
+                <th>DEVICE PARENT</th>
+
+                <th>DEVICE KW</th>
+
+                <th>DEVICE TYPE</th>
+
+                <th>HOSTNAME</th>
+
+                <th>HOST ADDRESS</th>
+
+                <th>LAT/LONG</th>
+
+                <th>CHARGE TYPE</th>
+
+                <th>RPH</th>
+
+                <th>START TIME</th>
+
+                <th>END TIME</th>
+
+                <th>ACTIVE</th>
+
+                <th>CAPACITY</th>
+
+                <th>CREATED BY</th>
+
+                <th>CREATED DATE</th>
+
+                <th>MODIFIED BY</th>
+
+                <th>MODIFIED DATE</th>
+
+                <th>FULL DAY</th>
+
+                <th>COUNTRY</th>
+
+                <th>ACTIONS</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              <tr
+                *ngFor="let charger of chargers"
+              >
+
+                <td>
+                  {{ charger.mobile ?? '—' }}
+                </td>
+
+
+                <td>
+
+                  <strong>
+                    {{ charger.deviceid ?? '—' }}
+                  </strong>
+
+                </td>
+
+
+                <td>
+                  {{ charger.connectorid ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.deviceparent ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.devicekw ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.devicetype ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.hostname ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.hostaddress ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.latlong ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.chargettype ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.rph ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.starttime ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.endtime ?? '—' }}
+                </td>
+
+
+                <td>
+
+                  <span
+                    class="status active"
+                    *ngIf="isActive(charger)"
+                  >
+                    Active
+                  </span>
+
+                  <span
+                    class="status inactive"
+                    *ngIf="!isActive(charger)"
+                  >
+                    Inactive
+                  </span>
+
+                </td>
+
+
+                <td>
+                  {{ charger.capacity ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.createdby ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.createddate ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.modifiedby ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.modifieddate ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.fullday ?? '—' }}
+                </td>
+
+
+                <td>
+                  {{ charger.country ?? '—' }}
+                </td>
+
+
+                <!-- ==================================================
+                     EDIT
+                =================================================== -->
+
+                <td class="actions-cell">
+
+                  <button
+                    type="button"
+                    class="edit-btn"
+                    (click)="editCharger(charger)"
+                  >
+                    Edit
+                  </button>
+
+                </td>
+
+              </tr>
+
+
+              <!-- EMPTY -->
+
+              <tr
+                *ngIf="chargers.length === 0"
+              >
+
+                <td
+                  colspan="22"
+                  class="empty"
+                >
+                  No chargers found.
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <!-- ==================================================
+             PAGINATION
+        =================================================== -->
+
+        <div
+          class="pagination"
+          *ngIf="!loading"
+        >
+
+          <span>
+
+            Page
+            {{ total === 0 ? 0 : page }}
+            of
+            {{ totalPages }}
+
+            &nbsp; · &nbsp;
+
+            {{ total }}
+
+            records
+
+          </span>
+
+
+          <div class="pagination-buttons">
+
+            <button
+              type="button"
+              (click)="previousPage()"
+              [disabled]="
+                page <= 1 ||
+                total === 0
+              "
+            >
+              Previous
+            </button>
+
+
+            <button
+              type="button"
+              (click)="nextPage()"
+              [disabled]="
+                page >= totalPages ||
+                total === 0
+              "
+            >
+              Next
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+
+  <!-- ==================================================
+       EDIT MODAL
+  =================================================== -->
+
+  <div
+    class="edit-overlay"
+    *ngIf="showEditModal"
+    (click)="closeEditModal()"
+  >
+
+    <div
+      class="edit-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+
+      <!-- HEADER -->
+
+      <div class="edit-modal-header">
+
+        <div>
+
+          <span class="kicker">
+            CHARGE MANAGER
+          </span>
+
+          <h2>
+            Edit Charger
+          </h2>
+
+          <p>
+            Update charging station details
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="modal-close"
+          (click)="closeEditModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- FORM -->
+
+      <div class="edit-form">
+
+
+        <div class="form-group">
+
+          <label>
+            Mobile
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.mobile"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Device ID
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.deviceid"
+            readonly
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Connector ID
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.connectorid"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Device Parent
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.deviceparent"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Device KW
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.devicekw"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Device Type
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.devicetype"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Hostname
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.hostname"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Host Address
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.hostaddress"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Latitude / Longitude
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.latlong"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Charge Type
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.chargettype"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            RPH
+          </label>
+
+          <input
+            type="number"
+            [(ngModel)]="editingCharger.rph"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Start Time
+          </label>
+
+          <input
+            type="time"
+            [(ngModel)]="editingCharger.starttime"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            End Time
+          </label>
+
+          <input
+            type="time"
+            [(ngModel)]="editingCharger.endtime"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Status
+          </label>
+
+          <select
+            [(ngModel)]="editingCharger.active"
+          >
+
+            <option [ngValue]="1">
+              Active
+            </option>
+
+            <option [ngValue]="0">
+              Inactive
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Capacity
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.capacity"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Full Day
+          </label>
+
+          <select
+            [(ngModel)]="editingCharger.fullday"
+          >
+
+            <option [ngValue]="1">
+              Yes
+            </option>
+
+            <option [ngValue]="0">
+              No
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Country
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="editingCharger.country"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- FOOTER -->
+
+      <div class="edit-modal-footer">
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="closeEditModal()"
+          [disabled]="saving"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="button"
+          class="save-btn"
+          (click)="saveCharger()"
+          [disabled]="saving"
+        >
+
+          {{
+            saving
+              ? 'Saving...'
+              : 'Save Changes'
+          }}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

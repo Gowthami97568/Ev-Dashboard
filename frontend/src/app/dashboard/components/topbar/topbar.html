@@ -1,0 +1,45 @@
+<header class="relative flex min-h-[88px] w-full min-w-0 flex-col gap-4 overflow-visible bg-[#f8fafc] px-8 py-6">
+
+  <!-- TOP ROW - PROFILE -->
+  <div class="flex w-full min-w-0 items-center justify-end gap-3">
+
+    <!-- PROFILE -->
+    <div class="relative">
+      <button type="button" aria-label="Open profile menu" [attr.aria-expanded]="isProfileMenuOpen" aria-haspopup="menu" class="flex items-center gap-2.5 rounded-xl border border-ink-100 bg-white py-1.5 pl-1.5 pr-3 shadow-card transition-colors hover:border-brand-200 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-brand-200" (click)="toggleProfileMenu()">
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white ring-2 ring-brand-100">{{ initials }}</span>
+        <span class="hidden leading-tight sm:block">
+          <span class="block max-w-[120px] truncate text-left text-sm font-medium text-ink-900">{{ currentUser.name }}</span>
+          <span class="block max-w-[120px] truncate text-left text-xs text-ink-500">{{ currentUser.role }}</span>
+        </span>
+        <svg viewBox="0 0 24 24" class="hidden h-4 w-4 shrink-0 text-ink-400 transition-transform duration-150 sm:block" [class.rotate-180]="isProfileMenuOpen" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+      </button>
+
+      <!-- PROFILE MENU -->
+      <div *ngIf="isProfileMenuOpen" role="menu" class="absolute right-0 top-[calc(100%+8px)] z-30 w-56 overflow-hidden rounded-xl border border-ink-100 bg-white shadow-card">
+        <div class="border-b border-ink-100 bg-ink-50 px-3.5 py-3">
+          <p class="mb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-400">Signed in as</p>
+          <p class="truncate text-sm font-medium text-ink-900">{{ currentUser.name }}</p>
+          <p class="truncate text-xs text-ink-400">{{ currentUser.role }}</p>
+        </div>
+        <a role="menuitem" routerLink="/settings" (click)="closeProfileMenu()" class="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-ink-600 hover:bg-ink-50">Account settings</a>
+        <button role="menuitem" type="button" (click)="signOut()" class="flex w-full items-center gap-2.5 border-t border-ink-100 px-3.5 py-2.5 text-left text-sm text-red-600 hover:bg-red-50">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CMS DASHBOARD HEADING ONLY - ALL SAME BLUE -->
+  <div *ngIf="title.toLowerCase().includes('charging') || title.toLowerCase().includes('dashboard')" class="flex w-full min-w-0 flex-col items-center justify-center overflow-visible py-2 text-center">
+
+    <h1 class="w-full break-words text-center text-[32px] font-black leading-tight text-[#0ea5e9]">
+      Charging Management System (CMS)
+    </h1>
+
+    <!-- DASHBOARD LABEL -->
+    <div class="mt-3 flex items-center justify-center gap-2">
+      <span class="h-[2px] w-8 bg-[#14b8a6]"></span>
+      <span class="rounded-full bg-[#e6f9f1] px-4 py-1 text-[11px] font-bold tracking-[0.2em] text-[#0f766e]">DASHBOARD • EV PLATFORM</span>
+      <span class="h-[2px] w-8 bg-[#14b8a6]"></span>
+    </div>
+  </div>
+
+</header>

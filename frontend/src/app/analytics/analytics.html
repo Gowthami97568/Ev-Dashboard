@@ -1,0 +1,686 @@
+<div class="dash">
+
+  <aside class="dash-sidebar">
+    <app-sidebar></app-sidebar>
+  </aside>
+
+
+  <main class="dash-main">
+
+    <section class="dash-content">
+
+
+      <!-- ==================================================
+           HEADER
+      ================================================== -->
+
+      <header class="page-head">
+
+        <div class="page-head-text">
+          <h1> Network Performance</h1>
+          <p>
+            Trends, efficiency and operational insights
+            from charging activity.
+          </p>
+
+        </div>
+
+
+        <div
+          class="status-pill"
+          [class.status-pill--live]="!loading"
+        >
+
+          <span class="status-dot"></span>
+
+          {{ loading ? 'Syncing' : 'Live' }}
+
+        </div>
+
+      </header>
+
+
+      <!-- ERROR -->
+
+      <div
+        class="error-box"
+        *ngIf="errorMessage"
+      >
+
+        {{ errorMessage }}
+
+      </div>
+
+
+      <!-- LOADING -->
+
+      <div
+        class="loading-state"
+        *ngIf="loading"
+      >
+
+        <span class="loading-spinner"></span>
+
+        Loading analytics...
+
+      </div>
+
+
+      <div *ngIf="!loading">
+
+
+        <!-- ==================================================
+             KEY INSIGHTS
+        ================================================== -->
+
+        <section class="insight-grid">
+
+
+          <div class="insight-card">
+
+            <span>
+              Avg KWh / Session
+            </span>
+
+            <strong>
+              {{ insights.averageKwh | number:'1.2-2' }}
+            </strong>
+
+            <small>
+              Energy per charging session
+            </small>
+
+          </div>
+
+
+          <div class="insight-card">
+
+            <span>
+              Avg Session Time
+            </span>
+
+            <strong>
+              {{ insights.averageDuration | number:'1.0-1' }}
+              <em>min</em>
+            </strong>
+
+            <small>
+              Average charging duration
+            </small>
+
+          </div>
+
+
+          <div class="insight-card">
+
+            <span>
+              Avg Power
+            </span>
+
+            <strong>
+              {{ insights.averageWatt | number:'1.0-0' }}
+              <em>W</em>
+            </strong>
+
+            <small>
+              Average charging power
+            </small>
+
+          </div>
+
+
+          <div class="insight-card">
+
+            <span>
+              Autostart Rate
+            </span>
+
+            <strong>
+              {{ insights.autostartRate | number:'1.0-1' }}%
+            </strong>
+
+            <small>
+              Sessions started automatically
+            </small>
+
+          </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             TRANSACTION ACTIVITY
+        ================================================== -->
+
+        <section class="panel panel-wide">
+
+          <div class="panel-head">
+
+            <div>
+
+              <h2>
+                Transaction activity
+              </h2>
+
+              <p>
+                Daily charging session volume
+              </p>
+
+            </div>
+
+            <span class="panel-tag">
+              30-day trend
+            </span>
+
+          </div>
+
+
+          <div
+            class="trend-chart"
+            *ngIf="transactionTrend.length > 0"
+          >
+
+            <div class="trend-bars">
+
+              <div
+                class="trend-column"
+                *ngFor="
+                  let item of transactionTrend
+                "
+              >
+
+                <div class="trend-value">
+                  {{ item.total }}
+                </div>
+
+                <div
+                  class="trend-bar transaction"
+                  [style.height]="
+                    getTransactionHeight(item.total)
+                  "
+                ></div>
+
+                <span>
+                  {{ formatDay(item.day) }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="empty-state"
+            *ngIf="transactionTrend.length === 0"
+          >
+            No transaction trend data available.
+          </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             ENERGY + CHARGE VALUE
+        ================================================== -->
+
+        <section class="analytics-grid">
+
+
+          <!-- ENERGY -->
+
+          <div class="panel">
+
+            <div class="panel-head">
+
+              <div>
+
+                <h2>
+                  Energy consumption
+                </h2>
+
+                <p>
+                  Daily energy delivered
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="trend-chart compact"
+              *ngIf="energyTrend.length > 0"
+            >
+
+              <div class="trend-bars">
+
+                <div
+                  class="trend-column"
+                  *ngFor="
+                    let item of energyTrend
+                  "
+                >
+
+                  <div
+                    class="trend-bar energy"
+                    [style.height]="
+                      getEnergyHeight(item.kwh)
+                    "
+                    [title]="
+                      formatDay(item.day) +
+                      ': ' +
+                      item.kwh +
+                      ' KWh'
+                    "
+                  ></div>
+
+                  <span>
+                    {{ formatDay(item.day) }}
+                  </span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="empty-state"
+              *ngIf="energyTrend.length === 0"
+            >
+              No energy data available.
+            </div>
+
+          </div>
+
+
+          <!-- CHARGE VALUE -->
+
+          <div class="panel">
+
+            <div class="panel-head">
+
+              <div>
+
+                <h2>
+                  Charge value
+                </h2>
+
+                <p>
+                  Daily recorded charging value
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="trend-chart compact"
+              *ngIf="chargeValueTrend.length > 0"
+            >
+
+              <div class="trend-bars">
+
+                <div
+                  class="trend-column"
+                  *ngFor="
+                    let item of chargeValueTrend
+                  "
+                >
+
+                  <div
+                    class="trend-value currency"
+                  >
+                    ₹{{ formatCurrency(item.value) }}
+                  </div>
+
+                  <div
+                    class="trend-bar revenue"
+                    [style.height]="
+                      getChargeValueHeight(item.value)
+                    "
+                  ></div>
+
+                  <span>
+                    {{ formatDay(item.day) }}
+                  </span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="empty-state"
+              *ngIf="chargeValueTrend.length === 0"
+            >
+              No charge value data available.
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             PERFORMANCE
+        ================================================== -->
+
+        <section class="performance-grid">
+
+
+          <div class="performance-card">
+
+            <span>
+              Total Energy
+            </span>
+
+            <strong>
+              {{ insights.totalKwh | number:'1.0-2' }}
+              <em>KWh</em>
+            </strong>
+
+          </div>
+
+
+          <div class="performance-card">
+
+            <span>
+              Total Charge Value
+            </span>
+
+            <strong>
+              ₹{{ formatCurrency(insights.totalChargeValue) }}
+            </strong>
+
+          </div>
+
+
+          <div class="performance-card">
+
+            <span>
+              Total Sessions
+            </span>
+
+            <strong>
+              {{ insights.transactions | number }}
+            </strong>
+
+          </div>
+
+
+        </section>
+
+
+        <!-- ==================================================
+             AUTOSTART + PEAK USAGE
+        ================================================== -->
+
+        <section class="analytics-grid">
+
+
+          <!-- AUTOSTART -->
+
+          <div class="panel">
+
+            <div class="panel-head">
+
+              <div>
+
+                <h2>
+                  Charging initiation
+                </h2>
+
+                <p>
+                  Automatic vs manual sessions
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="initiation-list">
+
+              <div
+                class="initiation-row"
+                *ngFor="
+                  let item of autostartData
+                "
+
+              >
+
+                <div class="initiation-top">
+
+                  <span>
+                    {{ item.type }}
+                  </span>
+
+                  <strong>
+                    {{ item.total | number }}
+                  </strong>
+
+                </div>
+
+
+                <div class="status-track">
+
+                  <div
+                    class="status-fill"
+                    [style.width]="
+                      getAutostartPercentage(item.total) +
+                      '%'
+                    "
+                  ></div>
+
+                </div>
+
+
+                <small>
+                  {{
+                    getAutostartPercentage(item.total)
+                  }}%
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- PEAK USAGE -->
+
+          <div class="panel">
+
+            <div class="panel-head">
+
+              <div>
+
+                <h2>
+                  Peak usage
+                </h2>
+
+                <p>
+                  Busiest periods across the network
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="peak-grid">
+
+              <div class="peak-item">
+
+                <span>
+                  Busiest day
+                </span>
+
+                <strong>
+                  {{
+                    peakUsage.busiestDay
+                      ? formatDay(peakUsage.busiestDay)
+                      : '—'
+                  }}
+                </strong>
+
+                <small>
+                  {{
+                    peakUsage.busiestDayTransactions
+                      | number
+                  }}
+                  transactions
+                </small>
+
+              </div>
+
+
+              <div class="peak-item">
+
+                <span>
+                  Peak hour
+                </span>
+
+                <strong>
+                  {{
+                    formatPeakHour(
+                      peakUsage.peakHour
+                    )
+                  }}
+                </strong>
+
+                <small>
+                  {{
+                    peakUsage.peakHourTransactions
+                      | number
+                  }}
+                  transactions
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             TOP ACTIVE CHARGERS
+        ================================================== -->
+
+        <section class="panel panel-wide">
+
+          <div class="panel-head">
+
+            <div>
+
+              <h2>
+                Most active charging points
+              </h2>
+
+              <p>
+                Chargers generating the highest session volume
+              </p>
+
+            </div>
+
+            <span class="panel-tag">
+              Top 10
+            </span>
+
+          </div>
+
+
+          <div
+            class="charger-table"
+            *ngIf="topChargers.length > 0"
+          >
+
+            <div class="charger-header">
+
+              <span>
+                DEVICE ID
+              </span>
+
+              <span>
+                SESSIONS
+              </span>
+
+              <span>
+                KWH
+              </span>
+
+              <span>
+                CHARGE VALUE
+              </span>
+
+            </div>
+
+
+            <div
+              class="charger-row"
+              *ngFor="
+                let charger of topChargers;
+                let i = index
+              "
+            >
+
+              <div class="charger-name">
+
+                <span class="rank">
+                  {{ i + 1 }}
+                </span>
+
+                <strong>
+                  {{ charger.deviceId }}
+                </strong>
+
+              </div>
+
+
+              <span>
+                {{ charger.sessions | number }}
+              </span>
+
+
+              <span>
+                {{ charger.totalKwh | number:'1.0-2' }}
+              </span>
+
+
+              <strong class="charger-value">
+                ₹{{ formatCurrency(charger.totalValue) }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="empty-state"
+            *ngIf="topChargers.length === 0"
+          >
+            No charger activity data available.
+          </div>
+
+        </section>
+
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
