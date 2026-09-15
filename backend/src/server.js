@@ -42,39 +42,86 @@ const socketInfoRoutes =
 const analyticsRoutes =
     require("./routes/analyticsRoutes");
 
-
 // ======================================================
 // CREATE APP
 // ======================================================
 
 const app = express();
 
-
 // ======================================================
-// MIDDLEWARE
+// CORS
 // ======================================================
 
-app.use(cors());
+const allowedOrigins = new Set([
+    // Current Vercel Production deployment
+    "https://frontend-24wu8a0n1-gowthamis-projects-9db3e52a.vercel.app",
+
+    // Stable Vercel Git/Main deployment
+    "https://frontend-git-main-gowthamis-projects-9db3e52a.vercel.app",
+
+    // Previous Vercel deployment
+    "https://frontend-g5aai93g0-gowthamis-projects-9db3e52a.vercel.app",
+
+    // Custom domain
+    "https://ev-dashboard.app",
+
+    // Local development
+    "http://localhost:4200",
+    "http://127.0.0.1:4200"
+]);
+
+app.use(
+    cors({
+        origin(origin, callback) {
+            // Allow requests without an Origin header
+            // such as direct browser/API requests.
+            if (!origin) {
+                callback(null, true);
+                return;
+            }
+
+            if (allowedOrigins.has(origin)) {
+                callback(null, true);
+                return;
+            }
+
+            console.error(
+                "❌ CORS blocked origin:",
+                origin
+            );
+
+            callback(
+                new Error("CORS origin not allowed")
+            );
+        }
+    })
+);
 
 app.use(express.json());
 
-app.use("/api/logs", logRoutes);
+// ======================================================
+// LOG ROUTES
+// ======================================================
 
+app.use(
+    "/api/logs",
+    logRoutes
+);
 
 // ======================================================
 // ROOT
 // ======================================================
 
-app.get("/", (req, res) => {
-
-    res.json({
-        success: true,
-        message:
-            "EV Dashboard Backend is running"
-    });
-
-});
-
+app.get(
+    "/",
+    (req, res) => {
+        res.json({
+            success: true,
+            message:
+                "EV Dashboard Backend is running"
+        });
+    }
+);
 
 // ======================================================
 // DATABASE TEST
@@ -83,23 +130,17 @@ app.get("/", (req, res) => {
 app.get(
     "/api/test-db",
     async (req, res) => {
-
         try {
-
             const [rows] =
                 await pool.query(
                     "SELECT 1 AS connected"
                 );
 
             res.json({
-
                 success: true,
-
                 message:
                     "Database connected successfully",
-
                 data: rows
-
             });
 
         } catch (error) {
@@ -108,19 +149,17 @@ app.get(
                 "❌ Database error:",
                 error
             );
-            
+
             res.status(500).json({
                 success: false,
                 message:
                     "Database connection failed",
-                    error:
+                error:
                     error.message
-
-                });
-            }
-       }
-    );
-
+            });
+        }
+    }
+);
 
 // ======================================================
 // API ROUTES
@@ -131,23 +170,20 @@ app.use(
     dashboardRoutes
 );
 
-
 app.use(
     "/api/chargers",
     chargerRoutes
 );
 
-
 // ======================================================
 // CHARGE TRANSACTIONS
 // ======================================================
 //
-// IMPORTANT:
 // Frontend uses:
 //
 // /api/charge-transactions
 //
-// So the backend must use the same base path.
+// Therefore backend uses the same base path.
 //
 
 app.use(
@@ -155,54 +191,45 @@ app.use(
     transactionRoutes
 );
 
-
 app.use(
     "/api/users",
     userRoutes
 );
-
 
 app.use(
     "/api/wallet",
     walletRoutes
 );
 
-
 app.use(
     "/api/account-info",
     accountInfoRoutes
 );
-
 
 app.use(
     "/api/app-version",
     appVersionRoutes
 );
 
-
 app.use(
     "/api/config-data",
     configDataRoutes
 );
-
 
 app.use(
     "/api/devices-master",
     devicesMasterRoutes
 );
 
-
 app.use(
     "/api/socket-info",
     socketInfoRoutes
 );
 
-
 app.use(
     "/api/analytics",
     analyticsRoutes
 );
-
 
 // ======================================================
 // 404 HANDLER
@@ -212,17 +239,13 @@ app.use(
     (req, res) => {
 
         res.status(404).json({
-
             success: false,
-
             message:
                 `Route not found: ${req.method} ${req.originalUrl}`
-
         });
 
     }
 );
-
 
 // ======================================================
 // ERROR HANDLER
@@ -237,20 +260,15 @@ app.use(
         );
 
         res.status(500).json({
-
             success: false,
-
             message:
                 "Internal server error",
-
             error:
                 err.message
-
         });
 
     }
 );
-
 
 // ======================================================
 // SERVER
@@ -258,7 +276,6 @@ app.use(
 
 const PORT =
     process.env.PORT || 5000;
-
 
 const server =
     app.listen(
@@ -279,71 +296,57 @@ const server =
                 "======================================"
             );
 
-
             console.log(
                 `🌐 Server: http://localhost:${PORT}`
             );
-
 
             console.log(
                 `📊 Dashboard: http://localhost:${PORT}/api/dashboard`
             );
 
-
             console.log(
                 `🔌 Chargers: http://localhost:${PORT}/api/chargers`
             );
-
 
             console.log(
                 `⚡ Transactions: http://localhost:${PORT}/api/charge-transactions`
             );
 
-
             console.log(
                 `👤 Users: http://localhost:${PORT}/api/users`
             );
-
 
             console.log(
                 `💰 Wallet: http://localhost:${PORT}/api/wallet`
             );
 
-
             console.log(
                 `📋 Account Info: http://localhost:${PORT}/api/account-info`
             );
-
 
             console.log(
                 `📱 App Versions: http://localhost:${PORT}/api/app-version`
             );
 
-
             console.log(
                 `⚙️ Config Data: http://localhost:${PORT}/api/config-data`
             );
-
 
             console.log(
                 `🔌 Devices Master: http://localhost:${PORT}/api/devices-master`
             );
 
-
             console.log(
                 `📡 Socket Info: http://localhost:${PORT}/api/socket-info`
             );
-
 
             console.log(
                 `📈 Analytics: http://localhost:${PORT}/api/analytics`
             );
 
-
             console.log(
                 `🗄️ DB Test: http://localhost:${PORT}/api/test-db`
             );
-
 
             console.log(
                 "======================================"
@@ -351,42 +354,34 @@ const server =
 
             console.log("");
 
-
             console.log(
                 "DB_HOST:",
                 process.env.DB_HOST
             );
-
 
             console.log(
                 "DB_PORT:",
                 process.env.DB_PORT
             );
 
-
             console.log(
                 "DB_USER:",
                 process.env.DB_USER
             );
-
 
             console.log(
                 "DB_NAME:",
                 process.env.DB_NAME
             );
 
-
             console.log(
                 "DB_PASSWORD exists:",
                 !!process.env.DB_PASSWORD
             );
 
-
             console.log("");
-
         }
     );
-
 
 // ======================================================
 // SERVER ERROR
@@ -416,15 +411,12 @@ server.on(
             "======================================"
         );
 
-
         if (
             error.code === "EADDRINUSE"
         ) {
 
             console.error(
-
                 `❌ Port ${PORT} is already being used by another process.`
-
             );
 
         }
