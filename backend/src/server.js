@@ -53,17 +53,11 @@ const app = express();
 // ======================================================
 
 const allowedOrigins = new Set([
-    // Current Vercel Production deployment
-    "https://frontend-24wu8a0n1-gowthamis-projects-9db3e52a.vercel.app",
-
-    // Stable Vercel Git/Main deployment
-    "https://frontend-git-main-gowthamis-projects-9db3e52a.vercel.app",
-
-    // Previous Vercel deployment
-    "https://frontend-g5aai93g0-gowthamis-projects-9db3e52a.vercel.app",
-
-    // Custom domain
+    // Custom production domain
     "https://ev-dashboard.app",
+
+    // Vercel Git/Main deployment
+    "https://frontend-git-main-gowthamis-projects-9db3e52a.vercel.app",
 
     // Local development
     "http://localhost:4200",
@@ -73,14 +67,27 @@ const allowedOrigins = new Set([
 app.use(
     cors({
         origin(origin, callback) {
+
             // Allow requests without an Origin header
-            // such as direct browser/API requests.
+            // Example: direct browser/API requests
             if (!origin) {
                 callback(null, true);
                 return;
             }
 
+            // Allow known fixed origins
             if (allowedOrigins.has(origin)) {
+                callback(null, true);
+                return;
+            }
+
+            // Allow Vercel deployment URLs belonging
+            // to this specific frontend project
+            const isVercelFrontend =
+                /^https:\/\/frontend-[a-z0-9-]+-gowthamis-projects-9db3e52a\.vercel\.app$/
+                    .test(origin);
+
+            if (isVercelFrontend) {
                 callback(null, true);
                 return;
             }
@@ -96,6 +103,10 @@ app.use(
         }
     })
 );
+
+// ======================================================
+// BODY PARSER
+// ======================================================
 
 app.use(express.json());
 
@@ -115,11 +126,13 @@ app.use(
 app.get(
     "/",
     (req, res) => {
+
         res.json({
             success: true,
             message:
                 "EV Dashboard Backend is running"
         });
+
     }
 );
 
@@ -130,17 +143,23 @@ app.get(
 app.get(
     "/api/test-db",
     async (req, res) => {
+
         try {
+
             const [rows] =
                 await pool.query(
                     "SELECT 1 AS connected"
                 );
 
             res.json({
+
                 success: true,
+
                 message:
                     "Database connected successfully",
+
                 data: rows
+
             });
 
         } catch (error) {
@@ -151,13 +170,19 @@ app.get(
             );
 
             res.status(500).json({
+
                 success: false,
+
                 message:
                     "Database connection failed",
+
                 error:
                     error.message
+
             });
+
         }
+
     }
 );
 
@@ -183,7 +208,7 @@ app.use(
 //
 // /api/charge-transactions
 //
-// Therefore backend uses the same base path.
+// Backend uses the same base path.
 //
 
 app.use(
@@ -191,40 +216,72 @@ app.use(
     transactionRoutes
 );
 
+// ======================================================
+// USERS
+// ======================================================
+
 app.use(
     "/api/users",
     userRoutes
 );
+
+// ======================================================
+// WALLET
+// ======================================================
 
 app.use(
     "/api/wallet",
     walletRoutes
 );
 
+// ======================================================
+// ACCOUNT INFO
+// ======================================================
+
 app.use(
     "/api/account-info",
     accountInfoRoutes
 );
+
+// ======================================================
+// APP VERSION
+// ======================================================
 
 app.use(
     "/api/app-version",
     appVersionRoutes
 );
 
+// ======================================================
+// CONFIG DATA
+// ======================================================
+
 app.use(
     "/api/config-data",
     configDataRoutes
 );
+
+// ======================================================
+// DEVICES MASTER
+// ======================================================
 
 app.use(
     "/api/devices-master",
     devicesMasterRoutes
 );
 
+// ======================================================
+// SOCKET INFO
+// ======================================================
+
 app.use(
     "/api/socket-info",
     socketInfoRoutes
 );
+
+// ======================================================
+// ANALYTICS
+// ======================================================
 
 app.use(
     "/api/analytics",
@@ -239,9 +296,12 @@ app.use(
     (req, res) => {
 
         res.status(404).json({
+
             success: false,
+
             message:
                 `Route not found: ${req.method} ${req.originalUrl}`
+
         });
 
     }
@@ -260,11 +320,15 @@ app.use(
         );
 
         res.status(500).json({
+
             success: false,
+
             message:
                 "Internal server error",
+
             error:
                 err.message
+
         });
 
     }
@@ -380,6 +444,7 @@ const server =
             );
 
             console.log("");
+
         }
     );
 
