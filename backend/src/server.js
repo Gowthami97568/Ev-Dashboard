@@ -49,14 +49,14 @@ const analyticsRoutes =
 const app = express();
 
 // ======================================================
-// CORS
+// CORS CONFIGURATION
 // ======================================================
 
 const allowedOrigins = new Set([
     // Custom production domain
     "https://ev-dashboard.app",
 
-    // Vercel Git/Main deployment
+    // Vercel main deployment
     "https://frontend-git-main-gowthamis-projects-9db3e52a.vercel.app",
 
     // Local development
@@ -66,30 +66,27 @@ const allowedOrigins = new Set([
 
 app.use(
     cors({
-        origin(origin, callback) {
+        origin: function (origin, callback) {
 
-            // Allow requests without an Origin header
-            // Example: direct browser/API requests
+            // Allow requests without an Origin header.
+            // Example: direct API calls from browser.
             if (!origin) {
-                callback(null, true);
-                return;
+                return callback(null, true);
             }
 
-            // Allow known fixed origins
+            // Allow specifically configured origins.
             if (allowedOrigins.has(origin)) {
-                callback(null, true);
-                return;
+                return callback(null, true);
             }
 
             // Allow Vercel deployment URLs belonging
-            // to this specific frontend project
-            const isVercelFrontend =
+            // to this frontend project.
+            const isVercelDeployment =
                 /^https:\/\/frontend-[a-z0-9-]+-gowthamis-projects-9db3e52a\.vercel\.app$/
                     .test(origin);
 
-            if (isVercelFrontend) {
-                callback(null, true);
-                return;
+            if (isVercelDeployment) {
+                return callback(null, true);
             }
 
             console.error(
@@ -97,10 +94,26 @@ app.use(
                 origin
             );
 
-            callback(
+            return callback(
                 new Error("CORS origin not allowed")
             );
-        }
+        },
+
+        methods: [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "OPTIONS"
+        ],
+
+        allowedHeaders: [
+            "Content-Type",
+            "Authorization"
+        ],
+
+        credentials: false
     })
 );
 
@@ -187,13 +200,17 @@ app.get(
 );
 
 // ======================================================
-// API ROUTES
+// DASHBOARD
 // ======================================================
 
 app.use(
     "/api/dashboard",
     dashboardRoutes
 );
+
+// ======================================================
+// CHARGERS
+// ======================================================
 
 app.use(
     "/api/chargers",
