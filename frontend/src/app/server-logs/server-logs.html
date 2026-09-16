@@ -57,9 +57,11 @@
 
             <thead>
               <tr>
-                <th>Type</th>
-                <th>Date & Time</th>
+                <th>ID</th>
+                <th>Level</th>
                 <th>Message</th>
+                <th>Status</th>
+                <th>Date & Time</th>
               </tr>
             </thead>
 
@@ -69,23 +71,38 @@
 
                 <tr>
 
+                  <td class="id-column">
+                    {{ log.id }}
+                  </td>
+
                   <td>
                     <span
                       class="level"
                       [class.info]="log.level === 'INFO'"
-                      [class.warning]="log.level === 'WARN' || log.level === 'WARNING'"
+                      [class.warning]="log.level === 'WARNING'"
                       [class.error]="log.level === 'ERROR'"
                     >
                       {{ log.level }}
                     </span>
                   </td>
 
-                  <td class="date-column">
-                    {{ formatTimestamp(log.timestamp) }}
-                  </td>
-
                   <td class="message-column">
                     {{ log.message }}
+                  </td>
+
+                  <td>
+                    <span
+                      class="status"
+                      [class.success]="log.status === 'Success'"
+                      [class.warning]="log.status === 'Warning'"
+                      [class.failed]="log.status === 'Failed'"
+                    >
+                      {{ log.status }}
+                    </span>
+                  </td>
+
+                  <td class="date-column">
+                    {{ log.timestamp }}
                   </td>
 
                 </tr>
@@ -96,7 +113,7 @@
 
                 <tr>
                   <td
-                    colspan="3"
+                    colspan="5"
                     class="no-data"
                   >
                     No server logs found

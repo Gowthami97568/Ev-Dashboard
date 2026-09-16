@@ -4,7 +4,6 @@ require("dotenv").config({ override: true });
 
 const pool = require("./config/db");
 const logRoutes = require("./routes/logRoutes");
-const serverLogRoutes = require("./routes/serverLogRoutes");
 
 // ======================================================
 // IMPORT ROUTES
@@ -54,12 +53,14 @@ const app = express();
 // ======================================================
 
 const allowedOrigins = new Set([
+    // Custom production domain
     "https://ev-dashboard.app",
 
+    // Vercel main deployment
     "https://frontend-git-main-gowthamis-projects-9db3e52a.vercel.app",
 
+    // Local development
     "http://localhost:4200",
-
     "http://127.0.0.1:4200"
 ]);
 
@@ -67,17 +68,19 @@ app.use(
     cors({
         origin: function (origin, callback) {
 
-            // Allow requests without an Origin header
+            // Allow requests without an Origin header.
+            // Example: direct API calls from browser.
             if (!origin) {
                 return callback(null, true);
             }
 
-            // Allow specifically configured origins
+            // Allow specifically configured origins.
             if (allowedOrigins.has(origin)) {
                 return callback(null, true);
             }
 
-            // Allow Vercel deployment URLs
+            // Allow Vercel deployment URLs belonging
+            // to this frontend project.
             const isVercelDeployment =
                 /^https:\/\/frontend-[a-z0-9-]+-gowthamis-projects-9db3e52a\.vercel\.app$/
                     .test(origin);
@@ -127,11 +130,6 @@ app.use(express.json());
 app.use(
     "/api/logs",
     logRoutes
-);
-
-app.use(
-    "/api/server-logs",
-    serverLogRoutes
 );
 
 // ======================================================
@@ -222,6 +220,13 @@ app.use(
 // ======================================================
 // CHARGE TRANSACTIONS
 // ======================================================
+//
+// Frontend uses:
+//
+// /api/charge-transactions
+//
+// Backend uses the same base path.
+//
 
 app.use(
     "/api/charge-transactions",

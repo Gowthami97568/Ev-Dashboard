@@ -95,7 +95,7 @@ export class ServerLogs implements OnInit {
 
     this.errorMessage = '';
 
-    this.logsService.getServerLogs().subscribe({
+    this.logsService.getLogs().subscribe({
 
       next: (response: string) => {
 
@@ -542,23 +542,6 @@ export class ServerLogs implements OnInit {
       this.filteredLogs.length
 
     );
-
-  }
-
-
-  formatTimestamp(
-    timestamp: string
-  ): string {
-
-    return timestamp
-      .replace(
-        /(\d{1,2}:\d{2}):\d{2}$/,
-        '$1'
-      )
-      .replace(
-        /^([A-Za-z]{3})/,
-        match => match.toLowerCase()
-      );
 
   }
 
