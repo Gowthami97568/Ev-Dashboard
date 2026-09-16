@@ -4,6 +4,7 @@ require("dotenv").config({ override: true });
 
 const pool = require("./config/db");
 const logRoutes = require("./routes/logRoutes");
+const serverLogRoutes = require("./routes/serverLogRoutes");
 
 // ======================================================
 // IMPORT ROUTES
@@ -130,6 +131,11 @@ app.use(express.json());
 app.use(
     "/api/logs",
     logRoutes
+);
+
+app.use(
+    "/api/server-logs",
+    serverLogRoutes
 );
 
 // ======================================================
