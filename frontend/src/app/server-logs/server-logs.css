@@ -236,29 +236,24 @@
 
 table {
   width: 100%;
-  min-width: 1040px;
+  min-width: 760px;
   table-layout: fixed;
   border-collapse: collapse;
 }
 
 th:nth-child(1),
 td:nth-child(1) {
-  width: 70px;
+  width: 90px;
 }
 
 th:nth-child(2),
 td:nth-child(2) {
-  width: 110px;
-}
-
-th:nth-child(4),
-td:nth-child(4) {
-  width: 110px;
-}
-
-th:nth-child(5),
-td:nth-child(5) {
   width: 190px;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+  width: 570px;
 }
 
 thead {
@@ -292,14 +287,9 @@ tbody tr:last-child td {
   border-bottom: none;
 }
 
-.id-column {
-  color: #667085;
-  font-weight: 600;
-}
-
 .message-column {
   width: auto;
-  max-width: 420px;
+  max-width: 570px;
   white-space: normal;
   overflow-wrap: anywhere;
   line-height: 1.5;
