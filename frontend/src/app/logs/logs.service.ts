@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class LogsService {
 
   private readonly apiUrl =
-    'http://server.evchargeman.com:5679/logs';
+       'https://ev-dashboard-backend.onrender.com/api/logs';
 
   constructor(
     private readonly http: HttpClient
