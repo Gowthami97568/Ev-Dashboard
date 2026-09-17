@@ -1,5 +1,19 @@
 const pool = require("../config/db");
 
+const toMysqlDateTime = (value) => {
+    if (typeof value !== "string") {
+        return value;
+    }
+
+    const match = value.match(
+        /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})(?:\.\d+)?Z?$/
+    );
+
+    return match
+        ? `${match[1]} ${match[2]}`
+        : value;
+};
+
 // ======================================================
 // GET TRANSACTION SUMMARY
 // ======================================================
@@ -398,6 +412,8 @@ const getTransactionById = async (req, res) => {
 // ======================================================
 
 const updateTransaction = async (req, res) => {
+    const connection = await pool.getConnection();
+
     try {
         const { transactionid } = req.params;
 
@@ -426,7 +442,7 @@ const updateTransaction = async (req, res) => {
         // Check whether transaction exists
         const [existingRows] = await pool.query(
             `
-            SELECT transactionid
+            SELECT transactionid, mobile, consumewallet, modifiedDate
             FROM chargetransaction
             WHERE transactionid = ?
             `,
@@ -434,11 +450,22 @@ const updateTransaction = async (req, res) => {
         );
 
         if (existingRows.length === 0) {
+            connection.release();
             return res.status(404).json({
                 success: false,
                 message: "Transaction not found"
             });
         }
+
+        const existingTransaction = existingRows[0];
+        const previousConsumption = Number(
+            existingTransaction.consumewallet || 0
+        );
+        const nextConsumption = Number(
+            consumewallet || 0
+        );
+
+        await connection.beginTransaction();
 
         // Update transaction
         const updateQuery = `
@@ -470,15 +497,15 @@ const updateTransaction = async (req, res) => {
         const values = [
             mobile,
             deviceid,
-            starttime,
-            endtime,
+            toMysqlDateTime(starttime),
+            toMysqlDateTime(endtime),
             duration,
             chargestatus,
             consumewallet,
             kwh,
-            chargedate,
+            toMysqlDateTime(chargedate),
             invoiceid,
-            commtime,
+            toMysqlDateTime(commtime),
             chargevalue,
             reason,
             voltage,
@@ -490,10 +517,58 @@ const updateTransaction = async (req, res) => {
             transactionid
         ];
 
-        await pool.query(updateQuery, values);
+        await connection.query(updateQuery, values);
+
+        let walletUpdated = false;
+
+        if (
+            previousConsumption !== nextConsumption &&
+            existingTransaction.mobile
+        ) {
+            const [walletRows] = await connection.query(
+                `
+                SELECT id, wallet, walletamount
+                FROM wallethistory
+                WHERE type = 'Consume'
+                  AND (
+                    transactionid = ?
+                    OR (
+                        mobile = ?
+                        AND walletamount = ?
+                    )
+                  )
+                ORDER BY (transactionid = ?) DESC, transactiondate DESC, id DESC
+                LIMIT 1
+                FOR UPDATE
+                `,
+                [
+                    String(transactionid),
+                    existingTransaction.mobile,
+                    previousConsumption,
+                    String(transactionid)
+                ]
+            );
+
+            if (walletRows.length > 0) {
+                const walletRecord = walletRows[0];
+                const walletBalance =
+                    Number(walletRecord.wallet || 0) - nextConsumption;
+
+                await connection.query(
+                    `
+                    UPDATE wallethistory
+                    SET walletamount = ?, walletbalance = ?
+                    WHERE id = ?
+                    `,
+                    [nextConsumption, walletBalance, walletRecord.id]
+                );
+
+                walletUpdated = true;
+            }
+        }
 
         // Fetch updated transaction
-        const [updatedRows] = await pool.query(
+        const [updatedRows] = await connection.query(
             `
             SELECT
                 transactionid,
@@ -526,13 +601,21 @@ const updateTransaction = async (req, res) => {
             [transactionid]
         );
 
+        await connection.commit();
+        connection.release();
+
         res.json({
             success: true,
-            message: "Transaction updated successfully",
-            data: updatedRows[0]
+            message: walletUpdated
+                ? "Transaction and wallet updated successfully"
+                : "Transaction updated successfully",
+            data: updatedRows[0],
+            walletUpdated
         });
 
     } catch (error) {
+        await connection.rollback();
+        connection.release();
         console.error("❌ Update Transaction Error:", error);
 
         res.status(500).json({
