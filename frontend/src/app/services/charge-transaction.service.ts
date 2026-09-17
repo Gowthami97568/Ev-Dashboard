@@ -6,6 +6,7 @@ import {
 } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 
 // =====================================================
@@ -220,7 +221,7 @@ export interface TransactionUpdateResponse {
 export class ChargeTransactionService {
 
   private readonly apiUrl =
-    'http://localhost:5000/api/charge-transactions';
+    `${environment.apiUrl}/api/charge-transactions`;
 
 
   constructor(

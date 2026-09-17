@@ -4,6 +4,7 @@ import {
   HttpParams
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 
 // =====================================================
@@ -106,7 +107,7 @@ export interface ChargerUpdateResponse {
 export class ChargeManagerService {
 
   private readonly apiUrl =
-    'http://localhost:5000/api/chargers';
+    `${environment.apiUrl}/api/chargers`;
 
 
   constructor(

@@ -5,6 +5,7 @@ import {
 } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface DeviceRecord {
   [key: string]: unknown;
@@ -56,7 +57,7 @@ export interface DeviceResponse {
 export class DevicesMasterService {
 
   private readonly apiUrl =
-    'http://localhost:5000/api/devices-master';
+    `${environment.apiUrl}/api/devices-master`;
 
   constructor(
     private readonly http: HttpClient

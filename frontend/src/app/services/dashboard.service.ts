@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface DashboardData {
   chargers: number;
@@ -45,7 +46,7 @@ export interface DashboardTrendsResponse {
 })
 export class DashboardService {
 
-  private readonly apiUrl = 'http://localhost:5000/api/dashboard';
+  private readonly apiUrl = `${environment.apiUrl}/api/dashboard`;
 
   constructor(private readonly http: HttpClient) {}
 

@@ -7,6 +7,7 @@ import {
 import {
   Observable
 } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 
 // ======================================================
@@ -159,7 +160,7 @@ export class ConfigDataService {
   // ====================================================
 
   private readonly apiUrl =
-    'http://localhost:5000/api/config-data';
+    `${environment.apiUrl}/api/config-data`;
 
 
   // ====================================================

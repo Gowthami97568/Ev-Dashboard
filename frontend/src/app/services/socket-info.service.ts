@@ -4,6 +4,7 @@ import {
   HttpParams
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface SocketInfoRecord {
   [key: string]: unknown;
@@ -49,7 +50,7 @@ export interface SocketInfoListResponse {
 export class SocketInfoService {
 
   private readonly apiUrl =
-    'http://localhost:5000/api/socket-info';
+    `${environment.apiUrl}/api/socket-info`;
 
   constructor(
     private readonly http: HttpClient

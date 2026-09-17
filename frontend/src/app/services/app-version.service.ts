@@ -4,6 +4,7 @@ import {
   HttpParams
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface AppVersionRecord {
   [key: string]: unknown;
@@ -50,7 +51,7 @@ export interface AppVersionListResponse {
 export class AppVersionService {
 
   private readonly apiUrl =
-    'http://localhost:5000/api/app-version';
+    `${environment.apiUrl}/api/app-version`;
 
   constructor(
     private readonly http: HttpClient

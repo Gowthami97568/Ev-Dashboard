@@ -6,6 +6,7 @@ import {
 } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface AccountInfoRecord {
   [key: string]: unknown;
@@ -52,7 +53,7 @@ export interface AccountInfoListResponse {
 export class AccountInfoService {
 
   private readonly apiUrl =
-    'http://localhost:5000/api/account-info';
+    `${environment.apiUrl}/api/account-info`;
 
   constructor(
     private readonly http: HttpClient

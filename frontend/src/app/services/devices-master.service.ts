@@ -6,6 +6,7 @@ import {
 } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 
 // =====================================================
@@ -73,7 +74,7 @@ export interface DeviceUpdateResponse {
 export class DevicesMasterService {
 
   private readonly apiUrl =
-    'http://localhost:5000/api/devices-master';
+    `${environment.apiUrl}/api/devices-master`;
 
 
   constructor(

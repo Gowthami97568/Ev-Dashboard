@@ -6,6 +6,7 @@ import {
 } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 
 // =====================================================
@@ -121,7 +122,7 @@ export interface WalletUpdateResponse {
 export class WalletHistoryService {
 
   private readonly apiUrl =
-    'http://localhost:5000/api/wallet';
+    `${environment.apiUrl}/api/wallet`;
 
 
   constructor(

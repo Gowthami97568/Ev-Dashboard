@@ -13,6 +13,7 @@ import {
 } from '../dashboard/services/config-data.service';
 
 import { Sidebar } from '../dashboard/components/sidebar/sidebar';
+import { environment } from '../../environments/environment';
 
 
 @Component({
@@ -657,7 +658,7 @@ export class ConfigData implements OnInit {
 
     console.log(
       'PUT URL:',
-      `http://localhost:5000/api/config-data/${this.originalSerialNumber}`
+      `${environment.apiUrl}/api/config-data/${this.originalSerialNumber}`
     );
 
 

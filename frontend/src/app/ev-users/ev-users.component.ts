@@ -19,6 +19,7 @@ import {
 import {
   Sidebar
 } from '../dashboard/components/sidebar/sidebar';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-ev-users',
@@ -271,7 +272,7 @@ export class EvUsersComponent implements OnInit {
 
     this.http
       .get<any>(
-        'http://localhost:5000/api/users'
+        `${environment.apiUrl}/api/users`
       )
       .subscribe({
 
@@ -879,7 +880,7 @@ export class EvUsersComponent implements OnInit {
     // ---------------------------------------------
 
     const url =
-      `http://localhost:5000/api/users/${userId}`;
+      `${environment.apiUrl}/api/users/${userId}`;
 
 
     console.log(
