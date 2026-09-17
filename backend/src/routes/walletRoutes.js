@@ -4,7 +4,8 @@ const {
     getWalletSummary,
     getWalletColumns,
     getWalletHistory,
-    getWalletById
+    getWalletById,
+    updateWalletRecord
 } = require("../controllers/walletController");
 
 const router = express.Router();
@@ -27,10 +28,22 @@ router.get(
     getWalletHistory
 );
 
+// Update a record without a database-generated ID by matching its original values
+router.put(
+    "/",
+    updateWalletRecord
+);
+
 // Single wallet record
 router.get(
     "/:id",
     getWalletById
+);
+
+// Update one wallet record
+router.put(
+    "/:id",
+    updateWalletRecord
 );
 
 module.exports = router;

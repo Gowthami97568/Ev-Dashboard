@@ -98,6 +98,8 @@ export class WalletHistory implements OnInit {
 
   editingRecord: WalletRecord = {} as WalletRecord;
 
+  private originalEditingRecord: WalletRecord = {};
+
 
   // =====================================================
   // CONSTRUCTOR
@@ -456,6 +458,10 @@ export class WalletHistory implements OnInit {
       ...record
     };
 
+    this.originalEditingRecord = {
+      ...record
+    };
+
     this.errorMessage = '';
 
     this.successMessage = '';
@@ -553,7 +559,8 @@ export class WalletHistory implements OnInit {
       if (
         value !== undefined &&
         value !== null &&
-        String(value).trim() !== ''
+        String(value).trim() !== '' &&
+        String(value).trim() !== '-'
       ) {
 
         return String(
@@ -588,6 +595,8 @@ export class WalletHistory implements OnInit {
     this.editingRecord =
       {} as WalletRecord;
 
+    this.originalEditingRecord = {};
+
   }
 
 
@@ -603,13 +612,16 @@ export class WalletHistory implements OnInit {
       );
 
 
+    const payload: Partial<WalletRecord> & {
+      __originalRecord?: WalletRecord;
+    } = {
+      ...this.editingRecord
+    };
+
     if (!recordId) {
-
-      this.errorMessage =
-        'Wallet record ID is required.';
-
-      return;
-
+      payload.__originalRecord = {
+        ...this.originalEditingRecord
+      };
     }
 
 
@@ -618,14 +630,6 @@ export class WalletHistory implements OnInit {
     this.errorMessage = '';
 
     this.successMessage = '';
-
-
-    const payload:
-      Partial<WalletRecord> = {
-
-      ...this.editingRecord
-
-    };
 
 
     this.walletService
@@ -661,6 +665,8 @@ export class WalletHistory implements OnInit {
 
           this.editingRecord =
             {} as WalletRecord;
+
+          this.originalEditingRecord = {};
 
 
           this.successMessage =

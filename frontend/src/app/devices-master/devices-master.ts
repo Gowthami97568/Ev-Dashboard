@@ -539,6 +539,7 @@ export class DevicesMaster implements OnInit {
         .toLowerCase();
 
     return (
+      normalized === 'slno' ||
       normalized === 'deviceid' ||
       normalized === 'id'
     );
@@ -576,6 +577,8 @@ export class DevicesMaster implements OnInit {
   ): string {
 
     const possibleKeys = [
+      'slno',
+      'SLNO',
       'device_id',
       'deviceid',
       'deviceId',

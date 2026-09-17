@@ -215,11 +215,15 @@ export class WalletHistoryService {
 
   updateRecord(
     recordId: string,
-    record: Partial<WalletRecord>
+    record: Partial<WalletRecord> & {
+      __originalRecord?: WalletRecord;
+    }
   ): Observable<WalletUpdateResponse> {
 
     return this.http.put<WalletUpdateResponse>(
-      `${this.apiUrl}/${encodeURIComponent(recordId)}`,
+      recordId
+        ? `${this.apiUrl}/${encodeURIComponent(recordId)}`
+        : this.apiUrl,
       record
     );
 
