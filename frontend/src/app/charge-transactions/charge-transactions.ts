@@ -68,7 +68,7 @@ export class ChargeTransactions implements OnInit {
 
   page = 1;
 
-  limit = 10;
+  limit = 500;
 
   total = 0;
 

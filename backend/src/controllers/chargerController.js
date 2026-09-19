@@ -96,7 +96,7 @@ const getChargers = async (req, res) => {
                 parseInt(limit, 10) || 10,
                 1
             ),
-            100
+            500
         );
 
 

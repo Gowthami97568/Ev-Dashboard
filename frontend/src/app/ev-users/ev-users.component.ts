@@ -78,7 +78,7 @@ export class EvUsersComponent implements OnInit {
 
   currentPage = 1;
 
-  pageSize = 10;
+  pageSize = 500;
 
 
   // =====================================================

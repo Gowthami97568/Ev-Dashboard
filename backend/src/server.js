@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config({ override: true });
-
 const pool = require("./config/db");
 const logRoutes = require("./routes/logRoutes");
 const serverLogRoutes = require("./routes/serverLogRoutes");

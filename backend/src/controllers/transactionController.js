@@ -188,7 +188,7 @@ const getTransactions = async (req, res) => {
                 parseInt(limit, 10) || 10,
                 1
             ),
-            100
+            500
         );
 
         const offset = (pageNumber - 1) * limitNumber;
