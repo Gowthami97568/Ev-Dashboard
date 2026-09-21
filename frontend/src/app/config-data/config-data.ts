@@ -39,6 +39,8 @@ export class ConfigData implements OnInit {
 
   columns: string[] = [];
 
+  identifierColumn = '';
+
 
   // ======================================================
   // SUMMARY
@@ -191,6 +193,10 @@ export class ConfigData implements OnInit {
 
             this.columns =
               response.data.columns;
+
+            this.identifierColumn =
+              response.data.identifierColumn ||
+              this.findRecordIdentifier(this.columns);
 
           }
 
@@ -487,46 +493,23 @@ export class ConfigData implements OnInit {
     };
 
 
-    // -----------------------------------------------
-    // Get original serial number
-    // -----------------------------------------------
+    const recordIdentifier =
+      this.identifierColumn ||
+      this.findRecordIdentifier(Object.keys(record));
+
+    this.identifierColumn = recordIdentifier;
 
     this.originalSerialNumber =
       String(
-        record['chargeBoxSerialNumber'] ?? ''
+        record[recordIdentifier] ?? ''
       ).trim();
-
-
-    console.log(
-      'ORIGINAL SERIAL NUMBER:',
-      this.originalSerialNumber
-    );
-
-
-    // -----------------------------------------------
-    // Check identifier
-    // -----------------------------------------------
-
-    if (
-      !this.originalSerialNumber
-    ) {
-
-      console.error(
-        '❌ chargeBoxSerialNumber is missing',
-        record
-      );
-
-      this.errorMessage =
-        'Charge Box Serial Number is missing from this record.';
-
-      return;
-
-    }
 
 
     this.errorMessage = '';
 
     this.successMessage = '';
+
+    this.showDetails = false;
 
     this.showEditModal = true;
 
@@ -542,8 +525,42 @@ export class ConfigData implements OnInit {
   ): boolean {
 
     return (
-      column === 'chargeBoxSerialNumber'
+      column === this.identifierColumn
     );
+
+  }
+
+
+  // ======================================================
+  // FIND RECORD IDENTIFIER
+  // ======================================================
+
+  private findRecordIdentifier(
+    columns: string[]
+  ): string {
+
+    const identifierNames = [
+      'id',
+      'configid',
+      'configId',
+      'config_id',
+      'configdataid',
+      'configDataId',
+      'config_data_id',
+      'recordid',
+      'recordId',
+      'record_id',
+      'chargeBoxSerialNumber'
+    ];
+
+    return identifierNames.find(
+      identifier =>
+        columns.some(
+          column =>
+            column.toLowerCase() ===
+            identifier.toLowerCase()
+        )
+    ) || '';
 
   }
 
@@ -554,7 +571,7 @@ export class ConfigData implements OnInit {
 
   getEditableColumns(): string[] {
 
-    return this.getVisibleColumns()
+    return this.columns
       .filter(
         column =>
           !this.isRecordIdColumn(column)
@@ -619,7 +636,7 @@ export class ConfigData implements OnInit {
     ) {
 
       this.errorMessage =
-        'Charge Box Serial Number is missing.';
+        `${this.identifierColumn || 'Record identifier'} is missing.`;
 
       console.error(
         '❌ Cannot save: serial number missing'

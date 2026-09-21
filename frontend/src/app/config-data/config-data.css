@@ -867,6 +867,14 @@ td strong {
   word-break: break-word;
 }
 
+.details-modal-footer {
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-top: 18px;
+}
+
 /* =========================================================
    EDIT MODAL (included ahead of time so if/when an Edit
    feature is added to this page, it won't render as

@@ -66,6 +66,8 @@ export interface ConfigDataColumnsResponse {
 
     columns: string[];
 
+    identifierColumn?: string | null;
+
   };
 
 }
