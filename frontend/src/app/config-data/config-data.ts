@@ -465,7 +465,7 @@ export class ConfigData implements OnInit {
 
   getVisibleColumns(): string[] {
 
-    return this.columns.slice(0, 8);
+    return this.columns;
 
   }
 
