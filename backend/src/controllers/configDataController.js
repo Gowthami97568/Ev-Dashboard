@@ -48,8 +48,7 @@ const getIdentifierColumn = async () => {
         "config_data_id",
         "recordid",
         "recordId",
-        "record_id",
-        "chargeBoxSerialNumber"
+        "record_id"
     ];
 
 
@@ -149,9 +148,6 @@ const getConfigDataColumns = async (req, res) => {
             SHOW COLUMNS FROM config_data
         `);
 
-        const identifierColumn =
-            await getIdentifierColumn();
-
 
         res.json({
 
@@ -165,9 +161,7 @@ const getConfigDataColumns = async (req, res) => {
                 columns:
                     rows.map(
                         row => row.Field
-                    ),
-
-                identifierColumn
+                    )
 
             }
 
@@ -598,6 +592,26 @@ const updateConfigData = async (req, res) => {
 
 
         // --------------------------------------------------
+        // Record not found
+        // --------------------------------------------------
+
+        if (
+            result.affectedRows === 0
+        ) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message:
+                    "Config data record not found or no changes were made."
+
+            });
+
+        }
+
+
+        // --------------------------------------------------
         // Fetch updated record
         // --------------------------------------------------
 
@@ -611,26 +625,6 @@ const updateConfigData = async (req, res) => {
                 `,
                 [id]
             );
-
-
-        // --------------------------------------------------
-        // Record not found
-        // --------------------------------------------------
-
-        if (
-            updatedRows.length === 0
-        ) {
-
-            return res.status(404).json({
-
-                success: false,
-
-                message:
-                    "Config data record not found."
-
-            });
-
-        }
 
 
         // --------------------------------------------------
