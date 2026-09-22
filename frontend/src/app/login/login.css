@@ -23,17 +23,19 @@
 }
 
 .login-brand {
-  width: 52px;
-  height: 52px;
-  display: grid;
-  place-items: center;
-  margin-bottom: 24px;
-  border-radius: 14px;
-  background: #0f766e;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  width: min(100%, 220px);
+  height: 72px;
+  margin: 0 auto 24px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #1f252a;
+}
+
+.login-brand img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .login-kicker {
