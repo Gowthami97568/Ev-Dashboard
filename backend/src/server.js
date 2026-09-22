@@ -1,57 +1,35 @@
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config({ override: true });
+require("dotenv").config();
+
 const pool = require("./config/db");
+
 const logRoutes = require("./routes/logRoutes");
 const serverLogRoutes = require("./routes/serverLogRoutes");
 
-// ======================================================
-// IMPORT ROUTES
-// ======================================================
+const dashboardRoutes = require("./routes/dashboardRoutes");
+const chargerRoutes = require("./routes/chargerRoutes");
+const transactionRoutes = require("./routes/transactionRoutes");
+const userRoutes = require("./routes/userRoutes");
+const walletRoutes = require("./routes/walletRoutes");
+const accountInfoRoutes = require("./routes/accountInfoRoutes");
+const appVersionRoutes = require("./routes/appVersionRoutes");
+const configDataRoutes = require("./routes/configDataRoutes");
+const devicesMasterRoutes = require("./routes/devicesMasterRoutes");
+const socketInfoRoutes = require("./routes/socketInfoRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
 
-const dashboardRoutes =
-    require("./routes/dashboardRoutes");
-
-const chargerRoutes =
-    require("./routes/chargerRoutes");
-
-const transactionRoutes =
-    require("./routes/transactionRoutes");
-
-const userRoutes =
-    require("./routes/userRoutes");
-
-const walletRoutes =
-    require("./routes/walletRoutes");
-
-const accountInfoRoutes =
-    require("./routes/accountInfoRoutes");
-
-const appVersionRoutes =
-    require("./routes/appVersionRoutes");
-
-const configDataRoutes =
-    require("./routes/configDataRoutes");
-
-const devicesMasterRoutes =
-    require("./routes/devicesMasterRoutes");
-
-const socketInfoRoutes =
-    require("./routes/socketInfoRoutes");
-
-const analyticsRoutes =
-    require("./routes/analyticsRoutes");
-
-const authRoutes =
-    require("./routes/authRoutes");
-const { requireAuth } =
-    require("./middleware/authMiddleware");
+const authRoutes = require("./routes/authRoutes");
+const { requireAuth } = require("./middleware/authMiddleware");
 
 // ======================================================
 // CREATE APP
 // ======================================================
 
 const app = express();
+
+// Render / reverse-proxy configuration
+app.set("trust proxy", 1);
 
 // ======================================================
 // CORS CONFIGURATION
@@ -71,21 +49,19 @@ const allowedOrigins = new Set([
 
 app.use(
     cors({
-        origin: function (origin, callback) {
-
-            // Allow requests without an Origin header.
-            // Example: direct API calls from browser.
+        origin: (origin, callback) => {
+            // Allow requests with no Origin header
+            // Example: server-to-server/direct API requests.
             if (!origin) {
                 return callback(null, true);
             }
 
-            // Allow specifically configured origins.
+            // Explicitly allowed origins
             if (allowedOrigins.has(origin)) {
                 return callback(null, true);
             }
 
-            // Allow Vercel deployment URLs belonging
-            // to this frontend project.
+            // Allow Vercel deployments belonging to this project
             const isVercelDeployment =
                 /^https:\/\/frontend-[a-z0-9-]+-gowthamis-projects-9db3e52a\.vercel\.app$/
                     .test(origin);
@@ -94,10 +70,7 @@ app.use(
                 return callback(null, true);
             }
 
-            console.error(
-                "❌ CORS blocked origin:",
-                origin
-            );
+            console.error("❌ CORS blocked origin:", origin);
 
             return callback(
                 new Error("CORS origin not allowed")
@@ -128,6 +101,58 @@ app.use(
 
 app.use(express.json());
 
+// ======================================================
+// AUTH ENVIRONMENT CHECK
+// ======================================================
+
+console.log("");
+console.log("======================================");
+console.log("🔐 AUTH CONFIG CHECK");
+console.log("======================================");
+
+console.log(
+    "ADMIN_USERNAME configured:",
+    Boolean(process.env.ADMIN_USERNAME)
+);
+
+console.log(
+    "ADMIN_PASSWORD_HASH configured:",
+    Boolean(process.env.ADMIN_PASSWORD_HASH)
+);
+
+console.log(
+    "AUTH_SECRET configured:",
+    Boolean(process.env.AUTH_SECRET)
+);
+
+console.log(
+    "ADMIN_USERNAME length:",
+    process.env.ADMIN_USERNAME
+        ? process.env.ADMIN_USERNAME.length
+        : 0
+);
+
+console.log(
+    "ADMIN_PASSWORD_HASH length:",
+    process.env.ADMIN_PASSWORD_HASH
+        ? process.env.ADMIN_PASSWORD_HASH.length
+        : 0
+);
+
+console.log(
+    "AUTH_SECRET length:",
+    process.env.AUTH_SECRET
+        ? process.env.AUTH_SECRET.length
+        : 0
+);
+
+console.log("======================================");
+console.log("");
+
+// ======================================================
+// LOGIN RATE LIMIT
+// ======================================================
+
 const loginAttempts = new Map();
 
 app.use(
@@ -135,6 +160,7 @@ app.use(
     (req, res, next) => {
         const key = req.ip || "unknown";
         const now = Date.now();
+
         const attempt = loginAttempts.get(key) || {
             count: 0,
             resetAt: now + 15 * 60 * 1000
@@ -148,7 +174,8 @@ app.use(
         if (attempt.count >= 5) {
             return res.status(429).json({
                 success: false,
-                message: "Too many login attempts. Try again later."
+                message:
+                    "Too many login attempts. Try again later."
             });
         }
 
@@ -156,7 +183,8 @@ app.use(
         loginAttempts.set(key, attempt);
 
         const originalJson = res.json.bind(res);
-        res.json = body => {
+
+        res.json = (body) => {
             if (body?.success) {
                 loginAttempts.delete(key);
             }
@@ -168,10 +196,18 @@ app.use(
     }
 );
 
+// ======================================================
+// AUTH ROUTES
+// ======================================================
+
 app.use(
     "/api/auth",
     authRoutes
 );
+
+// ======================================================
+// PROTECTED API ROUTES
+// ======================================================
 
 app.use(
     "/api",
@@ -199,13 +235,10 @@ app.use(
 app.get(
     "/",
     (req, res) => {
-
         res.json({
             success: true,
-            message:
-                "EV Dashboard Backend is running"
+            message: "EV Dashboard Backend is running"
         });
-
     }
 );
 
@@ -216,46 +249,31 @@ app.get(
 app.get(
     "/api/test-db",
     async (req, res) => {
-
         try {
+            const [rows] = await pool.query(
+                "SELECT 1 AS connected"
+            );
 
-            const [rows] =
-                await pool.query(
-                    "SELECT 1 AS connected"
-                );
-
-            res.json({
-
+            return res.json({
                 success: true,
-
                 message:
                     "Database connected successfully",
-
                 data: rows
-
             });
 
         } catch (error) {
-
             console.error(
                 "❌ Database error:",
                 error
             );
 
-            res.status(500).json({
-
+            return res.status(500).json({
                 success: false,
-
                 message:
                     "Database connection failed",
-
-                error:
-                    error.message
-
+                error: error.message
             });
-
         }
-
     }
 );
 
@@ -280,13 +298,6 @@ app.use(
 // ======================================================
 // CHARGE TRANSACTIONS
 // ======================================================
-//
-// Frontend uses:
-//
-// /api/charge-transactions
-//
-// Backend uses the same base path.
-//
 
 app.use(
     "/api/charge-transactions",
@@ -371,16 +382,11 @@ app.use(
 
 app.use(
     (req, res) => {
-
-        res.status(404).json({
-
+        return res.status(404).json({
             success: false,
-
             message:
                 `Route not found: ${req.method} ${req.originalUrl}`
-
         });
-
     }
 );
 
@@ -390,24 +396,16 @@ app.use(
 
 app.use(
     (err, req, res, next) => {
-
         console.error(
             "❌ Express error:",
             err
         );
 
-        res.status(500).json({
-
+        return res.status(500).json({
             success: false,
-
-            message:
-                "Internal server error",
-
-            error:
-                err.message
-
+            message: "Internal server error",
+            error: err.message
         });
-
     }
 );
 
@@ -418,112 +416,107 @@ app.use(
 const PORT =
     process.env.PORT || 5000;
 
-const server =
-    app.listen(
-        PORT,
-        () => {
+const server = app.listen(
+    PORT,
+    () => {
+        console.log("");
+        console.log(
+            "======================================"
+        );
+        console.log(
+            "🚀 EV Dashboard Backend Started"
+        );
+        console.log(
+            "======================================"
+        );
 
-            console.log("");
+        console.log(
+            `🌐 Server: http://localhost:${PORT}`
+        );
 
-            console.log(
-                "======================================"
-            );
+        console.log(
+            `📊 Dashboard: http://localhost:${PORT}/api/dashboard`
+        );
 
-            console.log(
-                "🚀 EV Dashboard Backend Started"
-            );
+        console.log(
+            `🔌 Chargers: http://localhost:${PORT}/api/chargers`
+        );
 
-            console.log(
-                "======================================"
-            );
+        console.log(
+            `⚡ Transactions: http://localhost:${PORT}/api/charge-transactions`
+        );
 
-            console.log(
-                `🌐 Server: http://localhost:${PORT}`
-            );
+        console.log(
+            `👤 Users: http://localhost:${PORT}/api/users`
+        );
 
-            console.log(
-                `📊 Dashboard: http://localhost:${PORT}/api/dashboard`
-            );
+        console.log(
+            `💰 Wallet: http://localhost:${PORT}/api/wallet`
+        );
 
-            console.log(
-                `🔌 Chargers: http://localhost:${PORT}/api/chargers`
-            );
+        console.log(
+            `📋 Account Info: http://localhost:${PORT}/api/account-info`
+        );
 
-            console.log(
-                `⚡ Transactions: http://localhost:${PORT}/api/charge-transactions`
-            );
+        console.log(
+            `📱 App Versions: http://localhost:${PORT}/api/app-version`
+        );
 
-            console.log(
-                `👤 Users: http://localhost:${PORT}/api/users`
-            );
+        console.log(
+            `⚙️ Config Data: http://localhost:${PORT}/api/config-data`
+        );
 
-            console.log(
-                `💰 Wallet: http://localhost:${PORT}/api/wallet`
-            );
+        console.log(
+            `🔌 Devices Master: http://localhost:${PORT}/api/devices-master`
+        );
 
-            console.log(
-                `📋 Account Info: http://localhost:${PORT}/api/account-info`
-            );
+        console.log(
+            `📡 Socket Info: http://localhost:${PORT}/api/socket-info`
+        );
 
-            console.log(
-                `📱 App Versions: http://localhost:${PORT}/api/app-version`
-            );
+        console.log(
+            `📈 Analytics: http://localhost:${PORT}/api/analytics`
+        );
 
-            console.log(
-                `⚙️ Config Data: http://localhost:${PORT}/api/config-data`
-            );
+        console.log(
+            `🗄️ DB Test: http://localhost:${PORT}/api/test-db`
+        );
 
-            console.log(
-                `🔌 Devices Master: http://localhost:${PORT}/api/devices-master`
-            );
+        console.log(
+            "======================================"
+        );
 
-            console.log(
-                `📡 Socket Info: http://localhost:${PORT}/api/socket-info`
-            );
+        console.log("");
 
-            console.log(
-                `📈 Analytics: http://localhost:${PORT}/api/analytics`
-            );
+        // Safe database diagnostics
+        console.log(
+            "DB_HOST:",
+            process.env.DB_HOST
+        );
 
-            console.log(
-                `🗄️ DB Test: http://localhost:${PORT}/api/test-db`
-            );
+        console.log(
+            "DB_PORT:",
+            process.env.DB_PORT
+        );
 
-            console.log(
-                "======================================"
-            );
+        console.log(
+            "DB_USER:",
+            process.env.DB_USER
+        );
 
-            console.log("");
+        console.log(
+            "DB_NAME:",
+            process.env.DB_NAME
+        );
 
-            console.log(
-                "DB_HOST:",
-                process.env.DB_HOST
-            );
+        console.log(
+            "DB_PASSWORD exists:",
+            Boolean(process.env.DB_PASSWORD)
+        );
 
-            console.log(
-                "DB_PORT:",
-                process.env.DB_PORT
-            );
-
-            console.log(
-                "DB_USER:",
-                process.env.DB_USER
-            );
-
-            console.log(
-                "DB_NAME:",
-                process.env.DB_NAME
-            );
-
-            console.log(
-                "DB_PASSWORD exists:",
-                !!process.env.DB_PASSWORD
-            );
-
-            console.log("");
-
-        }
-    );
+        console.log("");
+    }
+);
 
 // ======================================================
 // SERVER ERROR
@@ -532,36 +525,25 @@ const server =
 server.on(
     "error",
     (error) => {
-
         console.error("");
-
         console.error(
             "======================================"
         );
-
         console.error(
             "❌ SERVER STARTUP ERROR"
         );
-
         console.error(
             "======================================"
         );
-
         console.error(error);
-
         console.error(
             "======================================"
         );
 
-        if (
-            error.code === "EADDRINUSE"
-        ) {
-
+        if (error.code === "EADDRINUSE") {
             console.error(
                 `❌ Port ${PORT} is already being used by another process.`
             );
-
         }
-
     }
 );
