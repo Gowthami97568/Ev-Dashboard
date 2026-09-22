@@ -18,19 +18,34 @@ const getAuthSecret = () => {
     return process.env.AUTH_SECRET;
 };
 
+const verifyPassword = (password, configuredHash) => {
+    const [algorithm, salt, expectedHash] = configuredHash.split("$");
+
+    if (algorithm !== "scrypt" || !salt || !expectedHash) {
+        return false;
+    }
+
+    const actualHash = crypto
+        .scryptSync(String(password || ""), salt, 64)
+        .toString("hex");
+
+    return safeCompare(actualHash, expectedHash);
+};
+
 const login = (req, res) => {
     const { username, password } = req.body || {};
     const adminUsername = process.env.ADMIN_USERNAME;
-    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH;
 
-    if (!adminUsername || (!adminPassword && !process.env.ADMIN_PASSWORD_HASH)) {
+    if (!adminUsername || !adminPasswordHash || !process.env.AUTH_SECRET) {
         return res.status(503).json({
             success: false,
             message: "Admin login is not configured"
         });
     }
 
-    if (!safeCompare(username, adminUsername) || !verifyPassword(password)) {
+    if (!safeCompare(username, adminUsername) ||
+        !verifyPassword(password, adminPasswordHash)) {
         return res.status(401).json({
             success: false,
             message: "Invalid admin credentials"
@@ -46,23 +61,6 @@ const login = (req, res) => {
             expiresIn: TOKEN_TTL_SECONDS
         }
     });
-};
-
-const verifyPassword = (password) => {
-    const configuredHash = process.env.ADMIN_PASSWORD_HASH;
-
-    if (!configuredHash) {
-        return safeCompare(password, process.env.ADMIN_PASSWORD);
-    }
-
-    const [algorithm, salt, expectedHash] = configuredHash.split("$");
-
-    if (algorithm !== "scrypt" || !salt || !expectedHash) {
-        return false;
-    }
-
-    const actualHash = crypto.scryptSync(String(password || ""), salt, 64).toString("hex");
-    return safeCompare(actualHash, expectedHash);
 };
 
 const createToken = (username) => {
