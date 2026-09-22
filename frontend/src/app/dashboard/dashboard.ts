@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 import { ChartData, ChartOptions } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 
@@ -393,7 +394,8 @@ export class Dashboard implements OnInit {
 
   constructor(
     private readonly dashboardService: DashboardService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly authService: AuthService
   ) {}
 
 
@@ -402,11 +404,11 @@ export class Dashboard implements OnInit {
   // ============================================================
 
   onSignOut(): void {
-    localStorage.clear();
+    this.authService.logout();
     sessionStorage.clear();
 
     void this.router.navigate(
-      ['/signed-out'],
+      ['/login'],
       {
         replaceUrl: true
       }

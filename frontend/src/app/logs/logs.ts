@@ -68,6 +68,10 @@ export class Logs implements OnInit {
 
   selectedDeviceId = '';
 
+  searchTerm = '';
+
+  searchSuggestions: string[] = [];
+
 
   // =========================================================
   // DATE / TIME
@@ -403,6 +407,29 @@ export class Logs implements OnInit {
     this.currentPage = 1;
 
     this.clearDeviceReport();
+  }
+
+  onDeviceInput(): void {
+    this.currentPage = 1;
+    this.clearDeviceReport();
+
+    if (!this.selectedDeviceId) {
+      this.fromDateTime = '';
+      this.toDateTime = '';
+      this.applyFilters();
+      return;
+    }
+
+    const matchingDevice = this.deviceIds.find(
+      deviceId => deviceId.toLowerCase() === this.selectedDeviceId.trim().toLowerCase()
+    );
+
+    if (matchingDevice) {
+      this.selectedDeviceId = matchingDevice;
+      this.setChargeManagerDateTime(matchingDevice);
+    }
+
+    this.applyFilters();
   }
 
 
@@ -2102,6 +2129,29 @@ export class Logs implements OnInit {
   // THIS IS THE ACTUAL SEARCH.
   // =========================================================
 
+  onSearchInput(): void {
+    this.currentPage = 1;
+    this.clearDeviceReport();
+    const query = this.searchTerm.trim().toLowerCase();
+
+    this.searchSuggestions = query
+      ? Array.from(new Set(
+          this.allLogs
+            .flatMap(log => [log.message, log.deviceId, log.type])
+            .filter(value => value && value.toLowerCase().includes(query))
+        )).slice(0, 8)
+      : [];
+
+    // Keep the entered text in the field and update visible results immediately.
+    this.applyFilters();
+  }
+
+  selectSearchSuggestion(suggestion: string): void {
+    this.searchTerm = suggestion;
+    this.searchSuggestions = [];
+    this.applyFilters();
+  }
+
   searchLogs(): void {
 
     console.log(
@@ -2248,7 +2298,27 @@ export class Logs implements OnInit {
 
 
           // =================================================
-          // 2. LOG DATE/TIME
+          // 2. TEXT SEARCH
+          // =================================================
+
+          if (this.searchTerm.trim()) {
+            const query = this.searchTerm.trim().toLowerCase();
+            const searchableText = [
+              log.type,
+              log.date,
+              log.time,
+              log.message,
+              log.deviceId
+            ].join(' ').toLowerCase();
+
+            if (!searchableText.includes(query)) {
+              return false;
+            }
+          }
+
+
+          // =================================================
+          // 3. LOG DATE/TIME
           // =================================================
 
           const logDate =
@@ -2290,7 +2360,7 @@ export class Logs implements OnInit {
 
 
           // =================================================
-          // 3. FROM DATE/TIME
+          // 4. FROM DATE/TIME
           // =================================================
 
           if (
@@ -2303,7 +2373,7 @@ export class Logs implements OnInit {
 
 
           // =================================================
-          // 4. TO DATE/TIME
+          // 5. TO DATE/TIME
           // =================================================
 
           if (
@@ -3131,6 +3201,9 @@ export class Logs implements OnInit {
   resetFilters(): void {
 
     this.selectedDeviceId = '';
+
+    this.searchTerm = '';
+    this.searchSuggestions = [];
 
     this.fromDateTime = '';
 

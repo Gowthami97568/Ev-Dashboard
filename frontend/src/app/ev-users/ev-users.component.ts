@@ -12,8 +12,7 @@ import {
 } from '@angular/forms';
 
 import {
-  HttpClient,
-  HttpClientModule
+  HttpClient
 } from '@angular/common/http';
 
 import {
@@ -29,7 +28,6 @@ import { environment } from '../../environments/environment';
   imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule,
     Sidebar
   ],
 

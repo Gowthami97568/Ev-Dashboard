@@ -32,6 +32,36 @@
 
       <section class="filter-card">
 
+        <div class="filter-field search-filter-field">
+
+          <label for="logSearch">
+            Search Logs
+          </label>
+
+          <input
+            id="logSearch"
+            type="search"
+            [(ngModel)]="searchTerm"
+            placeholder="Search messages, type, device..."
+            (input)="onSearchInput()"
+            (keyup.enter)="searchLogs()"
+          >
+
+          <div
+            class="search-suggestions"
+            *ngIf="searchSuggestions.length > 0"
+          >
+            <button
+              type="button"
+              *ngFor="let suggestion of searchSuggestions"
+              (click)="selectSearchSuggestion(suggestion)"
+            >
+              {{ suggestion }}
+            </button>
+          </div>
+
+        </div>
+
 
         <!-- =================================================
              DEVICE ID
@@ -54,14 +84,11 @@
               All Devices
             </option>
 
-
             <option
               *ngFor="let deviceId of deviceIds"
               [value]="deviceId"
             >
-
               {{ deviceId }}
-
             </option>
 
           </select>
@@ -82,9 +109,8 @@
 
           <input
             id="fromDateTime"
-            type="text"
-            [value]="fromDateTimeDisplay"
-            readonly
+            type="datetime-local"
+            [(ngModel)]="fromDateTime"
           >
 
         </div>
@@ -103,9 +129,8 @@
 
           <input
             id="toDateTime"
-            type="text"
-            [value]="toDateTimeDisplay"
-            readonly
+            type="datetime-local"
+            [(ngModel)]="toDateTime"
           >
 
         </div>

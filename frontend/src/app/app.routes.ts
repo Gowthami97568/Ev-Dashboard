@@ -16,6 +16,8 @@ import { Settings } from './settings/settings';
 import { Logs } from './logs/logs';
 import { ServerLogs } from './server-logs/server-logs';
 import { SignedOut } from './signed-out/signed-out';
+import { Login } from './login/login';
+import { adminAuthGuard } from './guards/admin-auth.guard';
 
 export const routes: Routes = [
 
@@ -25,8 +27,13 @@ export const routes: Routes = [
 
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'login',
     pathMatch: 'full'
+  },
+
+  {
+    path: 'login',
+    component: Login
   },
 
   // =========================================================
@@ -35,7 +42,8 @@ export const routes: Routes = [
 
   {
     path: 'dashboard',
-    component: Dashboard
+    component: Dashboard,
+    canActivate: [adminAuthGuard]
   },
 
   // =========================================================
@@ -44,27 +52,32 @@ export const routes: Routes = [
 
   {
     path: 'users',
-    component: EvUsersComponent
+    component: EvUsersComponent,
+    canActivate: [adminAuthGuard]
   },
 
   {
     path: 'wallet-history',
-    component: WalletHistory
+    component: WalletHistory,
+    canActivate: [adminAuthGuard]
   },
 
   {
     path: 'charge-manager',
-    component: ChargeManager
+    component: ChargeManager,
+    canActivate: [adminAuthGuard]
   },
 
   {
     path: 'charge-transactions',
-    component: ChargeTransactions
+    component: ChargeTransactions,
+    canActivate: [adminAuthGuard]
   },
 
   {
     path: 'devices-master',
-    component: DevicesMaster
+    component: DevicesMaster,
+    canActivate: [adminAuthGuard]
   },
 
   // =========================================================
@@ -74,13 +87,15 @@ export const routes: Routes = [
   // Existing Logs component = Device Logs
   {
     path: 'device-logs',
-    component: Logs
+    component: Logs,
+    canActivate: [adminAuthGuard]
   },
 
   // Separate Server Logs component
   {
     path: 'server-logs',
-    component: ServerLogs
+    component: ServerLogs,
+    canActivate: [adminAuthGuard]
   },
 
   // =========================================================
@@ -89,22 +104,26 @@ export const routes: Routes = [
 
   {
     path: 'account-info',
-    component: AccountInfo
+    component: AccountInfo,
+    canActivate: [adminAuthGuard]
   },
 
   {
     path: 'app-versions',
-    component: AppVersions
+    component: AppVersions,
+    canActivate: [adminAuthGuard]
   },
 
   {
     path: 'config-data',
-    component: ConfigData
+    component: ConfigData,
+    canActivate: [adminAuthGuard]
   },
 
   {
     path: 'socket-info',
-    component: SocketInfo
+    component: SocketInfo,
+    canActivate: [adminAuthGuard]
   },
 
   // =========================================================
@@ -113,7 +132,8 @@ export const routes: Routes = [
 
   {
     path: 'analytics',
-    component: Analytics
+    component: Analytics,
+    canActivate: [adminAuthGuard]
   },
 
   // =========================================================
@@ -122,7 +142,8 @@ export const routes: Routes = [
 
   {
     path: 'settings',
-    component: Settings
+    component: Settings,
+    canActivate: [adminAuthGuard]
   },
 
   {
@@ -136,7 +157,7 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: 'dashboard'
+    redirectTo: 'login'
   }
 
 ];

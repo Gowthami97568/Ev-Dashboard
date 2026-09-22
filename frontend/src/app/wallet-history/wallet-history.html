@@ -2,30 +2,21 @@
 
   <!-- ==================================================
        LEFT SIDEBAR
-  =================================================== -->
+  ================================================== -->
 
   <aside class="wallet-sidebar">
     <app-sidebar></app-sidebar>
   </aside>
 
-
   <!-- ==================================================
        MAIN CONTENT
-  =================================================== -->
+  ================================================== -->
 
   <main class="wallet-main">
-
     <section class="wallet-content">
 
-
-      <!-- ==================================================
-           PAGE HEADER
-      =================================================== -->
-
       <div class="page-header">
-
         <div>
-
           <span class="kicker">
             MANAGEMENT
           </span>
@@ -33,9 +24,7 @@
           <p>
             View and monitor wallet transaction history
           </p>
-
         </div>
-
       </div>
 
 
@@ -61,31 +50,6 @@
       >
         {{ errorMessage }}
       </div>
-
-
-      <!-- ==================================================
-           SUMMARY
-      =================================================== -->
-
-      <section class="summary-grid">
-
-        <div class="summary-card">
-
-          <span>
-            Total Wallet Records
-          </span>
-
-          <strong>
-            {{ summary.total | number }}
-          </strong>
-
-          <small>
-            Wallet history records
-          </small>
-
-        </div>
-
-      </section>
 
 
       <!-- ==================================================

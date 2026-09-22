@@ -42,6 +42,11 @@ const socketInfoRoutes =
 const analyticsRoutes =
     require("./routes/analyticsRoutes");
 
+const authRoutes =
+    require("./routes/authRoutes");
+const { requireAuth } =
+    require("./middleware/authMiddleware");
+
 // ======================================================
 // CREATE APP
 // ======================================================
@@ -122,6 +127,56 @@ app.use(
 // ======================================================
 
 app.use(express.json());
+
+const loginAttempts = new Map();
+
+app.use(
+    "/api/auth/login",
+    (req, res, next) => {
+        const key = req.ip || "unknown";
+        const now = Date.now();
+        const attempt = loginAttempts.get(key) || {
+            count: 0,
+            resetAt: now + 15 * 60 * 1000
+        };
+
+        if (now > attempt.resetAt) {
+            attempt.count = 0;
+            attempt.resetAt = now + 15 * 60 * 1000;
+        }
+
+        if (attempt.count >= 5) {
+            return res.status(429).json({
+                success: false,
+                message: "Too many login attempts. Try again later."
+            });
+        }
+
+        attempt.count += 1;
+        loginAttempts.set(key, attempt);
+
+        const originalJson = res.json.bind(res);
+        res.json = body => {
+            if (body?.success) {
+                loginAttempts.delete(key);
+            }
+
+            return originalJson(body);
+        };
+
+        return next();
+    }
+);
+
+app.use(
+    "/api/auth",
+    authRoutes
+);
+
+app.use(
+    "/api",
+    requireAuth
+);
 
 // ======================================================
 // LOG ROUTES
