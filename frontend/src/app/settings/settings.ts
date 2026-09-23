@@ -23,6 +23,8 @@ const DEFAULT_PREFERENCES = {
   sessionTimeout: 30
 };
 
+const SETTINGS_STORAGE_KEY = 'ev-dashboard-settings';
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 @Component({
@@ -66,7 +68,44 @@ export class Settings implements OnInit {
   private saveMessageTimer: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
+    this.loadSettings();
     this.snapshot = this.captureSnapshot();
+  }
+
+  private loadSettings(): void {
+    try {
+      const storedSettings = JSON.parse(
+        localStorage.getItem(SETTINGS_STORAGE_KEY) || 'null'
+      ) as Partial<SettingsSnapshot> | null;
+
+      if (!storedSettings) {
+        return;
+      }
+
+      this.userName = typeof storedSettings.userName === 'string'
+        ? storedSettings.userName
+        : this.userName;
+      this.email = typeof storedSettings.email === 'string'
+        ? storedSettings.email
+        : this.email;
+      this.emailNotifications = typeof storedSettings.emailNotifications === 'boolean'
+        ? storedSettings.emailNotifications
+        : this.emailNotifications;
+      this.systemNotifications = typeof storedSettings.systemNotifications === 'boolean'
+        ? storedSettings.systemNotifications
+        : this.systemNotifications;
+      this.soundNotifications = typeof storedSettings.soundNotifications === 'boolean'
+        ? storedSettings.soundNotifications
+        : this.soundNotifications;
+      this.compactMode = typeof storedSettings.compactMode === 'boolean'
+        ? storedSettings.compactMode
+        : this.compactMode;
+      this.sessionTimeout = [15, 30, 60, 120].includes(Number(storedSettings.sessionTimeout))
+        ? Number(storedSettings.sessionTimeout)
+        : this.sessionTimeout;
+    } catch {
+      localStorage.removeItem(SETTINGS_STORAGE_KEY);
+    }
   }
 
   // =====================================================
@@ -144,7 +183,9 @@ export class Settings implements OnInit {
     // Simulates a persistence call so the button reflects real save latency.
     setTimeout(() => {
       this.saving = false;
-      this.snapshot = this.captureSnapshot();
+      const settings = this.captureSnapshot();
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+      this.snapshot = settings;
       this.showMessage('Settings updated successfully.');
     }, 600);
   }
@@ -166,7 +207,9 @@ export class Settings implements OnInit {
     this.compactMode = DEFAULT_PREFERENCES.compactMode;
     this.sessionTimeout = DEFAULT_PREFERENCES.sessionTimeout;
 
-    this.snapshot = this.captureSnapshot();
+    const settings = this.captureSnapshot();
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+    this.snapshot = settings;
     this.showMessage('Settings restored to default.');
   }
 
