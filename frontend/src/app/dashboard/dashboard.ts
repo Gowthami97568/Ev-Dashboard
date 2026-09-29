@@ -64,6 +64,17 @@ export class Dashboard implements OnInit {
 
 
   // ============================================================
+  // SIDEBAR TOGGLE
+  // ============================================================
+
+  isSidebarCollapsed = false;
+
+  onSidebarCollapsedChange(collapsed: boolean): void {
+    this.isSidebarCollapsed = collapsed;
+  }
+
+
+  // ============================================================
   // DOUGHNUT CHART
   // ============================================================
 

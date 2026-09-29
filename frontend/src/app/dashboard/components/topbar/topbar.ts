@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 interface TopbarUser {
   name: string;
@@ -37,7 +38,18 @@ export class Topbar {
 
   isProfileMenuOpen = false;
 
-  constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
+  constructor(
+    private readonly elementRef: ElementRef<HTMLElement>,
+    private readonly authService: AuthService
+  ) {
+    const username = this.authService.getUsername();
+    if (username) {
+      this.currentUser = {
+        ...this.currentUser,
+        name: username
+      };
+    }
+  }
 
   get hasUnreadAlerts(): boolean {
     return this.unreadNotificationCount > 0;

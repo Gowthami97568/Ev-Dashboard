@@ -1,8 +1,15 @@
-<div class="dashboard-page">
+<div
+  class="dashboard-page"
+  [class.sidebar-collapsed]="isSidebarCollapsed"
+>
   <!-- LEFT SIDEBAR -->
   <aside class="dashboard-sidebar">
-    <app-sidebar></app-sidebar>
+    <app-sidebar
+      [showTopbar]="false"
+      (collapsedChange)="onSidebarCollapsedChange($event)"
+    ></app-sidebar>
   </aside>
+
   <!-- MAIN AREA -->
   <main class="dashboard-main">
 
@@ -344,7 +351,6 @@
 
 
         </section>
-
 
         <!-- =====================================================
              CHARTS

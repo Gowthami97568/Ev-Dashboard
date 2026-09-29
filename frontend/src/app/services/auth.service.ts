@@ -48,6 +48,15 @@ export class AuthService {
     }
   }
 
+  getUsername(): string | null {
+    try {
+      const session = JSON.parse(localStorage.getItem(this.sessionKey) || 'null');
+      return typeof session?.username === 'string' ? session.username : null;
+    } catch {
+      return null;
+    }
+  }
+
   logout(): void {
     localStorage.removeItem(this.sessionKey);
   }

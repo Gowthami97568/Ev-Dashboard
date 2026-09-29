@@ -1,16 +1,45 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { SidebarNavSection } from '../../models/dashboard.model';
+import { AuthService } from '../../../services/auth.service';
+import { Topbar } from '../topbar/topbar';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, Topbar],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css'
 })
 export class Sidebar {
+
+  // ===========================================================
+  // SIDEBAR COLLAPSE STATE
+  // ===========================================================
+
+  /**
+   * false = expanded
+   * true  = collapsed
+   */
+  isCollapsed = false;
+
+  @Input() showTopbar = true;
+
+  /**
+   * Sends the collapse state to the dashboard layout.
+   */
+  @Output() collapsedChange = new EventEmitter<boolean>();
+
+  /**
+   * Toggle sidebar between expanded and collapsed states.
+   */
+  toggleSidebar(): void {
+    this.isCollapsed = !this.isCollapsed;
+
+    this.collapsedChange.emit(this.isCollapsed);
+  }
+
 
   // ===========================================================
   // SIDEBAR NAVIGATION
@@ -185,6 +214,12 @@ export class Sidebar {
 
   logout(): void {
     this.showProfile = false;
-    console.log('Logout clicked');
+    this.authService.logout();
+    void this.router.navigateByUrl('/signed-out');
   }
+
+  constructor(
+    private readonly authService: AuthService,
+    private readonly router: Router
+  ) {}
 }

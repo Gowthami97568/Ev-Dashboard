@@ -11,6 +11,147 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+app-sidebar app-topbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 3000;
+  display: block;
+}
+
+body:has(app-sidebar) .sidebar-container {
+  z-index: 4001 !important;
+}
+
+app-sidebar app-topbar > header {
+  min-height: 64px !important;
+  height: 64px !important;
+  flex-direction: row !important;
+  justify-content: flex-end !important;
+  gap: 0 !important;
+  padding: 8px 24px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06) !important;
+}
+
+body:has(app-sidebar) .dashboard-page,
+body:has(app-sidebar) .ev-users-page,
+body:has(app-sidebar) .wallet-page,
+body:has(app-sidebar) .charge-manager-page,
+body:has(app-sidebar) .transaction-page,
+body:has(app-sidebar) .devices-page,
+body:has(app-sidebar) .logs-page,
+body:has(app-sidebar) .account-page,
+body:has(app-sidebar) .app-version-page,
+body:has(app-sidebar) .config-page,
+body:has(app-sidebar) .socket-page,
+body:has(app-sidebar) .dash,
+body:has(app-sidebar) .settings-page {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+body:has(app-sidebar) .dashboard-sidebar,
+body:has(app-sidebar) .ev-sidebar,
+body:has(app-sidebar) .wallet-sidebar,
+body:has(app-sidebar) .charge-sidebar,
+body:has(app-sidebar) .transaction-sidebar,
+body:has(app-sidebar) .devices-sidebar,
+body:has(app-sidebar) .logs-sidebar,
+body:has(app-sidebar) .account-sidebar,
+body:has(app-sidebar) .app-version-sidebar,
+body:has(app-sidebar) .config-sidebar,
+body:has(app-sidebar) .socket-sidebar,
+body:has(app-sidebar) .dash-sidebar,
+body:has(app-sidebar) .settings-sidebar,
+body:has(app-sidebar) .dashboard-page > app-sidebar {
+  z-index: 4000 !important;
+}
+
+body:has(app-sidebar) .wallet-main,
+body:has(app-sidebar) .charge-main,
+body:has(app-sidebar) .transaction-main,
+body:has(app-sidebar) .devices-main,
+body:has(app-sidebar) .logs-main,
+body:has(app-sidebar) .account-main,
+body:has(app-sidebar) .app-version-main,
+body:has(app-sidebar) .config-main,
+body:has(app-sidebar) .socket-main,
+body:has(app-sidebar) .dash-main,
+body:has(app-sidebar) .settings-main,
+body:has(app-sidebar) .main-content {
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-top: 64px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+}
+
+body:has(app-sidebar) .dashboard-main {
+  padding-top: 0;
+}
+
+body:has(app-sidebar) .ev-main {
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: 64px;
+  box-sizing: border-box;
+}
+
+body:has(.sidebar-container.sidebar-collapsed) .dashboard-page,
+body:has(.sidebar-container.sidebar-collapsed) .transaction-page,
+body:has(.sidebar-container.sidebar-collapsed) .ev-users-page,
+body:has(.sidebar-container.sidebar-collapsed) .logs-page,
+body:has(.sidebar-container.sidebar-collapsed) .app-version-page,
+body:has(.sidebar-container.sidebar-collapsed) .dash,
+body:has(.sidebar-container.sidebar-collapsed) .wallet-page,
+body:has(.sidebar-container.sidebar-collapsed) .config-page,
+body:has(.sidebar-container.sidebar-collapsed) .socket-page,
+body:has(.sidebar-container.sidebar-collapsed) .account-page,
+body:has(.sidebar-container.sidebar-collapsed) .settings-page,
+body:has(.sidebar-container.sidebar-collapsed) .charge-manager-page,
+body:has(.sidebar-container.sidebar-collapsed) .devices-page {
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 0;
+}
+
+body:has(.sidebar-container.sidebar-collapsed) .dashboard-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .transaction-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .ev-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .logs-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .app-version-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .dash-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .wallet-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .config-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .socket-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .account-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .settings-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .charge-sidebar,
+body:has(.sidebar-container.sidebar-collapsed) .devices-sidebar {
+  width: 0;
+  min-width: 0;
+  max-width: 0;
+  height: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+body:has(.sidebar-container.sidebar-collapsed) .dashboard-page > app-sidebar {
+  width: 0;
+  min-width: 0;
+  max-width: 0;
+  overflow: visible;
+}
+
 /* Thin scrollbars to match the dense dashboard look */
 ::-webkit-scrollbar {
   width: 8px;
