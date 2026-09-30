@@ -165,6 +165,17 @@
 
         </button>
 
+        <button
+          type="button"
+          class="export-button export-last-24-button"
+          (click)="exportLast24Hours()"
+          [disabled]="!selectedDeviceId || loading"
+          title="Export all logs for the selected device from the last 24 hours"
+        >
+          <span class="export-icon">↓</span>
+          Export Last 24 Hours
+        </button>
+
       </section>
 
 

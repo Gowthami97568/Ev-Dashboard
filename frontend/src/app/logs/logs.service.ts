@@ -8,9 +8,6 @@ import { environment } from '../../environments/environment';
 })
 export class LogsService {
 
-  private readonly apiUrl =
-       'https://ev-dashboard-backend.onrender.com/api/logs';
-
   constructor(
     private readonly http: HttpClient
   ) {}
@@ -35,7 +32,7 @@ export class LogsService {
     }
 
     return this.http.get(
-      this.apiUrl,
+      `${environment.apiUrl}/api/logs`,
       {
         params,
         responseType: 'text'

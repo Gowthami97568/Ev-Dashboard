@@ -109,7 +109,8 @@
     minmax(130px, 1fr)
     minmax(130px, 1fr)
     120px
-    100px;
+    100px
+    160px;
 
   align-items: end;
 
@@ -680,6 +681,11 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   opacity: 0.5;
 
   cursor: not-allowed;
+}
+
+.export-last-24-button {
+  width: 100%;
+  white-space: nowrap;
 }
 
 
@@ -1373,7 +1379,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 
 
   .search-button,
-  .reset-button {
+  .reset-button,
+  .export-last-24-button {
     width: 100%;
   }
 

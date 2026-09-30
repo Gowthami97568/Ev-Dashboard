@@ -2910,7 +2910,56 @@ export class Logs implements OnInit {
   // EXPORT
   // =========================================================
 
-  exportDeviceReport(): void {
+  exportLast24Hours(): void {
+    const deviceId = this.selectedDeviceId.trim();
+    if (!deviceId) {
+      this.errorMessage = 'Select a device before exporting its logs.';
+      return;
+    }
+
+    if (this.loading) {
+      return;
+    }
+
+    const to = new Date();
+    const from = new Date(to.getTime() - 24 * 60 * 60 * 1000);
+    const fromDateTime = this.formatDateTimeLocal(from);
+    const toDateTime = this.formatDateTimeLocal(to);
+
+    this.fromDateTime = fromDateTime;
+    this.toDateTime = toDateTime;
+    this.searchTerm = '';
+    this.searchSuggestions = [];
+    this.currentPage = 1;
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.logsService.getLogs(deviceId, fromDateTime, toDateTime).subscribe({
+      next: (response: string) => {
+        this.allLogs = this.convertResponseToLogs(response)
+          .filter(log => this.logBelongsToDevice(log, deviceId));
+        this.filteredLogs = this.allLogs;
+        this.currentPage = 1;
+        this.updatePagination();
+        this.createDeviceReport();
+        this.loading = false;
+
+        if (this.filteredLogs.length === 0) {
+          this.errorMessage = 'No device logs were found in the last 24 hours.';
+          return;
+        }
+
+        this.exportDeviceReport('Last_24_Hours');
+      },
+      error: (error: unknown) => {
+        console.error('DEVICE LOG EXPORT ERROR:', error);
+        this.errorMessage = 'Unable to load device logs for export. Please try again.';
+        this.loading = false;
+      }
+    });
+  }
+
+  exportDeviceReport(filenameSuffix = ''): void {
 
     if (
       !this.selectedDeviceId
@@ -3136,7 +3185,9 @@ export class Logs implements OnInit {
 
 
     link.download =
-      `Device_Report_${safeDeviceId}_${year}-${month}-${day}.csv`;
+      `Device_Report_${safeDeviceId}` +
+      `${filenameSuffix ? `_${filenameSuffix}` : ''}_` +
+      `${year}-${month}-${day}.csv`;
 
 
     document.body.appendChild(
