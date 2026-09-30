@@ -1367,6 +1367,19 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
    MEDIUM SCREEN
 ========================================================= */
 
+@media (max-width: 1500px) {
+  .filter-card {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .search-button,
+  .reset-button,
+  .export-last-24-button {
+    width: 100%;
+  }
+}
+
 @media (max-width: 1250px) {
 
   .filter-card {
