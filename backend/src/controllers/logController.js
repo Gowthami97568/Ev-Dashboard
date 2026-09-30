@@ -49,7 +49,7 @@ const getLogs = async (req, res) => {
         }
 
         if (fromDateTime) {
-            where.push(`(starttime >= ? OR (COALESCE(chargestatus, 0) = 1 AND endtime IS NULL))`);
+            where.push(`(starttime >= ? OR COALESCE(chargestatus, 0) = 1)`);
             params.push(fromDateTime.replace('T', ' '));
         }
 
@@ -79,7 +79,7 @@ const getLogs = async (req, res) => {
                 const [rows] = await pool.query(query, params);
 
         const logs = rows.map(row => ({
-            type: Number(row.chargeStatus) === 1 && !row.endTime
+            type: Number(row.chargeStatus) === 1
                 ? "Charging"
                 : "Transaction",
             deviceId: row.deviceId,
