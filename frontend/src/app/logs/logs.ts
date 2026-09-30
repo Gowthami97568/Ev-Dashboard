@@ -107,7 +107,11 @@ export class Logs implements OnInit {
 
   loading = true;
 
+  exportingLast24Hours = false;
+
   errorMessage = '';
+
+  private logsRequestVersion = 0;
 
 
   // =========================================================
@@ -953,6 +957,8 @@ export class Logs implements OnInit {
 
   loadLogs(deviceId = ''): void {
 
+    const requestVersion = ++this.logsRequestVersion;
+    this.exportingLast24Hours = false;
     this.loading = true;
 
     this.errorMessage = '';
@@ -965,6 +971,10 @@ export class Logs implements OnInit {
         next: (
           response: string
         ) => {
+
+          if (requestVersion !== this.logsRequestVersion) {
+            return;
+          }
 
           console.log(
             'REAL LOG SERVER RESPONSE:',
@@ -1005,6 +1015,10 @@ export class Logs implements OnInit {
         error: (
           error: unknown
         ) => {
+
+          if (requestVersion !== this.logsRequestVersion) {
+            return;
+          }
 
           console.error(
             'REAL LOG API ERROR:',
@@ -2203,6 +2217,8 @@ export class Logs implements OnInit {
   }
 
   private loadLogsForSearch(): void {
+    const requestVersion = ++this.logsRequestVersion;
+    this.exportingLast24Hours = false;
     this.loading = true;
     this.errorMessage = '';
 
@@ -2214,11 +2230,19 @@ export class Logs implements OnInit {
       )
       .subscribe({
         next: (response: string) => {
+          if (requestVersion !== this.logsRequestVersion) {
+            return;
+          }
+
           this.allLogs = this.convertResponseToLogs(response);
           this.applyFilters();
           this.loading = false;
         },
         error: (error: unknown) => {
+          if (requestVersion !== this.logsRequestVersion) {
+            return;
+          }
+
           console.error('DEVICE LOG API ERROR:', error);
           this.errorMessage = 'Unable to load logs for the selected device.';
           this.filteredLogs = [];
@@ -2917,7 +2941,7 @@ export class Logs implements OnInit {
       return;
     }
 
-    if (this.loading) {
+    if (this.exportingLast24Hours) {
       return;
     }
 
@@ -2931,17 +2955,24 @@ export class Logs implements OnInit {
     this.searchTerm = '';
     this.searchSuggestions = [];
     this.currentPage = 1;
+    const requestVersion = ++this.logsRequestVersion;
+    this.exportingLast24Hours = true;
     this.loading = true;
     this.errorMessage = '';
 
     this.logsService.getLogs(deviceId, fromDateTime, toDateTime).subscribe({
       next: (response: string) => {
+        if (requestVersion !== this.logsRequestVersion) {
+          return;
+        }
+
         this.allLogs = this.convertResponseToLogs(response)
           .filter(log => this.logBelongsToDevice(log, deviceId));
         this.filteredLogs = this.allLogs;
         this.currentPage = 1;
         this.updatePagination();
         this.createDeviceReport();
+        this.exportingLast24Hours = false;
         this.loading = false;
 
         if (this.filteredLogs.length === 0) {
@@ -2952,8 +2983,13 @@ export class Logs implements OnInit {
         this.exportDeviceReport('Last_24_Hours');
       },
       error: (error: unknown) => {
+        if (requestVersion !== this.logsRequestVersion) {
+          return;
+        }
+
         console.error('DEVICE LOG EXPORT ERROR:', error);
         this.errorMessage = 'Unable to load device logs for export. Please try again.';
+        this.exportingLast24Hours = false;
         this.loading = false;
       }
     });

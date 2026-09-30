@@ -169,11 +169,11 @@
           type="button"
           class="export-button export-last-24-button"
           (click)="exportLast24Hours()"
-          [disabled]="!selectedDeviceId || loading"
+          [disabled]="!selectedDeviceId || exportingLast24Hours"
           title="Export all logs for the selected device from the last 24 hours"
         >
-          <span class="export-icon">↓</span>
-          Export Last 24 Hours
+          <span class="export-icon">{{ exportingLast24Hours ? '...' : '↓' }}</span>
+          {{ exportingLast24Hours ? 'Exporting...' : 'Export Last 24 Hours' }}
         </button>
 
       </section>
