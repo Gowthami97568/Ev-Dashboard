@@ -155,12 +155,8 @@ export class Logs implements OnInit {
 
   ngOnInit(): void {
 
-    /*
-     * Load Device IDs and Created Date
-     * from Charge Manager.
-     */
-    this.loadChargeManager();
-
+    // Load the selectable IDs from transactions, which are the rows exported here.
+    this.loadTransactionDeviceIds();
 
     /*
      * Load REAL logs.
@@ -218,10 +214,6 @@ export class Logs implements OnInit {
             this.chargeManagerRecords =
               records;
 
-            this.createDeviceIdList(
-              records
-            );
-
             return;
           }
 
@@ -268,14 +260,6 @@ export class Logs implements OnInit {
 
 
           /*
-           * Create Device ID dropdown.
-           */
-          this.createDeviceIdList(
-            records
-          );
-
-
-          /*
            * If a device was already selected,
            * populate its date/time.
            */
@@ -295,10 +279,6 @@ export class Logs implements OnInit {
           );
 
 
-          console.log(
-            'Device IDs:',
-            this.deviceIds
-          );
         },
 
 
@@ -310,61 +290,36 @@ export class Logs implements OnInit {
           );
 
           this.chargeManagerRecords = [];
-
-          this.deviceIds = [];
         }
       });
   }
 
+  private loadTransactionDeviceIds(): void {
+    this.logsService.getDeviceIds().subscribe({
+      next: response => {
+        if (!response.success || !Array.isArray(response.data)) {
+          this.errorMessage = response.message || 'Unable to load device IDs from transactions.';
+          return;
+        }
 
-  // =========================================================
-  // CREATE DEVICE ID DROPDOWN
-  // =========================================================
-
-  private createDeviceIdList(
-    records: Charger[]
-  ): void {
-
-    const ids =
-      new Set<string>();
-
-
-    for (
-      const charger of records
-    ) {
-
-      const deviceId =
-        String(
-          charger.deviceid ?? ''
-        ).trim();
-
-
-      if (
-        deviceId
-      ) {
-
-        ids.add(
-          deviceId
-        );
+        this.deviceIds = Array.from(new Set(
+          response.data
+            .map(deviceId => String(deviceId).trim())
+            .filter(Boolean)
+        )).sort((first, second) => first.localeCompare(second));
+      },
+      error: (error: unknown) => {
+        console.error('TRANSACTION DEVICE ID API ERROR:', error);
+        this.errorMessage = 'Unable to load device IDs from transactions.';
       }
-    }
-
-
-    this.deviceIds =
-      Array.from(ids)
-        .sort(
-          (
-            first,
-            second
-          ) =>
-            first.localeCompare(
-              second
-            )
-        );
+    });
   }
 
 
   // =========================================================
+  // DEVICE ID DROPDOWN
+  // =========================================================
+
   // DEVICE ID CHANGE
   //
   // IMPORTANT:

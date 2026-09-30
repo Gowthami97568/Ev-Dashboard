@@ -3,6 +3,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+interface LogDeviceIdsResponse {
+  success: boolean;
+  message: string;
+  data: string[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +17,12 @@ export class LogsService {
   constructor(
     private readonly http: HttpClient
   ) {}
+
+  getDeviceIds(): Observable<LogDeviceIdsResponse> {
+    return this.http.get<LogDeviceIdsResponse>(
+      `${environment.apiUrl}/api/logs/devices`
+    );
+  }
 
   getLogs(
     deviceId = '',

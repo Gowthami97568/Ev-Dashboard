@@ -1,5 +1,31 @@
 const pool = require("../config/db");
 
+const getLogDeviceIds = async (req, res) => {
+    try {
+        const [rows] = await pool.query(`
+            SELECT DISTINCT TRIM(deviceid) AS deviceId
+            FROM chargetransaction
+            WHERE deviceid IS NOT NULL
+              AND TRIM(deviceid) <> ''
+            ORDER BY deviceId
+        `);
+
+        res.json({
+            success: true,
+            message: "Transaction device IDs fetched successfully",
+            data: rows.map(row => row.deviceId)
+        });
+    } catch (error) {
+        console.error("❌ Log Device IDs Error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch transaction device IDs",
+            error: error.message
+        });
+    }
+};
+
 // ======================================================
 // GET LOGS
 // ======================================================
@@ -79,5 +105,6 @@ const getLogs = async (req, res) => {
 // ======================================================
 
 module.exports = {
+    getLogDeviceIds,
     getLogs
 };
