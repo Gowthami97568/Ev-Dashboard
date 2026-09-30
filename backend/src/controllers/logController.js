@@ -49,7 +49,7 @@ const getLogs = async (req, res) => {
         }
 
         if (fromDateTime) {
-            where.push(`starttime >= ?`);
+            where.push(`(starttime >= ? OR (COALESCE(chargestatus, 0) = 1 AND endtime IS NULL))`);
             params.push(fromDateTime.replace('T', ' '));
         }
 
@@ -60,10 +60,16 @@ const getLogs = async (req, res) => {
 
         const query = `
             SELECT
+                transactionid AS transactionId,
                 deviceid AS deviceId,
                 DATE(starttime) AS date,
                 TIME(starttime) AS time,
-                HOUR(starttime) AS hour
+                HOUR(starttime) AS hour,
+                chargestatus AS chargeStatus,
+                status,
+                endtime AS endTime,
+                kwh,
+                chargevalue AS chargeValue
             FROM chargetransaction
                         WHERE ${where.join("\n              AND ")}
             ORDER BY starttime DESC
@@ -73,10 +79,23 @@ const getLogs = async (req, res) => {
                 const [rows] = await pool.query(query, params);
 
         const logs = rows.map(row => ({
+            type: Number(row.chargeStatus) === 1 && !row.endTime
+                ? "Charging"
+                : "Transaction",
             deviceId: row.deviceId,
             date: row.date,
             time: row.time,
-            hour: Number(row.hour)
+            hour: Number(row.hour),
+            message: [
+                `Transaction ID: ${row.transactionId}`,
+                `Charge status: ${row.chargeStatus ?? "N/A"}`,
+                row.status ? `Status: ${row.status}` : null,
+                row.endTime ? `End time: ${row.endTime}` : null,
+                row.kwh !== null && row.kwh !== undefined ? `Energy: ${row.kwh} kWh` : null,
+                row.chargeValue !== null && row.chargeValue !== undefined
+                    ? `Charge value: ${row.chargeValue}`
+                    : null
+            ].filter(Boolean).join(" | ")
         }));
 
         console.log("✅ Logs fetched:", logs.length);
