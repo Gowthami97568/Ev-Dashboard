@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 
-const TOKEN_TTL_SECONDS = 8 * 60 * 60;
+const TOKEN_TTL_SECONDS = 24 * 60 * 60;
 
 /**
  * Safely compare two values.

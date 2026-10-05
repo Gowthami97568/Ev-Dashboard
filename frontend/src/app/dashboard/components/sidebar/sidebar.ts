@@ -22,7 +22,9 @@ export class Sidebar {
    * false = expanded
    * true  = collapsed
    */
-  isCollapsed = false;
+  private readonly sidebarStateKey = 'ev-sidebar-collapsed';
+
+  isCollapsed = localStorage.getItem(this.sidebarStateKey) === 'true';
 
   @Input() showTopbar = true;
 
@@ -36,6 +38,7 @@ export class Sidebar {
    */
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;
+    localStorage.setItem(this.sidebarStateKey, String(this.isCollapsed));
 
     this.collapsedChange.emit(this.isCollapsed);
   }

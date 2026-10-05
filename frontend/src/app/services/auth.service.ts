@@ -25,10 +25,15 @@ export class AuthService {
       password
     }).pipe(
       tap(response => {
-        if (response.success) {
+        if (
+          response.success &&
+          response.data?.token &&
+          response.data.expiresIn > 0
+        ) {
           localStorage.setItem(this.sessionKey, JSON.stringify({
-            username: response.data?.username ?? username,
-            token: response.data?.token
+            username: response.data.username || username,
+            token: response.data.token,
+            expiresAt: Date.now() + response.data.expiresIn * 1000
           }));
         }
       })
@@ -42,7 +47,19 @@ export class AuthService {
   getToken(): string | null {
     try {
       const session = JSON.parse(localStorage.getItem(this.sessionKey) || 'null');
-      return typeof session?.token === 'string' ? session.token : null;
+      if (typeof session?.token !== 'string') {
+        return null;
+      }
+
+      if (
+        typeof session.expiresAt === 'number' &&
+        session.expiresAt <= Date.now()
+      ) {
+        this.logout();
+        return null;
+      }
+
+      return session.token;
     } catch {
       return null;
     }

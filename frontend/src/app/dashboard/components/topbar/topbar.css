@@ -1,11 +1,60 @@
-/* All layout and color comes from Tailwind utilities in topbar.html. */
 :host {
   display: block;
+}
+
+.topbar-header {
+  height: 64px;
+  min-height: 64px;
+  padding: 8px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
+}
+
+.topbar-brand {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  color: #0f172a;
+}
+
+.topbar-brand-name {
+  color: #0f766e;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.topbar-brand-divider {
+  width: 1px;
+  height: 22px;
+  background: #cbd5e1;
+}
+
+.topbar-brand-description {
+  overflow: hidden;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 [role='menu'] {
   animation: topbar-menu-in 0.12s ease-out;
   transform-origin: top right;
+}
+
+@media (max-width: 600px) {
+  .topbar-header {
+    padding: 8px 12px;
+  }
+
+  .topbar-brand-description,
+  .topbar-brand-divider {
+    display: none;
+  }
 }
 
 @keyframes topbar-menu-in {
