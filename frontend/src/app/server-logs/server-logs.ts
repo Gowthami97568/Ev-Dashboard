@@ -184,7 +184,7 @@ export class ServerLogs implements OnInit {
      APPLY SEARCH
   ========================================================= */
 
-  private applySearch(): void {
+  applySearch(): void {
 
     const search =
       this.searchText
@@ -252,6 +252,12 @@ export class ServerLogs implements OnInit {
 
     this.updatePagination();
 
+  }
+
+  clearSearch(): void {
+    this.searchText = '';
+    this.currentPage = 1;
+    this.applySearch();
   }
 
 

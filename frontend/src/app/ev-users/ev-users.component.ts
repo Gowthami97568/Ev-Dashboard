@@ -18,6 +18,9 @@ import {
 import {
   Sidebar
 } from '../dashboard/components/sidebar/sidebar';
+import { Topbar } from '../dashboard/components/topbar/topbar';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -28,7 +31,8 @@ import { environment } from '../../environments/environment';
   imports: [
     CommonModule,
     FormsModule,
-    Sidebar
+    Sidebar,
+    Topbar
   ],
 
   templateUrl: './ev-users.component.html',
@@ -76,7 +80,7 @@ export class EvUsersComponent implements OnInit {
 
   currentPage = 1;
 
-  pageSize = 500;
+  pageSize = 5;
 
 
   // =====================================================
@@ -97,7 +101,9 @@ export class EvUsersComponent implements OnInit {
   // =====================================================
 
   constructor(
-    private readonly http: HttpClient
+    private readonly http: HttpClient,
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {}
 
 
@@ -109,6 +115,11 @@ export class EvUsersComponent implements OnInit {
 
     this.loadUsers();
 
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
   }
 
 
@@ -1050,10 +1061,29 @@ export class EvUsersComponent implements OnInit {
 
     }
 
+    const columns = Object.keys(this.filteredUsers[0]);
+    const preferredColumns = [
+      'consumerid',
+      'mobile',
+      'fname',
+      'lname',
+      'city',
+      'state',
+      'vehicle_type',
+      'active'
+    ];
 
-    return Object.keys(
-      this.filteredUsers[0]
-    );
+    const visibleColumns = preferredColumns
+      .map(preferred =>
+        columns.find(column =>
+          column.toLowerCase() === preferred
+        )
+      )
+      .filter((column): column is string => column !== undefined);
+
+    return visibleColumns.length > 0
+      ? visibleColumns
+      : columns.slice(0, 8);
 
   }
 

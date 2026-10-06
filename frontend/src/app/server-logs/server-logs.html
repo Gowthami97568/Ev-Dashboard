@@ -23,21 +23,27 @@
           <input
             type="text"
             [(ngModel)]="searchText"
-              (ngModelChange)="onSearchChange()"
+            (ngModelChange)="onSearchChange()"
             placeholder="Search service, level, message..."
           />
 
-          @if (searchText) {
-            <button
-              type="button"
-              class="clear-btn"
-              (click)="searchText = ''"
-            >
-              ×
-            </button>
-          }
-
         </div>
+
+        <button
+          type="button"
+          class="search-btn"
+          (click)="applySearch()"
+        >
+          Search
+        </button>
+
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="clearSearch()"
+        >
+          Clear
+        </button>
 
       </div>
 

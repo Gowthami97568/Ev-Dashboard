@@ -35,6 +35,17 @@ export class ChargeManager implements OnInit {
 
 
   // =====================================================
+  // SIDEBAR
+  // =====================================================
+
+  isSidebarCollapsed = false;
+
+  onSidebarCollapsedChange(collapsed: boolean): void {
+    this.isSidebarCollapsed = collapsed;
+  }
+
+
+  // =====================================================
   // DATA
   // =====================================================
 
@@ -77,7 +88,7 @@ export class ChargeManager implements OnInit {
 
   page = 1;
 
-  limit = 500;
+  limit = 10;
 
   total = 0;
 

@@ -20,10 +20,11 @@
   width: 100%;
 
   height: 100vh;
+  height: 100dvh;
 
   min-height: 0;
 
-  padding: 18px;
+  padding: 0 18px 18px;
 
   gap: 18px;
 
@@ -78,7 +79,7 @@
 
   width: 100%;
 
-  height: calc(100vh - 36px);
+  height: 100%;
 
   min-height: 0;
 
@@ -120,13 +121,15 @@
 
   flex: 1 1 auto;
 
-  padding: 30px;
+  padding: 22px 30px 35px;
 
   box-sizing: border-box;
 
-  overflow-y: auto;
+  display: flex;
 
-  overflow-x: hidden;
+  flex-direction: column;
+
+  overflow: hidden;
 
   scrollbar-width: thin;
 }
@@ -142,6 +145,8 @@
   justify-content: space-between;
 
   align-items: center;
+
+  padding-top: 4px;
 
   margin-bottom: 25px;
 }
@@ -377,6 +382,14 @@
 
   min-width: 0;
 
+  min-height: 0;
+
+  flex: 1 1 auto;
+
+  display: flex;
+
+  flex-direction: column;
+
   box-sizing: border-box;
 
   background: white;
@@ -392,17 +405,31 @@
 .table-wrapper {
   width: 100%;
 
-  overflow-x: auto;
+  min-width: 0;
+
+  min-height: 0;
+
+  flex: 1 1 auto;
+
+  overflow: hidden;
 }
 
 table {
   width: 100%;
 
+  table-layout: fixed;
+
   border-collapse: collapse;
 }
 
 th {
-  padding: 14px;
+  position: sticky;
+
+  top: 0;
+
+  z-index: 1;
+
+  padding: 9px 6px;
 
   text-align: left;
 
@@ -410,21 +437,30 @@ th {
 
   color: #64748b;
 
-  font-size: 12px;
+  font-size: 10px;
 
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 td {
-  padding: 14px;
+  padding: 8px 6px;
 
   border-bottom: 1px solid #e5e7eb;
 
   color: #374151;
 
-  font-size: 14px;
+  font-size: 11px;
 
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  vertical-align: middle;
+}
+
+.cell-value {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 tbody tr:hover {
@@ -439,13 +475,37 @@ tbody tr:hover {
 .pagination-container {
   display: flex;
 
+  flex: 0 0 auto;
+
   justify-content: space-between;
 
   align-items: center;
 
-  gap: 20px;
+  gap: 12px;
 
-  padding: 20px 8px 4px;
+  padding: 14px 8px 2px;
+
+  border-top: 1px solid #e5e7eb;
+
+  background: #ffffff;
+}
+
+.table-content {
+  display: flex;
+
+  flex: 1 1 auto;
+
+  flex-direction: column;
+
+  min-width: 0;
+
+  min-height: 0;
+
+  width: 100%;
+}
+
+.empty {
+  flex: 1 1 auto;
 }
 
 
@@ -871,50 +931,42 @@ tbody tr:hover {
 @media (max-width: 850px) {
 
   .ev-users-page {
-    display: block;
+    grid-template-columns: minmax(0, 1fr);
 
-    height: 100vh;
-
-    min-height: 0;
-
-    padding: 12px;
-
-    overflow: hidden;
+    padding: 0;
   }
 
 
   .ev-sidebar {
-    width: 100%;
+    width: 0;
 
-    min-width: 100%;
+    min-width: 0;
 
-    max-width: 100%;
+    max-width: 0;
 
-    height: auto;
+    height: 0;
 
-    position: relative;
-
-    top: auto;
-
-    margin-bottom: 14px;
+    margin: 0;
   }
 
 
   .ev-main {
     width: 100%;
 
-    height: auto;
+    height: 100%;
 
     min-height: 0;
 
-    overflow: visible;
+    overflow: hidden;
   }
 
 
   .ev-content {
-    overflow-y: auto;
+    min-height: 0;
 
-    padding: 20px;
+    padding: 20px 16px;
+
+    overflow: hidden;
   }
 
 
@@ -940,9 +992,7 @@ tbody tr:hover {
 
 
   .pagination-container {
-    flex-direction: column;
-
-    align-items: flex-start;
+    flex-wrap: wrap;
   }
 
 
@@ -952,13 +1002,14 @@ tbody tr:hover {
 
 
   .ev-users-page.sidebar-collapsed {
-    display: block;
+    display: grid;
 
     height: 100vh;
+    height: 100dvh;
 
     min-height: 0;
 
-    padding: 12px;
+    padding: 0;
   }
 
 
@@ -981,6 +1032,8 @@ tbody tr:hover {
 
   .ev-users-page.sidebar-collapsed .ev-main {
     width: 100% !important;
+
+    height: 100%;
 
     margin: 0;
   }
@@ -1013,4 +1066,57 @@ tbody tr:hover {
     padding: 14px;
   }
 
+}
+
+@media (max-width: 600px) {
+  .filter-panel {
+    flex-direction: row;
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .filter-btn,
+  .clear-btn {
+    width: auto;
+    flex: 0 0 auto;
+    padding: 10px 8px;
+  }
+
+  .table-wrapper th {
+    padding: 6px 4px;
+  }
+
+  .table-wrapper td {
+    padding: 5px 4px;
+  }
+
+  .table-wrapper .edit-btn {
+    padding: 5px 6px;
+    font-size: 11px;
+  }
+
+  .table-wrapper th:nth-child(4),
+  .table-wrapper td:nth-child(4),
+  .table-wrapper th:nth-child(6),
+  .table-wrapper td:nth-child(6),
+  .table-wrapper th:nth-child(7),
+  .table-wrapper td:nth-child(7) {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .pagination-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 4px 2px;
+  }
+
+  .table-wrapper th:nth-child(3),
+  .table-wrapper td:nth-child(3),
+  .table-wrapper th:nth-child(6),
+  .table-wrapper td:nth-child(6) {
+    display: none;
+  }
 }

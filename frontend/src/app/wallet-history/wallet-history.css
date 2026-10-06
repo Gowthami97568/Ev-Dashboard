@@ -12,8 +12,8 @@
   grid-template-columns: 240px minmax(0, 1fr);
   gap: 18px;
 
-  min-height: 100vh;
-  padding: 18px;
+  min-height: calc(100vh - 36px);
+  padding: 0 18px 18px;
 
   box-sizing: border-box;
 
@@ -60,7 +60,7 @@
   width: 100%;
   min-width: 0;
 
-  padding-bottom: 35px;
+  padding: 18px 0 35px;
   box-sizing: border-box;
 }
 
@@ -69,6 +69,7 @@
 ========================================================= */
 
 .page-header {
+  padding-top: 4px;
   margin-bottom: 22px;
 }
 

@@ -12,6 +12,9 @@ import {
 } from '../services/wallet-history.service';
 
 import { Sidebar } from '../dashboard/components/sidebar/sidebar';
+import { Topbar } from '../dashboard/components/topbar/topbar';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-wallet-history',
@@ -20,7 +23,8 @@ import { Sidebar } from '../dashboard/components/sidebar/sidebar';
   imports: [
     CommonModule,
     FormsModule,
-    Sidebar
+    Sidebar,
+    Topbar
   ],
 
   templateUrl: './wallet-history.html',
@@ -106,7 +110,9 @@ export class WalletHistory implements OnInit {
   // =====================================================
 
   constructor(
-    private readonly walletService: WalletHistoryService
+    private readonly walletService: WalletHistoryService,
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {}
 
 
@@ -122,6 +128,11 @@ export class WalletHistory implements OnInit {
 
     this.loadWalletHistory();
 
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
   }
 
 

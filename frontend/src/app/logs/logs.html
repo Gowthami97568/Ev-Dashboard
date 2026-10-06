@@ -6,16 +6,12 @@
   <aside class="logs-sidebar">
     <app-sidebar></app-sidebar>
   </aside>
-
-
-  <!-- =====================================================
+ <!-- =====================================================
        MAIN
   ====================================================== -->
 
   <main class="logs-main">
-
-    <section class="logs-content">
-
+  <section class="logs-content">
 
       <!-- =================================================
            LOGS HEADING
@@ -42,7 +38,8 @@
             id="logSearch"
             type="search"
             [(ngModel)]="searchTerm"
-            placeholder="Search messages, type, device..."
+            [placeholder]="selectedDeviceId ? 'Search messages, type, device...' : 'Select a device ID first'"
+            [disabled]="!selectedDeviceId"
             (input)="onSearchInput()"
             (keyup.enter)="searchLogs()"
           >
@@ -70,18 +67,19 @@
         <div class="filter-field">
 
           <label for="deviceId">
-            Device ID
+            Device ID (required)
           </label>
 
 
           <select
             id="deviceId"
             [(ngModel)]="selectedDeviceId"
+            required
             (change)="onDeviceChange()"
           >
 
-            <option value="">
-              All Devices
+            <option value="" disabled>
+              Select Device ID
             </option>
 
             <option
@@ -94,7 +92,6 @@
           </select>
 
         </div>
-
 
         <!-- =================================================
              FROM DATE & TIME
@@ -144,6 +141,8 @@
           type="button"
           class="search-button"
           (click)="searchLogs()"
+          [disabled]="!selectedDeviceId || loading"
+          title="Select a device ID before searching logs"
         >
 
           Search
@@ -653,6 +652,3 @@
   </main>
 
 </div>
-
-
-

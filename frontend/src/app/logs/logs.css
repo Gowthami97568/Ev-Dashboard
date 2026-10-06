@@ -381,8 +381,18 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
    SEARCH HOVER
 ========================================================= */
 
-.search-button:hover {
+.search-button:hover:not(:disabled) {
   background: #0f766e;
+}
+
+.search-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.filter-field input[type="search"]:disabled {
+  background: #f7f8fa;
+  cursor: not-allowed;
 }
 
 
@@ -1512,4 +1522,115 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     padding: 15px;
   }
 
+}
+
+.logs-content {
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+.logs-heading {
+  flex: 0 0 auto;
+  margin-bottom: 0;
+}
+
+.logs-heading h1 {
+  font-size: 22px;
+}
+
+.filter-card {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px;
+  margin-bottom: 0;
+}
+
+.filter-field {
+  min-width: 0;
+}
+
+.filter-field label {
+  font-size: 11px;
+}
+
+.filter-field input,
+.filter-field select,
+.search-button,
+.reset-button,
+.export-last-24-button {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  box-sizing: border-box;
+  font-size: 12px;
+}
+
+.logs-report-layout {
+  min-height: 0;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.device-report {
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.logs-card {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.table-wrapper {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+.logs-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 48px;
+  font-size: 16px;
+}
+
+.logs-table tbody td,
+.type-cell {
+  padding: 8px;
+  font-size: 12px;
+}
+
+.pagination {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+}
+
+.pagination-buttons button {
+  height: 30px;
+}
+
+@media (max-width: 950px) {
+  .filter-card {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .logs-report-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px;
+  }
+
+  .device-report {
+    max-height: 180px;
+    flex: 0 0 auto;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

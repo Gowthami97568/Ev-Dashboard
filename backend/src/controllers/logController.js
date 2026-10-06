@@ -36,47 +36,96 @@ const getLogs = async (req, res) => {
         const deviceId = String(req.query.deviceId || '').trim();
         const fromDateTime = String(req.query.fromDateTime || '').trim();
         const toDateTime = String(req.query.toDateTime || '').trim();
+        const timestampColumns = ["starttime", "endtime", "chargedate", "createddate"];
+        const timestampFallback = `COALESCE(${timestampColumns.join(", ")})`;
         const where = [
             `deviceid IS NOT NULL`,
             `deviceid <> ''`,
-            `starttime IS NOT NULL`
+            `(${timestampFallback} IS NOT NULL OR COALESCE(chargestatus, 0) = 1)`
         ];
-        const params = [];
+        const whereParams = [];
+        const projectionParams = [];
+        const timestampBounds = (column, params) => {
+            const bounds = [];
+
+            if (fromDateTime) {
+                bounds.push(`${column} >= ?`);
+                params.push(fromDateTime.replace('T', ' '));
+            }
+
+            if (toDateTime) {
+                bounds.push(`${column} <= ?`);
+                params.push(toDateTime.replace('T', ' '));
+            }
+
+            return bounds.length ? `(${bounds.join(" AND ")})` : "";
+        };
 
         if (deviceId) {
-            where.push(`deviceid = ?`);
-            params.push(deviceId);
+            where.push(`LOWER(TRIM(deviceid)) = LOWER(?)`);
+            whereParams.push(deviceId);
         }
 
-        if (fromDateTime) {
-            where.push(`(starttime >= ? OR COALESCE(chargestatus, 0) = 1)`);
-            params.push(fromDateTime.replace('T', ' '));
-        }
+        const hasDateFilter = Boolean(fromDateTime || toDateTime);
+        let logTimestamp = timestampFallback;
 
-        if (toDateTime) {
-            where.push(`starttime <= ?`);
-            params.push(toDateTime.replace('T', ' '));
+        if (hasDateFilter) {
+            const windowPredicates = timestampColumns
+                .map(column => timestampBounds(column, whereParams))
+                .filter(Boolean);
+
+            where.push(`(${windowPredicates.join(" OR ")} OR COALESCE(chargestatus, 0) = 1)`);
+
+            const timestampCases = timestampColumns
+                .map(column => {
+                    const bounds = timestampBounds(column, projectionParams);
+                    return bounds ? `WHEN ${bounds} THEN ${column}` : "";
+                })
+                .filter(Boolean);
+
+            logTimestamp = `CASE
+                ${timestampCases.join("\n                ")}
+                WHEN COALESCE(chargestatus, 0) = 1 THEN ${timestampFallback}
+                ELSE ${timestampFallback}
+            END`;
         }
 
         const query = `
             SELECT
                 transactionid AS transactionId,
                 deviceid AS deviceId,
-                DATE(starttime) AS date,
-                TIME(starttime) AS time,
-                HOUR(starttime) AS hour,
+                DATE(logTimestamp) AS date,
+                TIME(logTimestamp) AS time,
+                HOUR(logTimestamp) AS hour,
                 chargestatus AS chargeStatus,
                 status,
                 endtime AS endTime,
                 kwh,
                 chargevalue AS chargeValue
-            FROM chargetransaction
-                        WHERE ${where.join("\n              AND ")}
-            ORDER BY starttime DESC
-                        ${deviceId ? '' : 'LIMIT 100'}
+            FROM (
+                SELECT
+                    transactionid,
+                    deviceid,
+                    starttime,
+                    endtime,
+                    chargedate,
+                    createddate,
+                    chargestatus,
+                    status,
+                    kwh,
+                    chargevalue,
+                    ${logTimestamp} AS logTimestamp
+                FROM chargetransaction
+                WHERE ${where.join("\n                  AND ")}
+            ) AS device_logs
+            ORDER BY logTimestamp DESC
+            ${deviceId ? '' : 'LIMIT 100'}
         `;
 
-                const [rows] = await pool.query(query, params);
+        const [rows] = await pool.query(
+            query,
+            [...projectionParams, ...whereParams]
+        );
 
         const logs = rows.map(row => ({
             type: Number(row.chargeStatus) === 1

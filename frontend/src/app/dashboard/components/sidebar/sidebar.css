@@ -67,10 +67,8 @@
 
   max-height: none;
 
-  object-fit: cover;
-  object-position: center 46%;
-  transform: scale(1.06);
-  filter: contrast(1.08) saturate(1.08);
+  object-fit: contain;
+  object-position: center;
 
   transition:
     width 0.22s ease,

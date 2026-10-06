@@ -333,38 +333,10 @@ export class Logs implements OnInit {
 
   onDeviceChange(): void {
 
-    /*
-     * All Devices
-     */
-    if (
-      !this.selectedDeviceId
-    ) {
-
-      this.fromDateTime = '';
-
-      this.toDateTime = '';
-
-      this.currentPage = 1;
-
-      this.clearDeviceReport();
-
-      /*
-       * Do not automatically filter.
-       */
-      return;
-    }
-
-
-    const now = new Date();
-
-    this.fromDateTime = this.formatDateTimeLocal(
-      new Date(now.getTime() - 24 * 60 * 60 * 1000)
-    );
-
-    this.toDateTime = this.formatDateTimeLocal(now);
+    this.fromDateTime = '';
+    this.toDateTime = '';
 
     this.currentPage = 1;
-
     this.clearDeviceReport();
   }
 
@@ -2123,6 +2095,11 @@ export class Logs implements OnInit {
 
   searchLogs(): void {
 
+    if (!this.selectedDeviceId.trim()) {
+      this.errorMessage = 'Select a device ID before searching logs.';
+      return;
+    }
+
     console.log(
       '================ SEARCH ================'
     );
@@ -2152,18 +2129,7 @@ export class Logs implements OnInit {
      */
     this.currentPage = 1;
 
-    if (this.selectedDeviceId) {
-      this.loadLogsForSearch();
-      return;
-    }
-
-    this.applyFilters();
-
-
-    console.log(
-      'Matching Logs:',
-      this.filteredLogs.length
-    );
+    this.loadLogsForSearch();
 
 
     console.log(

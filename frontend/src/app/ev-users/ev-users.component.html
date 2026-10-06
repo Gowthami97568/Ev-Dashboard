@@ -5,7 +5,7 @@
   ================================================== -->
 
   <aside class="ev-sidebar">
-    <app-sidebar></app-sidebar>
+    <app-sidebar [showTopbar]="false"></app-sidebar>
   </aside>
 
 
@@ -15,32 +15,16 @@
 
   <main class="ev-main">
 
+    <app-topbar
+      [title]="'Management System'"
+      (signOutRequested)="logout()"
+    ></app-topbar>
+
     <!-- ==================================================
          CONTENT
     ================================================== -->
 
     <section class="ev-content">
-
-
-      <!-- ==================================================
-           PAGE HEADER
-      ================================================== -->
-
-      <div class="page-header">
-
-        <div>
-
-          <span class="kicker">
-            MANAGEMENT
-          </span>
-
-          <p>
-            Manage and monitor registered EV users
-          </p>
-
-        </div>
-
-      </div>
 
 
       <!-- ==================================================
@@ -191,7 +175,9 @@
                   <td
                     *ngFor="let column of getUserColumns()"
                   >
-                    {{ user[column] ?? '—' }}
+                    <span class="cell-value">
+                      {{ user[column] ?? '—' }}
+                    </span>
                   </td>
 
 
@@ -239,8 +225,7 @@
           <div
             class="pagination-container"
             *ngIf="
-              filteredUsers.length > 0 &&
-              totalPages > 1
+              filteredUsers.length > 0
             "
           >
 

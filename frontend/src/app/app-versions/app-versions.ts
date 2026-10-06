@@ -225,30 +225,6 @@ export class AppVersions implements OnInit {
   }
 
   // ======================================================
-  // PAGINATION
-  // ======================================================
-
-  previousPage(): void {
-
-    if (this.page > 1) {
-
-      this.page--;
-
-      this.loadAppVersions();
-    }
-  }
-
-  nextPage(): void {
-
-    if (this.page < this.totalPages) {
-
-      this.page++;
-
-      this.loadAppVersions();
-    }
-  }
-
-  // ======================================================
   // DETAILS
   // ======================================================
 

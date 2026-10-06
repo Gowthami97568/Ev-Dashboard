@@ -5,7 +5,7 @@
   ================================================== -->
 
   <aside class="wallet-sidebar">
-    <app-sidebar></app-sidebar>
+    <app-sidebar [showTopbar]="false"></app-sidebar>
   </aside>
 
   <!-- ==================================================
@@ -13,20 +13,12 @@
   ================================================== -->
 
   <main class="wallet-main">
+    <app-topbar
+      [title]="'Management System'"
+      (signOutRequested)="logout()"
+    ></app-topbar>
+
     <section class="wallet-content">
-
-      <div class="page-header">
-        <div>
-          <span class="kicker">
-            MANAGEMENT
-          </span>
-
-          <p>
-            View and monitor wallet transaction history
-          </p>
-        </div>
-      </div>
-
 
       <!-- ==================================================
            SUCCESS MESSAGE

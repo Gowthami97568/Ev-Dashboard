@@ -13,21 +13,6 @@
 
     <section class="app-version-content">
 
-      <!-- HEADER -->
-
-      <div class="page-header">
-
-        <span class="kicker">
-          CONFIGURATION
-        </span>
-
-        <p>
-          View and manage application version information
-        </p>
-
-      </div>
-
-
       <!-- ERROR -->
 
       <div
@@ -199,34 +184,6 @@
             records
 
           </span>
-
-
-          <div class="pagination-buttons">
-
-            <button
-              type="button"
-              (click)="previousPage()"
-              [disabled]="
-                page <= 1 ||
-                total === 0
-              "
-            >
-              Previous
-            </button>
-
-
-            <button
-              type="button"
-              (click)="nextPage()"
-              [disabled]="
-                page >= totalPages ||
-                total === 0
-              "
-            >
-              Next
-            </button>
-
-          </div>
 
         </div>
 
