@@ -74,7 +74,7 @@ const getLogs = async (req, res) => {
                 .map(column => timestampBounds(column, whereParams))
                 .filter(Boolean);
 
-            where.push(`(${windowPredicates.join(" OR ")} OR COALESCE(chargestatus, 0) = 1)`);
+            where.push(`(${windowPredicates.join(" OR ")})`);
 
             const timestampCases = timestampColumns
                 .map(column => {

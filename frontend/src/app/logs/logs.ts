@@ -2866,13 +2866,6 @@ export class Logs implements OnInit {
       return;
     }
 
-    const to = new Date();
-    const from = new Date(to.getTime() - 24 * 60 * 60 * 1000);
-    const fromDateTime = this.formatDateTimeLocal(from);
-    const toDateTime = this.formatDateTimeLocal(to);
-
-    this.fromDateTime = fromDateTime;
-    this.toDateTime = toDateTime;
     this.searchTerm = '';
     this.searchSuggestions = [];
     this.currentPage = 1;
@@ -2881,15 +2874,45 @@ export class Logs implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
-    this.logsService.getLogs(deviceId, fromDateTime, toDateTime).subscribe({
+    this.logsService.getLogs(deviceId).subscribe({
       next: (response: string) => {
         if (requestVersion !== this.logsRequestVersion) {
           return;
         }
 
-        this.allLogs = this.convertResponseToLogs(response)
+        const deviceLogs = this.convertResponseToLogs(response)
           .filter(log => this.logBelongsToDevice(log, deviceId));
-        this.filteredLogs = this.allLogs;
+        const latestTimestamp = deviceLogs
+          .map(log => this.createLogDate(log))
+          .filter((date): date is Date => date !== null)
+          .reduce<Date | null>(
+            (latest, date) => !latest || date > latest ? date : latest,
+            null
+          );
+
+        if (!latestTimestamp) {
+          this.allLogs = deviceLogs;
+          this.filteredLogs = [];
+          this.displayedLogs = [];
+          this.clearDeviceReport();
+          this.errorMessage = deviceLogs.length
+            ? 'Device logs were found, but none have a usable timestamp.'
+            : 'No device logs were found for this device.';
+          this.exportingLast24Hours = false;
+          this.loading = false;
+          return;
+        }
+
+        const from = new Date(latestTimestamp.getTime() - 24 * 60 * 60 * 1000);
+        this.fromDateTime = this.formatDateTimeLocal(from);
+        this.toDateTime = this.formatDateTimeLocal(latestTimestamp);
+        this.allLogs = deviceLogs;
+        this.filteredLogs = deviceLogs.filter(log => {
+          const timestamp = this.createLogDate(log);
+          return timestamp !== null &&
+            timestamp >= from &&
+            timestamp <= latestTimestamp;
+        });
         this.currentPage = 1;
         this.updatePagination();
         this.createDeviceReport();
