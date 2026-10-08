@@ -80,7 +80,7 @@ export class EvUsersComponent implements OnInit {
 
   currentPage = 1;
 
-  pageSize = 5;
+  pageSize = 50;
 
 
   // =====================================================
@@ -184,7 +184,6 @@ export class EvUsersComponent implements OnInit {
     if (total === 0) {
 
       return [];
-
     }
 
 
