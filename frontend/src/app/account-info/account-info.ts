@@ -12,6 +12,7 @@ import {
 } from '../services/account-info.service';
 
 import { Sidebar } from '../dashboard/components/sidebar/sidebar';
+import { isHiddenDashboardColumn } from '../services/dashboard-column-visibility';
 
 @Component({
   selector: 'app-account-info',
@@ -299,6 +300,8 @@ export class AccountInfo implements OnInit {
   }
 
   getVisibleColumns(): string[] {
-    return this.columns.slice(0, 8);
+    return this.columns
+      .filter(column => !isHiddenDashboardColumn(column))
+      .slice(0, 8);
   }
 }

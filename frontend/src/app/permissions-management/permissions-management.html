@@ -1,0 +1,109 @@
+<div class="settings-page permissions-page">
+  <aside class="settings-sidebar permissions-sidebar">
+    <app-sidebar [showTopbar]="false"></app-sidebar>
+  </aside>
+
+  <main class="settings-main permissions-main">
+    <app-topbar
+      [title]="'Permissions Management'"
+      (signOutRequested)="logout()"
+    ></app-topbar>
+
+    <section class="settings-content permissions-content">
+      <header class="page-head">
+        <span class="eyebrow">Administration</span>
+        <h1>Permissions Management</h1>
+        <p>Manage each user’s access using the single comma-separated permission map.</p>
+      </header>
+
+      <div class="permissions-message permissions-message--error" *ngIf="errorMessage" role="alert">
+        {{ errorMessage }}
+      </div>
+      <div class="permissions-message permissions-message--success" *ngIf="successMessage" role="status">
+        {{ successMessage }}
+      </div>
+
+      <section class="permissions-card" *ngIf="canManage">
+        <div class="permissions-card-head">
+          <div>
+            <h2>Users and permissions</h2>
+            <p>Only the User ID and permission tags are shown.</p>
+          </div>
+          <form class="create-user" (ngSubmit)="startCreate()">
+            <label class="visually-hidden" for="new-permission-user">User ID</label>
+            <input
+              id="new-permission-user"
+              name="newUserId"
+              [(ngModel)]="newUserId"
+              maxlength="191"
+              placeholder="Enter User ID"
+            />
+            <button type="submit" class="primary-button">Add user</button>
+          </form>
+        </div>
+
+        <div class="permissions-state" *ngIf="loading">Loading permissions…</div>
+        <div class="permissions-state" *ngIf="!loading && rows.length === 0">
+          No permissions have been assigned yet.
+        </div>
+
+        <div class="permissions-table-wrap" *ngIf="!loading && rows.length > 0">
+          <table class="permissions-table">
+            <thead>
+              <tr>
+                <th scope="col">User ID</th>
+                <th scope="col">Permissions</th>
+                <th scope="col" class="action-column">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of rows">
+                <td data-label="User ID" class="user-id">{{ row.UserId }}</td>
+                <td data-label="Permissions">
+                  <div class="permission-tags" *ngIf="getPermissionTags(row).length; else noneAssigned">
+                    <span
+                      *ngFor="let permission of getPermissionTags(row)"
+                      [class]="permissionStyle(permission)"
+                    >
+                      {{ permission }}
+                    </span>
+                  </div>
+                  <ng-template #noneAssigned><span class="empty-permissions">No permissions</span></ng-template>
+                </td>
+                <td data-label="Action" class="action-column">
+                  <button type="button" class="secondary-button" (click)="startEdit(row)">Edit</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="permissions-card permission-editor" *ngIf="canManage && editingUserId">
+        <div class="permissions-card-head">
+          <div>
+            <h2>Edit permissions</h2>
+            <p>User: <strong>{{ editingUserId }}</strong></p>
+          </div>
+        </div>
+        <div class="permission-options">
+          <button
+            type="button"
+            *ngFor="let permission of permissionOptions"
+            class="permission-option"
+            [class.is-selected]="permissions.includes(permission)"
+            (click)="togglePermission(permission)"
+          >
+            {{ permission }}
+          </button>
+        </div>
+        <div class="editor-actions">
+          <button type="button" class="secondary-button" (click)="cancelEdit()" [disabled]="saving">Cancel</button>
+          <button type="button" class="primary-button" (click)="savePermissions()" [disabled]="saving">
+            {{ saving ? 'Saving…' : 'Save permissions' }}
+          </button>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>

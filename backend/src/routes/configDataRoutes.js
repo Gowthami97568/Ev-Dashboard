@@ -1,4 +1,5 @@
 const express = require("express");
+const { requireModulePermission } = require("../controllers/permissionsController");
 
 const {
 
@@ -65,6 +66,7 @@ router.get(
 
 router.put(
     "/:id",
+    requireModulePermission("ConfigData"),
     updateConfigData
 );
 

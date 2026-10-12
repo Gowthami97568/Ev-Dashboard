@@ -1,4 +1,5 @@
 const express = require("express");
+const { requireModulePermission } = require("../controllers/permissionsController");
 
 const {
     getChargerSummary,
@@ -17,10 +18,10 @@ router.get("/", getChargers);
 
 router.get("/:deviceid", getChargerById);
 
-router.post("/", createCharger);
+router.post("/", requireModulePermission("chargeMaster"), createCharger);
 
-router.put("/:deviceid", updateCharger);
+router.put("/:deviceid", requireModulePermission("chargeMaster"), updateCharger);
 
-router.delete("/:deviceid", deleteCharger);
+router.delete("/:deviceid", requireModulePermission("chargeMaster"), deleteCharger);
 
 module.exports = router;

@@ -9,6 +9,8 @@ import {
 } from '../services/devices-master.service';
 
 import { Sidebar } from '../dashboard/components/sidebar/sidebar';
+import { PermissionsService } from '../services/permissions.service';
+import { isHiddenDashboardColumn } from '../services/dashboard-column-visibility';
 
 
 /*
@@ -124,8 +126,13 @@ export class DevicesMaster implements OnInit {
   // =====================================================
 
   constructor(
-    private readonly devicesMasterService: DevicesMasterService
+    private readonly devicesMasterService: DevicesMasterService,
+    private readonly permissionsService: PermissionsService
   ) {}
+
+  get canEditDevices(): boolean {
+    return this.permissionsService.hasAccess('devices-master', 'allow');
+  }
 
 
   // =====================================================
@@ -260,7 +267,7 @@ export class DevicesMaster implements OnInit {
 
   getVisibleColumns(): string[] {
 
-    return this.columns;
+    return this.columns.filter(column => !isHiddenDashboardColumn(column));
   }
 
 
@@ -322,6 +329,25 @@ export class DevicesMaster implements OnInit {
     }
 
     return String(value);
+  }
+
+  formatDeviceColumnValue(device: DeviceMasterRecord, column: string): string {
+    const value = device[column];
+    const normalizedColumn = column.toLowerCase().replace(/[_\s-]/g, '');
+
+    if (value === null || value === undefined || value === '') {
+      return '—';
+    }
+
+    if (normalizedColumn.includes('date') || normalizedColumn.endsWith('at')) {
+      return this.formatDate(value);
+    }
+
+    if (normalizedColumn.includes('status')) {
+      return this.formatStatus(value);
+    }
+
+    return this.formatValue(value);
   }
 
 

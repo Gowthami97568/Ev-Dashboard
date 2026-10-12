@@ -1,4 +1,5 @@
 const express = require("express");
+const { requireModulePermission } = require("../controllers/permissionsController");
 
 const {
     getAllUsers,
@@ -25,6 +26,7 @@ router.get(
 
 router.put(
     "/:id",
+    requireModulePermission("User"),
     updateUser
 );
 

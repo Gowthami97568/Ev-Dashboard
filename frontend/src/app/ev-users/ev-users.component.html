@@ -130,75 +130,46 @@
           >
 
             <table>
-
-
-              <!-- ==================================================
-                   TABLE HEADER
-              ================================================== -->
-
               <thead>
-
                 <tr>
-
-                  <!-- DATABASE COLUMNS -->
-
-                  <th
-                    *ngFor="let column of getUserColumns()"
-                  >
-                    {{ column }}
+                  <th *ngFor="let column of getUserColumns()">
+                    {{ getUserColumnLabel(column) }}
                   </th>
-
-
-                  <!-- ACTIONS -->
-
-                  <th>
-                    Actions
-                  </th>
-
+                  <th class="actions-column">Actions</th>
                 </tr>
-
               </thead>
-
-
-              <!-- ==================================================
-                   TABLE BODY
-              ================================================== -->
-
               <tbody>
-
                 <tr
                   *ngFor="let user of paginatedUsers"
                 >
-
-                  <!-- DATABASE VALUES -->
-
-                  <td
-                    *ngFor="let column of getUserColumns()"
-                  >
-                    <span class="cell-value">
+                  <td *ngFor="let column of getUserColumns()">
+                    <span class="cell-value" [attr.title]="user[column] ?? '—'">
                       {{ user[column] ?? '—' }}
                     </span>
                   </td>
-
-
-                  <!-- EDIT BUTTON -->
-
-                  <td>
-
-                    <button
-                      type="button"
-                      class="edit-btn"
-                      (click)="editUser(user)"
-                    >
-                      Edit
-                    </button>
+                  <td class="actions-column">
+                    <div class="row-actions">
+                      <button
+                        type="button"
+                        class="view-btn"
+                        (click)="viewUser(user)"
+                      >
+                        View
+                      </button>
+                      <button
+                        *ngIf="canEditUsers"
+                        type="button"
+                        class="edit-btn"
+                        (click)="editUser(user)"
+                      >
+                        Edit
+                      </button>
+                    </div>
 
                   </td>
 
                 </tr>
-
               </tbody>
-
             </table>
 
           </div>
@@ -293,7 +264,6 @@
 
   </main>
 
-
   <!-- ==================================================
        EDIT USER MODAL
   ================================================== -->
@@ -362,17 +332,18 @@
 
         <div
           class="form-field"
-          *ngFor="let key of getEditableKeys()"
+          *ngFor="let key of getUserColumns()"
         >
 
           <label>
-            {{ key }}
+            {{ getUserColumnLabel(key) }}
           </label>
-
 
           <input
             type="text"
             [(ngModel)]="editingUser[key]"
+            [disabled]="isUserKeyColumn(key)"
+            [attr.aria-label]="getUserColumnLabel(key)"
           />
 
         </div>
@@ -414,6 +385,43 @@
 
     </div>
 
+  </div>
+
+  <div
+    class="modal-overlay"
+    *ngIf="isViewModalOpen"
+    (click)="closeViewModal()"
+  >
+    <section
+      class="modal-box"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="user-details-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-header">
+        <h2 id="user-details-title">User Details</h2>
+        <button
+          type="button"
+          class="modal-close"
+          aria-label="Close user details"
+          (click)="closeViewModal()"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="modal-body" *ngIf="viewingUser">
+        <div class="form-field" *ngFor="let key of getViewableKeys()">
+          <label>{{ getUserColumnLabel(key) }}</label>
+          <p class="record-detail-value">{{ formatRecordValue(viewingUser[key]) }}</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="clear-btn" (click)="closeViewModal()">Close</button>
+      </div>
+    </section>
   </div>
 
 </div>

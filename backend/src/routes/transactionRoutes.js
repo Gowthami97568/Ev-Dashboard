@@ -1,4 +1,5 @@
 const express = require("express");
+const { requireModulePermission } = require("../controllers/permissionsController");
 
 const {
     getTransactions,
@@ -47,6 +48,7 @@ router.get(
 
 router.put(
     "/:transactionid",
+    requireModulePermission("Transaction"),
     updateTransaction
 );
 

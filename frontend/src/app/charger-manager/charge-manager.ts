@@ -15,6 +15,7 @@ import {
 import {
   Sidebar
 } from '../dashboard/components/sidebar/sidebar';
+import { PermissionsService } from '../services/permissions.service';
 
 @Component({
   selector: 'app-charge-manager',
@@ -119,8 +120,13 @@ export class ChargeManager implements OnInit {
 
   constructor(
     private readonly chargeManagerService:
-      ChargeManagerService
+      ChargeManagerService,
+    private readonly permissionsService: PermissionsService
   ) {}
+
+  get canEditChargers(): boolean {
+    return this.permissionsService.hasAccess('charge-manager', 'allow');
+  }
 
 
   // =====================================================

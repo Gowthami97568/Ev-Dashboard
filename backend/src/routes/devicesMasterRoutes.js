@@ -1,4 +1,5 @@
 const express = require("express");
+const { requireModulePermission } = require("../controllers/permissionsController");
 
 const {
     getDeviceSummary,
@@ -47,6 +48,7 @@ router.get(
 
 router.put(
     "/:id",
+    requireModulePermission("Device"),
     updateDevice
 );
 

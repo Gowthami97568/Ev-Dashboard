@@ -67,6 +67,7 @@
 
 
         <button
+          *ngIf="canEditDevices"
           type="button"
           class="search-btn"
           (click)="applySearch()"
@@ -116,20 +117,8 @@
 
               <tr>
 
-                <th>
-                  SLNO
-                </th>
-
-                <th>
-                  DEVICE ID
-                </th>
-
-                <th>
-                  REG DATE
-                </th>
-
-                <th>
-                  STATUS
+                <th *ngFor="let column of getVisibleColumns()">
+                  {{ formatColumnName(column) }}
                 </th>
 
                 <th>
@@ -152,45 +141,8 @@
                 *ngFor="let device of devices"
               >
 
-                <!-- SLNO -->
-
-                <td>
-                  {{ formatValue(device.slno) }}
-                </td>
-
-
-                <!-- DEVICE ID -->
-
-                <td>
-                  {{ formatValue(device.device_id) }}
-                </td>
-
-
-                <!-- REG DATE -->
-
-                <td>
-                  {{ formatDate(device.reg_date) }}
-                </td>
-
-
-                <!-- STATUS -->
-
-                <td>
-
-                  <span
-                    *ngIf="device.status"
-                    class="status-badge"
-                  >
-                    {{ device.status }}
-                  </span>
-
-                  <span
-                    *ngIf="!device.status"
-                    class="empty-status"
-                  >
-                    —
-                  </span>
-
+                <td *ngFor="let column of getVisibleColumns()">
+                  {{ formatDeviceColumnValue(device, column) }}
                 </td>
 
 
@@ -235,7 +187,7 @@
               >
 
                 <td
-                  colspan="5"
+                  [attr.colspan]="getVisibleColumns().length + 1"
                   class="empty"
                 >
                   No devices found.
@@ -362,66 +314,10 @@
 
       <div class="details-grid">
 
-
-        <!-- SLNO -->
-
-        <div>
-
-          <label>
-            SLNO
-          </label>
-
-          <p>
-            {{ formatValue(selectedDevice.slno) }}
-          </p>
-
+        <div *ngFor="let column of getVisibleColumns()">
+          <label>{{ formatColumnName(column) }}</label>
+          <p>{{ formatDeviceColumnValue(selectedDevice, column) }}</p>
         </div>
-
-
-        <!-- DEVICE ID -->
-
-        <div>
-
-          <label>
-            DEVICE ID
-          </label>
-
-          <p>
-            {{ formatValue(selectedDevice.device_id) }}
-          </p>
-
-        </div>
-
-
-        <!-- REG DATE -->
-
-        <div>
-
-          <label>
-            REG DATE
-          </label>
-
-          <p>
-            {{ formatDate(selectedDevice.reg_date) }}
-          </p>
-
-        </div>
-
-
-        <!-- STATUS -->
-
-        <div>
-
-          <label>
-            STATUS
-          </label>
-
-          <p>
-            {{ formatStatus(selectedDevice.status) }}
-          </p>
-
-        </div>
-
 
       </div>
 

@@ -12,6 +12,7 @@ import {
 } from '../services/socket-info.service';
 
 import { Sidebar } from '../dashboard/components/sidebar/sidebar';
+import { isHiddenDashboardColumn } from '../services/dashboard-column-visibility';
 
 @Component({
   selector: 'app-socket-info',
@@ -297,6 +298,8 @@ export class SocketInfo implements OnInit {
   }
 
   getVisibleColumns(): string[] {
-    return this.columns.slice(0, 8);
+    return this.columns
+      .filter(column => !isHiddenDashboardColumn(column))
+      .slice(0, 8);
   }
 }

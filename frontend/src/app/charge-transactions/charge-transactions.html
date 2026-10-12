@@ -185,6 +185,7 @@
         <!-- SEARCH -->
 
         <button
+          *ngIf="canEditTransactions"
           type="button"
           class="search-btn"
           (click)="applyFilters()"
@@ -237,15 +238,7 @@
               <tr>
 
                 <th>
-                  TRANSACTION ID
-                </th>
-
-                <th>
                   MOBILE
-                </th>
-
-                <th>
-                  DEVICE ID
                 </th>
 
                 <th>
@@ -308,28 +301,10 @@
                 *ngFor="let transaction of transactions"
               >
 
-                <!-- TRANSACTION ID -->
-
-                <td>
-
-                  <strong>
-                    {{ transaction.transactionid }}
-                  </strong>
-
-                </td>
-
-
                 <!-- MOBILE -->
 
                 <td>
                   {{ transaction.mobile || '—' }}
-                </td>
-
-
-                <!-- DEVICE -->
-
-                <td>
-                  {{ transaction.deviceid || '—' }}
                 </td>
 
 
@@ -479,7 +454,7 @@
               >
 
                 <td
-                  colspan="15"
+                  colspan="13"
                   class="empty"
                 >
                   No transactions found.
@@ -573,7 +548,7 @@
           </span>
 
           <h2>
-            #{{ selectedTransaction.transactionid }}
+            Session information
           </h2>
 
         </div>
@@ -593,25 +568,9 @@
       <div class="details-grid">
 
         <div>
-          <label>Transaction ID</label>
-          <p>
-            {{ selectedTransaction.transactionid }}
-          </p>
-        </div>
-
-
-        <div>
           <label>Mobile</label>
           <p>
             {{ selectedTransaction.mobile || '—' }}
-          </p>
-        </div>
-
-
-        <div>
-          <label>Device ID</label>
-          <p>
-            {{ selectedTransaction.deviceid || '—' }}
           </p>
         </div>
 
@@ -733,22 +692,6 @@
 
 
         <div>
-          <label>Created Date</label>
-          <p>
-            {{ selectedTransaction.createddate || '—' }}
-          </p>
-        </div>
-
-
-        <div>
-          <label>Invoice ID</label>
-          <p>
-            {{ selectedTransaction.invoiceid ?? '—' }}
-          </p>
-        </div>
-
-
-        <div>
           <label>Comm Time</label>
           <p>
             {{ selectedTransaction.commtime || '—' }}
@@ -779,13 +722,6 @@
           </p>
         </div>
 
-
-        <div>
-          <label>Modified Date</label>
-          <p>
-            {{ selectedTransaction.modifiedDate || '—' }}
-          </p>
-        </div>
 
       </div>
 

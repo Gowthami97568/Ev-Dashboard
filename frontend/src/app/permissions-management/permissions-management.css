@@ -1,0 +1,366 @@
+:host {
+  display: block;
+  min-width: 0;
+  color: #0b1420;
+}
+
+.permissions-page {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 18px;
+  width: 100%;
+  min-height: 100vh;
+  padding: 0 18px 18px;
+  box-sizing: border-box;
+  background: #f4f6f8;
+}
+
+.permissions-sidebar {
+  width: 240px;
+  min-width: 240px;
+  height: calc(100vh - 36px);
+  position: sticky;
+  top: 0;
+  align-self: start;
+  overflow: hidden;
+}
+
+.permissions-sidebar app-sidebar {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.permissions-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.permissions-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 24px 28px 40px;
+}
+
+.permissions-content .page-head {
+  margin-bottom: 20px;
+}
+
+.permissions-content .eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  color: #06746f;
+  font-family: 'JetBrains Mono', 'SFMono-Regular', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.permissions-content .page-head h1 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.permissions-content .page-head p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.permissions-card {
+  min-width: 0;
+  margin-bottom: 20px;
+  padding: 22px;
+  border: 1px solid #e6e9ee;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(11, 20, 32, 0.05);
+}
+
+.permissions-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.permissions-card-head h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.permissions-card-head p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.create-user {
+  display: flex;
+  gap: 8px;
+  min-width: min(360px, 100%);
+}
+
+.create-user input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #d5dbe3;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.primary-button,
+.secondary-button {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-button {
+  background: #0e958b;
+  color: #fff;
+}
+
+.secondary-button {
+  border-color: #d5dbe3;
+  background: #fff;
+  color: #334155;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.permissions-table-wrap {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.permissions-table th,
+.permissions-table td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #edf0f3;
+  text-align: left;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+.permissions-table th {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.permissions-table th:first-child,
+.permissions-table td:first-child {
+  width: 24%;
+}
+
+.permissions-table .action-column {
+  width: 100px;
+  text-align: right;
+}
+
+.user-id {
+  font-weight: 600;
+}
+
+.permission-tags,
+.permission-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.permission-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.permission-tag--allow {
+  border-color: #a7f3d0;
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.permission-tag--view {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.empty-permissions,
+.permissions-state {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.permissions-state {
+  padding: 20px 4px;
+}
+
+.permission-editor {
+  scroll-margin-top: 80px;
+}
+
+.permission-option {
+  padding: 8px 11px;
+  border: 1px solid #d5dbe3;
+  border-radius: 999px;
+  background: #fff;
+  color: #475569;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.permission-option.is-selected {
+  border-color: #0e958b;
+  background: #e9f8f6;
+  color: #06746f;
+}
+
+.editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 20px;
+}
+
+.permissions-message {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 9px;
+  font-size: 13px;
+}
+
+.permissions-message--error {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.permissions-message--success {
+  border: 1px solid #a7f3d0;
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 760px) {
+  .permissions-content {
+    padding: 20px 14px 30px;
+  }
+
+  .permissions-page {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0;
+  }
+
+  .permissions-sidebar {
+    display: none;
+  }
+
+  .permissions-card {
+    padding: 16px;
+  }
+
+  .permissions-card-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .permissions-table-wrap {
+    overflow: visible;
+  }
+
+  .permissions-table,
+  .permissions-table tbody {
+    display: block;
+  }
+
+  .permissions-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .permissions-table tbody tr {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid #edf0f3;
+    border-radius: 10px;
+  }
+
+  .permissions-table tbody td,
+  .permissions-table th:first-child,
+  .permissions-table td:first-child,
+  .permissions-table .action-column {
+    width: auto;
+    padding: 7px 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .permissions-table tbody td::before {
+    display: block;
+    margin-bottom: 6px;
+    color: #64748b;
+    content: attr(data-label);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .permissions-table .action-column .secondary-button {
+    width: 100%;
+  }
+}

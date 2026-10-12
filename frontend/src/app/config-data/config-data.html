@@ -65,6 +65,7 @@
 
 
         <button
+          *ngIf="canEditConfigData"
           type="button"
           class="search-btn"
           (click)="applySearch()"
@@ -173,7 +174,6 @@
                   >
                     View
                   </button>
-
 
                   <!-- EDIT -->
 

@@ -22,6 +22,8 @@ import { Topbar } from '../dashboard/components/topbar/topbar';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { PermissionsService } from '../services/permissions.service';
+import { isHiddenDashboardColumn } from '../services/dashboard-column-visibility';
 
 @Component({
   selector: 'app-ev-users',
@@ -95,6 +97,10 @@ export class EvUsersComponent implements OnInit {
 
   editErrorMessage = '';
 
+  isViewModalOpen = false;
+
+  viewingUser: Record<string, unknown> | null = null;
+
 
   // =====================================================
   // CONSTRUCTOR
@@ -103,8 +109,13 @@ export class EvUsersComponent implements OnInit {
   constructor(
     private readonly http: HttpClient,
     private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly permissionsService: PermissionsService
   ) {}
+
+  get canEditUsers(): boolean {
+    return this.permissionsService.hasAccess('users', 'allow');
+  }
 
 
   // =====================================================
@@ -757,6 +768,28 @@ export class EvUsersComponent implements OnInit {
 
   }
 
+  viewUser(user: Record<string, unknown>): void {
+    this.viewingUser = { ...user };
+    this.isViewModalOpen = true;
+  }
+
+  closeViewModal(): void {
+    this.isViewModalOpen = false;
+    this.viewingUser = null;
+  }
+
+  getViewableKeys(): string[] {
+    return this.viewingUser ? Object.keys(this.viewingUser) : [];
+  }
+
+  formatRecordValue(value: unknown): string {
+    if (value === null || value === undefined || value === '') {
+      return '—';
+    }
+
+    return typeof value === 'object' ? JSON.stringify(value) : String(value);
+  }
+
 
   // =====================================================
   // EDIT USER — CLOSE MODAL
@@ -778,17 +811,14 @@ export class EvUsersComponent implements OnInit {
   // =====================================================
 
   getEditableKeys(): string[] {
+    return this.editingUser
+      ? this.getUserColumns().filter(key => !this.isUserKeyColumn(key))
+      : [];
+  }
 
-    if (!this.editingUser) {
-
-      return [];
-
-    }
-
-
-    return Object.keys(
-      this.editingUser
-    );
+  isUserKeyColumn(key: string): boolean {
+    const normalized = key.replace(/[_\s-]/g, '').toLowerCase();
+    return normalized === 'id' || normalized.endsWith('id') || normalized.endsWith('uuid');
 
   }
 
@@ -890,6 +920,10 @@ export class EvUsersComponent implements OnInit {
     const url =
       `${environment.apiUrl}/api/users/${userId}`;
 
+    const updatePayload = Object.fromEntries(
+      this.getEditableKeys().map(key => [key, this.editingUser[key]])
+    );
+
 
     console.log(
       'PUT URL:',
@@ -899,7 +933,7 @@ export class EvUsersComponent implements OnInit {
 
     console.log(
       'PUT Request Body:',
-      this.editingUser
+      updatePayload
     );
 
 
@@ -910,7 +944,7 @@ export class EvUsersComponent implements OnInit {
     this.http
       .put<any>(
         url,
-        this.editingUser
+        updatePayload
       )
       .subscribe({
 
@@ -962,7 +996,7 @@ export class EvUsersComponent implements OnInit {
 
             this.users[index] = {
               ...this.users[index],
-              ...this.editingUser
+              ...updatePayload
             };
 
           }
@@ -1051,13 +1085,8 @@ export class EvUsersComponent implements OnInit {
   // =====================================================
 
   getUserColumns(): string[] {
-
-    if (
-      this.filteredUsers.length === 0
-    ) {
-
+    if (this.filteredUsers.length === 0) {
       return [];
-
     }
 
     const columns = Object.keys(this.filteredUsers[0]);
@@ -1071,19 +1100,41 @@ export class EvUsersComponent implements OnInit {
       'vehicle_type',
       'active'
     ];
-
     const visibleColumns = preferredColumns
-      .map(preferred =>
-        columns.find(column =>
-          column.toLowerCase() === preferred
-        )
-      )
-      .filter((column): column is string => column !== undefined);
+      .map(preferred => columns.find(column => column.toLowerCase() === preferred))
+      .filter(
+        (column): column is string =>
+          column !== undefined && !isHiddenDashboardColumn(column)
+      );
 
     return visibleColumns.length > 0
       ? visibleColumns
-      : columns.slice(0, 8);
+      : columns
+        .filter(column => column !== '__v' && !isHiddenDashboardColumn(column))
+        .slice(0, 8);
+  }
 
+  getUserColumnLabel(column: string): string {
+    const labels: Record<string, string> = {
+      consumerid: 'Consumer ID',
+      country_code: 'Country Code',
+      fname: 'First Name',
+      lname: 'Last Name',
+      vehicle_type: 'Vehicle Type',
+      vehicle_brand: 'Vehicle Brand',
+      vehicle_model: 'Vehicle Model',
+      lastlogin: 'Last Login',
+      usertype: 'User Type',
+      rfid: 'RFID',
+      aadhaar: 'Aadhaar',
+      pancard: 'PAN Card'
+    };
+    const normalized = column.toLowerCase();
+
+    return labels[normalized] ?? column
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/[_-]/g, ' ')
+      .replace(/\b\w/g, letter => letter.toUpperCase());
   }
 
 }

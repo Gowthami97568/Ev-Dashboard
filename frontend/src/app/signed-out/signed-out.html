@@ -2,8 +2,8 @@
   <section class="signed-out-card" aria-labelledby="signed-out-title">
     <div class="signed-out-mark" aria-hidden="true">&#10003;</div>
     <p class="signed-out-kicker">EV Charging Dashboard</p>
-    <h1 id="signed-out-title">You have been signed out</h1>
-    <p class="signed-out-message">Your dashboard session has ended.</p>
+    <h1 id="signed-out-title">{{ title }}</h1>
+    <p class="signed-out-message">{{ message }}</p>
     <a routerLink="/login" class="signed-out-link">Return to admin login</a>
   </section>
 </main>

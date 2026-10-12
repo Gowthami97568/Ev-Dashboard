@@ -12,6 +12,7 @@ import { ConfigData } from './config-data/config-data';
 import { SocketInfo } from './socket-info/socket-info';
 import { Analytics } from './analytics/analytics';
 import { Settings } from './settings/settings';
+import { PermissionsManagement } from './permissions-management/permissions-management';
 
 import { Logs } from './logs/logs';
 import { ServerLogs } from './server-logs/server-logs';
@@ -143,6 +144,12 @@ export const routes: Routes = [
   {
     path: 'settings',
     component: Settings,
+    canActivate: [adminAuthGuard]
+  },
+
+  {
+    path: 'permissions',
+    component: PermissionsManagement,
     canActivate: [adminAuthGuard]
   },
 

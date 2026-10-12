@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { SidebarNavSection } from '../../models/dashboard.model';
 import { AuthService } from '../../../services/auth.service';
+import { PermissionsService } from '../../../services/permissions.service';
 import { Topbar } from '../topbar/topbar';
 
 @Component({
@@ -13,6 +14,8 @@ import { Topbar } from '../topbar/topbar';
   styleUrl: './sidebar.css'
 })
 export class Sidebar {
+
+  private readonly permissionsService = inject(PermissionsService);
 
   // ===========================================================
   // SIDEBAR COLLAPSE STATE
@@ -59,7 +62,8 @@ export class Sidebar {
         {
           label: 'Dashboard',
           icon: 'layout-dashboard',
-          route: '/dashboard'
+          route: '/dashboard',
+          permissionKey: 'dashboard'
         }
       ]
     },
@@ -73,31 +77,36 @@ export class Sidebar {
         {
           label: 'EV Users',
           icon: 'users',
-          route: '/users'
+          route: '/users',
+          permissionKey: 'users'
         },
 
         {
           label: 'Wallet History',
           icon: 'wallet',
-          route: '/wallet-history'
+          route: '/wallet-history',
+          permissionKey: 'wallet-history'
         },
 
         {
           label: 'Charge Manager',
           icon: 'user-cog',
-          route: '/charge-manager'
+          route: '/charge-manager',
+          permissionKey: 'charge-manager'
         },
 
         {
           label: 'Charge Transactions',
           icon: 'receipt',
-          route: '/charge-transactions'
+          route: '/charge-transactions',
+          permissionKey: 'charge-transactions'
         },
 
         {
           label: 'Devices Master',
           icon: 'cpu',
-          route: '/devices-master'
+          route: '/devices-master',
+          permissionKey: 'devices-master'
         }
       ]
     },
@@ -111,13 +120,15 @@ export class Sidebar {
         {
           label: 'Device Logs',
           icon: 'logs',
-          route: '/device-logs'
+          route: '/device-logs',
+          permissionKey: 'device-logs'
         },
 
         {
           label: 'Server Logs',
           icon: 'logs',
-          route: '/server-logs'
+          route: '/server-logs',
+          permissionKey: 'server-logs'
         }
       ]
     },
@@ -131,25 +142,29 @@ export class Sidebar {
         {
           label: 'Account Info',
           icon: 'user-circle',
-          route: '/account-info'
+          route: '/account-info',
+          permissionKey: 'account-info'
         },
 
         {
           label: 'App Versions',
           icon: 'smartphone',
-          route: '/app-versions'
+          route: '/app-versions',
+          permissionKey: 'app-versions'
         },
 
         {
           label: 'Config Data',
           icon: 'database',
-          route: '/config-data'
+          route: '/config-data',
+          permissionKey: 'config-data'
         },
 
         {
           label: 'Socket Info',
           icon: 'radio',
-          route: '/socket-info'
+          route: '/socket-info',
+          permissionKey: 'socket-info'
         }
       ]
     },
@@ -163,7 +178,8 @@ export class Sidebar {
         {
           label: 'Analytics',
           icon: 'bar-chart',
-          route: '/analytics'
+          route: '/analytics',
+          permissionKey: 'analytics'
         }
       ]
     },
@@ -177,11 +193,31 @@ export class Sidebar {
         {
           label: 'Settings',
           icon: 'settings',
-          route: '/settings'
+          route: '/settings',
+          permissionKey: 'settings'
+        },
+
+        {
+          label: 'Permissions',
+          icon: 'user-cog',
+          route: '/permissions',
+          permissionKey: 'settings'
         }
       ]
     }
   ];
+
+  get visibleSections(): SidebarNavSection[] {
+    return this.sections
+      .map(section => ({
+        ...section,
+        items: section.items.filter(item => {
+          const permissionKey = item.permissionKey ?? (item.route.replace('/', '').split('?')[0] || 'dashboard');
+          return this.permissionsService.hasAccess(permissionKey, 'view');
+        })
+      }))
+      .filter(section => section.items.length > 0);
+  }
 
 
   // ===========================================================

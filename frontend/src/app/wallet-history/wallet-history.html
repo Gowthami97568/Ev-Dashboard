@@ -92,6 +92,7 @@
 
 
         <button
+          *ngIf="canEditRecords"
           type="button"
           class="search-btn"
           (click)="applySearch()"
@@ -452,49 +453,20 @@
           </label>
 
 
-          <!-- ==================================================
-               STATUS / ACTIVE
-          =================================================== -->
-
           <select
-            *ngIf="
-              column.toLowerCase() === 'active' ||
-              column.toLowerCase() === 'enabled' ||
-              column.toLowerCase() === 'status'
-            "
+            *ngIf="column.toLowerCase() === 'type'"
             [(ngModel)]="editingRecord[column]"
           >
-
-            <option
-              [ngValue]="1"
-            >
-              Active
-            </option>
-
-            <option
-              [ngValue]="0"
-            >
-              Inactive
-            </option>
-
+            <option value="Consume">Consume</option>
+            <option value="Earning">Earning</option>
+            <option value="Recharge">Recharge</option>
           </select>
 
-
-          <!-- ==================================================
-               NORMAL INPUT
-          =================================================== -->
-
           <input
-            *ngIf="
-              column.toLowerCase() !== 'active' &&
-              column.toLowerCase() !== 'enabled' &&
-              column.toLowerCase() !== 'status'
-            "
-            type="text"
+            *ngIf="column.toLowerCase() !== 'type'"
+            [type]="column.toLowerCase().includes('amount') || column.toLowerCase().includes('balance') ? 'number' : 'text'"
+            [step]="column.toLowerCase().includes('amount') || column.toLowerCase().includes('balance') ? 'any' : null"
             [(ngModel)]="editingRecord[column]"
-            [readonly]="
-              isRecordIdColumn(column)
-            "
           />
 
         </div>

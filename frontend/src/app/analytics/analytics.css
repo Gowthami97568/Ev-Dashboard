@@ -768,25 +768,30 @@
 
 .charger-table {
   width: 100%;
-
-  overflow-x: auto;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .charger-header,
 .charger-row {
-  min-width: 650px;
-
   display: grid;
 
   grid-template-columns:
-    2fr
-    1fr
-    1fr
-    1.2fr;
+    minmax(0, 2fr)
+    minmax(0, 1fr)
+    minmax(0, 1fr)
+    minmax(0, 1.2fr);
 
   align-items: center;
 
   gap: 18px;
+}
+
+.charger-header > *,
+.charger-row > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .charger-header {

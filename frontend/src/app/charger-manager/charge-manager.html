@@ -112,6 +112,7 @@
 
 
         <button
+          *ngIf="canEditChargers"
           type="button"
           class="filter-btn"
           (click)="applyFilters()"
@@ -158,10 +159,6 @@
 
                 <th>MOBILE</th>
 
-                <th>DEVICE ID</th>
-
-                <th>CONNECTOR ID</th>
-
                 <th>DEVICE PARENT</th>
 
                 <th>DEVICE KW</th>
@@ -188,11 +185,7 @@
 
                 <th>CREATED BY</th>
 
-                <th>CREATED DATE</th>
-
                 <th>MODIFIED BY</th>
-
-                <th>MODIFIED DATE</th>
 
                 <th>FULL DAY</th>
 
@@ -213,20 +206,6 @@
 
                 <td>
                   {{ charger.mobile ?? '—' }}
-                </td>
-
-
-                <td>
-
-                  <strong>
-                    {{ charger.deviceid ?? '—' }}
-                  </strong>
-
-                </td>
-
-
-                <td>
-                  {{ charger.connectorid ?? '—' }}
                 </td>
 
 
@@ -310,17 +289,7 @@
 
 
                 <td>
-                  {{ charger.createddate ?? '—' }}
-                </td>
-
-
-                <td>
                   {{ charger.modifiedby ?? '—' }}
-                </td>
-
-
-                <td>
-                  {{ charger.modifieddate ?? '—' }}
                 </td>
 
 
@@ -360,7 +329,7 @@
               >
 
                 <td
-                  colspan="22"
+                  colspan="18"
                   class="empty"
                 >
                   No chargers found.

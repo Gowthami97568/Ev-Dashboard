@@ -123,6 +123,7 @@ export interface SidebarNavItem {
   label: string;
   icon: string;
   route: string;
+  permissionKey?: string;
   active?: boolean;
 }
 

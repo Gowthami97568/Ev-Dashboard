@@ -16,7 +16,6 @@
 
   grid-template-columns:
     240px minmax(0, 1fr);
-
   width: 100%;
 
   min-height: 100vh;
@@ -412,7 +411,8 @@
 
   flex: 0 0 auto;
 
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: visible;
 
   scrollbar-width: thin;
 }
@@ -443,6 +443,7 @@ th {
   font-size: 10px;
 
   overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 td {
@@ -455,7 +456,14 @@ td {
   font-size: 11px;
 
   overflow-wrap: anywhere;
+  word-break: break-word;
   vertical-align: middle;
+}
+
+.actions-column {
+  width: 140px;
+
+  white-space: nowrap;
 }
 
 .cell-value {
@@ -710,6 +718,40 @@ tbody tr:hover {
   color: white;
 }
 
+.row-actions {
+  display: flex;
+
+  flex-wrap: nowrap;
+
+  align-items: center;
+
+  white-space: nowrap;
+
+  gap: 6px;
+}
+
+.view-btn {
+  border: 1px solid #cbd5e1;
+
+  background: white;
+
+  color: #475569;
+
+  padding: 8px 12px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  font-size: 13px;
+}
+
+.view-btn:hover {
+  background: #f1f5f9;
+}
+
 
 /* =====================================================
    EDIT MODAL
@@ -854,6 +896,24 @@ tbody tr:hover {
 
 .form-field input:focus {
   border-color: #26756f;
+}
+
+.record-detail-value {
+  margin: 0;
+
+  padding: 10px 12px;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 8px;
+
+  color: #1f2937;
+
+  font-size: 14px;
+
+  overflow-wrap: anywhere;
+
+  white-space: pre-wrap;
 }
 
 .modal-footer {
@@ -1098,15 +1158,6 @@ tbody tr:hover {
     padding: 5px 6px;
     font-size: 11px;
   }
-
-  .table-wrapper th:nth-child(4),
-  .table-wrapper td:nth-child(4),
-  .table-wrapper th:nth-child(6),
-  .table-wrapper td:nth-child(6),
-  .table-wrapper th:nth-child(7),
-  .table-wrapper td:nth-child(7) {
-    display: none;
-  }
 }
 
 @media (max-width: 380px) {
@@ -1115,12 +1166,5 @@ tbody tr:hover {
     align-items: center;
     gap: 6px;
     padding: 8px 4px 2px;
-  }
-
-  .table-wrapper th:nth-child(3),
-  .table-wrapper td:nth-child(3),
-  .table-wrapper th:nth-child(6),
-  .table-wrapper td:nth-child(6) {
-    display: none;
   }
 }

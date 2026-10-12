@@ -14,6 +14,8 @@ import {
 
 import { Sidebar } from '../dashboard/components/sidebar/sidebar';
 import { environment } from '../../environments/environment';
+import { PermissionsService } from '../services/permissions.service';
+import { isHiddenDashboardColumn } from '../services/dashboard-column-visibility';
 
 
 @Component({
@@ -112,8 +114,13 @@ export class ConfigData implements OnInit {
   // ======================================================
 
   constructor(
-    private readonly configDataService: ConfigDataService
+    private readonly configDataService: ConfigDataService,
+    private readonly permissionsService: PermissionsService
   ) {}
+
+  get canEditConfigData(): boolean {
+    return this.permissionsService.hasAccess('config-data', 'allow');
+  }
 
 
   // ======================================================
@@ -458,9 +465,9 @@ export class ConfigData implements OnInit {
   // ======================================================
 
   getVisibleColumns(): string[] {
-
-    return this.columns.slice(0, 8);
-
+    return this.columns
+      .filter(column => !isHiddenDashboardColumn(column))
+      .slice(0, 8);
   }
 
 

@@ -1,4 +1,5 @@
 const express = require("express");
+const { requireModulePermission } = require("../controllers/permissionsController");
 
 const {
     getWalletSummary,
@@ -31,6 +32,7 @@ router.get(
 // Update a record without a database-generated ID by matching its original values
 router.put(
     "/",
+    requireModulePermission("Wallet"),
     updateWalletRecord
 );
 
@@ -43,6 +45,7 @@ router.get(
 // Update one wallet record
 router.put(
     "/:id",
+    requireModulePermission("Wallet"),
     updateWalletRecord
 );
 

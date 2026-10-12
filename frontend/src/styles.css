@@ -99,6 +99,10 @@ body:has(app-sidebar) .dashboard-main {
   padding-top: 0;
 }
 
+body:has(app-sidebar) .permissions-page .permissions-main {
+  padding-top: 0;
+}
+
 body:has(app-sidebar) .ev-main {
   height: 100%;
   max-height: 100%;
@@ -425,7 +429,8 @@ body:has(app-sidebar) .ev-users-page .table-content > .table-wrapper {
   flex: 0 1 auto;
   min-height: 0;
   max-height: none;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   scrollbar-width: thin;
 }
 
@@ -460,6 +465,21 @@ body:has(app-sidebar) .ev-users-page .pagination-container {
   body:has(app-sidebar) .logs-sidebar {
     width: 220px;
     min-width: 220px;
+  }
+}
+
+@media (max-width: 850px) {
+  body:has(app-sidebar) .permissions-page {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0;
+  }
+
+  body:has(app-sidebar) .permissions-page .permissions-sidebar {
+    display: none;
+  }
+
+  body:has(app-sidebar) .permissions-page app-topbar {
+    left: 0;
   }
 }
 

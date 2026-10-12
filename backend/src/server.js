@@ -18,6 +18,7 @@ const configDataRoutes = require("./routes/configDataRoutes");
 const devicesMasterRoutes = require("./routes/devicesMasterRoutes");
 const socketInfoRoutes = require("./routes/socketInfoRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const permissionsRoutes = require("./routes/permissionsRoutes");
 
 const authRoutes = require("./routes/authRoutes");
 const { requireAuth } = require("./middleware/authMiddleware");
@@ -374,6 +375,15 @@ app.use(
 app.use(
     "/api/analytics",
     analyticsRoutes
+);
+
+// ======================================================
+// USER PERMISSIONS
+// ======================================================
+
+app.use(
+    "/api/permissions",
+    permissionsRoutes
 );
 
 // ======================================================

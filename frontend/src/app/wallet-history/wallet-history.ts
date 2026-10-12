@@ -15,6 +15,8 @@ import { Sidebar } from '../dashboard/components/sidebar/sidebar';
 import { Topbar } from '../dashboard/components/topbar/topbar';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { PermissionsService } from '../services/permissions.service';
+import { isHiddenDashboardColumn } from '../services/dashboard-column-visibility';
 
 @Component({
   selector: 'app-wallet-history',
@@ -112,8 +114,13 @@ export class WalletHistory implements OnInit {
   constructor(
     private readonly walletService: WalletHistoryService,
     private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly permissionsService: PermissionsService
   ) {}
+
+  get canEditRecords(): boolean {
+    return this.permissionsService.hasAccess('wallet-history', 'allow');
+  }
 
 
   // =====================================================
@@ -448,12 +455,41 @@ export class WalletHistory implements OnInit {
   // =====================================================
 
   getVisibleColumns(): string[] {
+    const preferredColumns = [
+      'transactionid',
+      'walletid',
+      'userid',
+      'mobile',
+      'name',
+      'type',
+      'amount',
+      'balance',
+      'status',
+      'date'
+    ];
+    const normalizedColumns = this.columns.map(column => ({
+      column,
+      normalized: column.replace(/[_\s-]/g, '').toLowerCase()
+    })).filter(item => !isHiddenDashboardColumn(item.column));
+    const selected = preferredColumns
+      .map(preferred => normalizedColumns.find(item => item.normalized === preferred)?.column)
+      .filter((column): column is string => column !== undefined);
 
-    return this.columns.slice(
-      0,
-      8
-    );
+    for (const column of this.columns) {
+      if (selected.length >= 7) {
+        break;
+      }
 
+      if (
+        !selected.includes(column) &&
+        !this.isRecordIdColumn(column) &&
+        !isHiddenDashboardColumn(column)
+      ) {
+        selected.push(column);
+      }
+    }
+
+    return selected.slice(0, 7);
   }
 
 
@@ -487,11 +523,15 @@ export class WalletHistory implements OnInit {
   // =====================================================
 
   getEditableColumns(): string[] {
-
-    return this.getVisibleColumns().filter(
-      column =>
-        !this.isRecordIdColumn(column)
-    );
+    return this.columns.filter(column => {
+      const normalized = column.replace(/[_\s-]/g, '').toLowerCase();
+      return [
+        'walletamount',
+        'walletbalance',
+        'type',
+        'bankname'
+      ].includes(normalized);
+    });
 
   }
 
@@ -622,12 +662,19 @@ export class WalletHistory implements OnInit {
         this.editingRecord
       );
 
+    const editableColumns = this.getEditableColumns();
+    if (editableColumns.length === 0) {
+      this.errorMessage = 'This wallet record has no editable fields.';
+      return;
+    }
 
     const payload: Partial<WalletRecord> & {
       __originalRecord?: WalletRecord;
-    } = {
-      ...this.editingRecord
-    };
+    } = {};
+
+    for (const column of editableColumns) {
+      payload[column] = this.editingRecord[column];
+    }
 
     if (!recordId) {
       payload.__originalRecord = {

@@ -13,6 +13,7 @@ import {
 } from '../services/charge-transaction.service';
 
 import { Sidebar } from '../dashboard/components/sidebar/sidebar';
+import { PermissionsService } from '../services/permissions.service';
 
 @Component({
   selector: 'app-charge-transactions',
@@ -89,8 +90,13 @@ export class ChargeTransactions implements OnInit {
 
 
   constructor(
-    private readonly transactionService: ChargeTransactionService
+    private readonly transactionService: ChargeTransactionService,
+    private readonly permissionsService: PermissionsService
   ) {}
+
+  get canEditTransactions(): boolean {
+    return this.permissionsService.hasAccess('charge-transactions', 'allow');
+  }
 
 
   ngOnInit(): void {
